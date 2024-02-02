@@ -1,5 +1,5 @@
 import './Login.scss'
-
+import { Link } from 'react-router-dom'
 export default function Login(){
     return (
         <div className='content-container'>
@@ -8,6 +8,7 @@ export default function Login(){
                <input className='input-box' type="email" placeholder='Enter your email'/>
                <input className='input-box' type="password" placeholder='Enter your password'/>
                <button className='login-button'>Log in</button>
+               <small className='small-text'>Don't have an account? <Link to='/signup'>Sign Up</Link></small>
            </div>
         </div>
     )

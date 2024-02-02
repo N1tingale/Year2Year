@@ -28,7 +28,7 @@
             font-size: 1.5rem;
             width: 20vw;
             &::placeholder {
-                color: black;
+                color: #434343;
             }
         }
         .login-button {
@@ -43,6 +43,10 @@
             &:hover {
                 cursor: pointer;
             }
+        }
+        .small-text {
+            margin-top: 0.25rem;
+            align-self: flex-start;
         }
     }
     
