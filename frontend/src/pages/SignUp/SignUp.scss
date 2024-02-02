@@ -20,15 +20,30 @@
         }
         .input-box {
             border: none;
-            outline: 1px solid black;
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 5px;
+            border-bottom: 2px dashed gray;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding-top: 1rem;
+            padding-bottom: 0.25rem;
             background-color: inherit;
             font-size: 1.5rem;
             width: 20vw;
+
             &::placeholder {
                 color: #434343;
+                transition: transform 0.3s ease-out, font-size 0.3s ease-out;
+                transform: translateY(0);
+                font-size: 1.5rem;
+            }
+
+            &:focus {
+                outline: none;
+
+                &::placeholder {
+                    transform: translateY(-1.75rem);
+                    transition: transform 0.3s ease-out, font-size 0.3s ease-out;
+                    font-size: 0.75rem;
+                }
             }
         }
         .signup-button {
