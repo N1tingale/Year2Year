@@ -1,6 +1,6 @@
 @import "../../variables.scss";
 
-.content-container {
+.signup-content-container {
   width: 100vw;
   height: 100vh;
   background-color: $base;
@@ -52,8 +52,8 @@
       padding: 0.5rem;
       border-radius: 5px;
       color: white;
-      font-size: 1.5rem;
-      background-color: $complementary;
+      font-size: 1.25rem;
+      background-color: black;
       &:hover {
         cursor: pointer;
       }

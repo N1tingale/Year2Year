@@ -1,0 +1,21 @@
+@import "../variables.scss";
+
+.nav {
+  height: 100%;
+  background-color: $base;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  .link {
+    text-decoration: none;
+    font-size: 1.25rem;
+    color: black;
+    margin: 1rem;
+    &:first-of-type {
+      margin-left: 20%;
+    }
+    &:last-of-type {
+      margin-right: 20%;
+    }
+  }
+}

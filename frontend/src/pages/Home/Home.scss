@@ -1,78 +1,18 @@
-// Home.scss file - the css/styling for your Landing page goes here
-.main-container
-{
-	
-	width: 100vw;
-  	height: 100vh;
-	background-color: #FFA500;
-	display: flex;
-	justify-content: center;
-	align-items: start;
-	
-	  	.header
-	  	{
-	  		font-family: Georgia, serif;
-	  		height: 55 px;
-	  		line-height: 50px;
-	  		text-align: center;
-			background-color: #FAD5A5;
-			border-style: solid;
-			border-color: #FAD5A5;
-			color: black;
-	  		border-bottom: solid black;
-	  		width: 100%; 
-	  		padding: 40px;
-	  		
+@import "../../variables.scss";
 
-	  	}
-
-	  	.body
-	  	{
-	  		display: flex;
-	  		flex-direction: column;
-	  		font-family: Georgia, serif;
-	  		height: 55 px;
-	  		line-height: 50px;
-	  		text-align: center;
-
-		  	.button
-		  	{
-		  		justify-content: center;
-		  		font-family: Georgia, serif;
-		  		line-height: 50px;
-		  		margin: 0px 00;
- 				padding: 15px;
-  				border: 2px solid;
-  				font-size: 30px;
-  				background-color: #FAD5A5;	
-  			
-		  	}
-
-		  	.p1
-		  	{
-		  		
-		  		text-align: center;
-		  		margin: 10px 00;
-  				padding: 10px;
-  				border: 1px solid;
-  			
-  				background-color: #FAD5A5;
-		  	}
-
-		  	.footer
-		  	{
-		  		position: absolute; 
-			    bottom: 0; 
-			    left: 0;
-			    right: 0; 
-			    z-index: 1;
-			    border: 5px solid;
-			    width: 99.5%;
-			    background-color: #FAD5A5;
-			    text-align: center;
-
-		  	}
-
-		}
-
+.home-container {
+  background-color: $base;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .header {
+    font-size: 3rem;
+  }
+  .header-text {
+    margin-bottom: 10rem;
+    font-size: 1.25rem;
+  }
 }
