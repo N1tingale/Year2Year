@@ -2,6 +2,9 @@ from app import app, db
 from app.models import Student
 from flask import jsonify, request
 
+# API Routes are instantiated here 
+# Each decorator such as @app.route defines an endpoint (such as /students) and a method for that endpoint
+# The function below the decorator handles the data sent/received by the endpoint
 @app.route('/students', methods=['GET'])
 def get_students():
     students = Student.query.all()
