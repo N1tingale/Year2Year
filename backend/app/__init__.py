@@ -1,13 +1,9 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config.from_object('config.Config')
 
-# Load configuration from config.py
-# config.py will not be visible in the repository, 
-# because it is in .gitignore, we will share the file via other means
-app.config.from_pyfile('../config.py')
+db = SQLAlchemy(app)
 
-from app.routes import *  # Import all routes
-
-if __name__ == '__main__':
-    app.run(debug=True)
+from app import routes
