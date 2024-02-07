@@ -1,21 +1,19 @@
 import { Link } from "react-router-dom";
-import "./Navbar.scss";
 export default function Navbar() {
   return (
-    <nav className="nav">
-      <Link className="link" to="/home">
+    <div className="navbar bg-base-100 justify-evenly">
+      <Link className="text-xl font-semibold ml-52" to="/">
         Home
       </Link>
-      <Link className="link" to="/profile">
+      <Link className="text-xl font-semibold" to="/profile">
         Profile
       </Link>
-      <h1>Year2Year</h1>
-      <Link className="link" to="/login">
+      <Link className="text-xl font-semibold" to="/login">
         Log In
       </Link>
-      <Link className="link" to="/signup">
+      <Link className="text-xl font-semibold mr-52" to="/signup">
         Sign Up
       </Link>
-    </nav>
+    </div>
   );
 }
