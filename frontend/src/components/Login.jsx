@@ -1,7 +1,7 @@
 import Navbar from "./Navbar";
 export default function Login() {
   return (
-    <>
+    <div className="overflow-hidden h-screen">
       <Navbar />
       <div className="flex flex-col justify-center items-center h-screen">
         <h1 className="text-5xl font-semibold mb-2">Log In</h1>
@@ -27,6 +27,6 @@ export default function Login() {
         </label>
         <button className="btn btn-primary mt-4">Log in</button>
       </div>
-    </>
+    </div>
   );
 }
