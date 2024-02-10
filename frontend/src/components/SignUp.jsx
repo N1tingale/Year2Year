@@ -13,7 +13,7 @@ export default function SignUp() {
           <input
             type="email"
             placeholder="Email"
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
           />
         </label>
         <label className="form-control w-full max-w-xs">
@@ -23,7 +23,7 @@ export default function SignUp() {
           <input
             type="text"
             placeholder="First name"
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
           />
         </label>
         <label className="form-control w-full max-w-xs">
@@ -33,7 +33,7 @@ export default function SignUp() {
           <input
             type="text"
             placeholder="Last name"
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
           />
         </label>
 
@@ -44,7 +44,7 @@ export default function SignUp() {
           <input
             type="password"
             placeholder="Password"
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
           />
         </label>
         <button className="btn btn-primary mt-4">Sign Up</button>

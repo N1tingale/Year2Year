@@ -12,7 +12,7 @@ export default function Login() {
           <input
             type="email"
             placeholder="Email"
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
           />
         </label>
         <label className="form-control w-full max-w-xs">
@@ -22,7 +22,7 @@ export default function Login() {
           <input
             type="password"
             placeholder="Password"
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
           />
         </label>
         <button className="btn btn-primary mt-4">Log in</button>
