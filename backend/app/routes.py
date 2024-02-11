@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Student, Tutor
+from app.models import Student, Tutor, Module
 from flask import jsonify, request
 
 # API Routes are instantiated here 
@@ -65,3 +65,14 @@ def create_tutor():
     
     db.session.add(new_tutor)
     db.session.commit()
+
+@app.route('/modules', methods=['GET'])
+def get_modules():
+    modules = Module.query.all()
+    return jsonify({'modules': [{'id': module.id,
+                                 'module_code': module.module_code,
+                                 'module_name': module.module_name,
+                                 'tutor_id': module.tutor_id}for module in modules]})
+
+# @app.route('/bookings', methods=['GET'])
+# def get_bookings():
