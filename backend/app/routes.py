@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Student, Tutor, Module
+from app.models import Student, Tutor, Module, Booking, Report
 from flask import jsonify, request
 
 # API Routes are instantiated here 
@@ -74,5 +74,42 @@ def get_modules():
                                  'module_name': module.module_name,
                                  'tutor_id': module.tutor_id}for module in modules]})
 
-# @app.route('/bookings', methods=['GET'])
-# def get_bookings():
+@app.route('/bookings', methods=['GET'])
+def get_bookings():
+    bookings = Booking.query.all()
+    return jsonify({'bookings': [{'id': booking.id,
+                                'student_id': booking.student_id,
+                                'tutor_id': booking.tutor_id,
+                                'module_id': booking.module_id,
+                                'time': booking.time,
+                                'location': booking.location,
+                                'description': booking.description}for booking in bookings]})
+
+@app.route('/bookings', methods=['POST'])
+def create_bookings():
+    data = request.get_json()
+
+    student_id = data.get('student_id')
+    tutor_id = data.get('tutor_id')
+    module_id = data.get('module_id')
+    time = data.get('time')
+    location = data.get('location')
+    description = data.get('description')
+
+    if not all([student_id, tutor_id, module_id, time, location, description]):
+        return jsonify({'error': 'All fields (student_id, tutor_id, module_id, time, location, description) are required'}), 400
+    
+    new_booking = Booking(student_id=student_id, tutor_id=tutor_id, module_id=module_id, time=time, location=location, description=description)
+    db.session.add(new_booking)
+    db.session.commit()
+
+@app.route('/reports', methods=['GET'])
+def get_bookings():
+    reports = Report.query.all()
+    return jsonify({'reports': [{'id': report.id,
+                                 'student_id': report.student_id,
+                                 'tutor_id': report.tutor_id,
+                                 'module': report.module_id,
+                                 'type': report.type,
+                                 'description': report.description}for report in reports]})
+
