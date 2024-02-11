@@ -104,12 +104,11 @@ def create_bookings():
     db.session.commit()
 
 @app.route('/reports', methods=['GET'])
-def get_bookings():
+def get_reports():
     reports = Report.query.all()
     return jsonify({'reports': [{'id': report.id,
                                  'student_id': report.student_id,
                                  'tutor_id': report.tutor_id,
-                                 'module': report.module_id,
+                                 'module_id': report.module_id,
                                  'type': report.type,
                                  'description': report.description}for report in reports]})
-
