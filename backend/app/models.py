@@ -9,6 +9,58 @@ class Student(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    bookings = db.relationship('Booking', backref='student', lazy=True)
+    reports = db.relationship('Report', backref='student', lazy=True)
 
     def __repr__(self):
         return f"<Student {self.first_name} {self.last_name}>"
+
+
+class Tutor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    contact_number = db.Column(db.String(10), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+    modules = db.relationship('Module', backref='tutor', lazy=True)
+    bookings = db.relationship('Booking', backref='tutor', lazy=True)
+    reports = db.relationship('Report', backref='tutor', lazy=True)
+
+
+    def __repr__(self):
+        return f"<Tutor {self.first_name} {self.last_name}>"
+
+class Module(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    module_code = db.Column(db.String(10), nullable=False)
+    module_name = db.Column(db.String(50), nullable=False)
+    tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.id'), nullable=False)
+
+    def __repr__(self):
+        return f"<Module {self.module_code} {self.module_name}>"
+
+class Booking(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.id'), nullable=False)
+    module_id = db.Column(db.Integer, db.ForeignKey('module.id'), nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
+    location = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f"<Booking {self.student_id} {self.tutor_id} {self.module_id} {self.time} {self.location} {self.description}>"
+
+class Report(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.id'), nullable=False)
+    module_id = db.Column(db.Integer, db.ForeignKey('module.id'), nullable=False)
+    type = db.Column(db.String(20), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f"<Report {self.student_id} {self.tutor_id} {self.module_id} {self.description}>"
