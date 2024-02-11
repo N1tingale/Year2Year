@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Student
+from app.models import Student, Tutor
 from flask import jsonify, request
 
 # API Routes are instantiated here 
@@ -35,3 +35,33 @@ def create_student():
                                 'first_name': new_student.first_name,
                                 'last_name': new_student.last_name,
                                 'email': new_student.email}}), 201
+
+@app.route('/tutors', methods=['GET'])
+def get_tutors():
+    tutors = Tutor.query.all()
+    return jsonify({'tutors': [{'id': tutor.id,
+                                'first_name': tutor.first_name,
+                                'last_name': tutor.last_name,
+                                'email': tutor.email} for tutor in tutors]})
+
+
+@app.route('/tutors', methods=['POST'])
+def create_tutor():
+    data = request.get_json()
+
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    email = data.get('email')
+    password = data.get('password')
+    year = data.get('year')
+    contact_number = data.get('contact_number')
+    description = data.get('description')
+
+    if not all([first_name, last_name, email, password]):
+        return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
+    
+    new_tutor = Tutor(first_name=first_name, last_name=last_name, email=email, password=password, year=year, \
+                     contact_number=contact_number, description= description)
+    
+    db.session.add(new_tutor)
+    db.session.commit()
