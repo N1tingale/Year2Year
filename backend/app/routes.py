@@ -44,6 +44,13 @@ def get_tutors():
                                 'last_name': tutor.last_name,
                                 'email': tutor.email} for tutor in tutors]})
 
+@app.route('/tutors/<tutorId>', methods=['GET'])
+def get_tutor_id(tutorId):
+    tutor = Tutor.query.get(tutorId)
+    return jsonify({'tutor': {'id': tutor.id,
+                                'first_name': tutor.first_name,
+                                'last_name': tutor.last_name,
+                                'email': tutor.email}})
 
 @app.route('/tutors', methods=['POST'])
 def create_tutor():
@@ -65,6 +72,12 @@ def create_tutor():
     
     db.session.add(new_tutor)
     db.session.commit()
+
+    return jsonify({'message': 'Student created successfully',
+                    'student': {'id': new_tutor.id,
+                                'first_name': new_tutor.first_name,
+                                'last_name': new_tutor.last_name,
+                                'email': new_tutor.email}}), 201
 
 @app.route('/modules', methods=['GET'])
 def get_modules():
