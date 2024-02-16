@@ -52,17 +52,14 @@ def login():
     password = data.get("password")
 
     try:
-        try:
-            student_query = select(Student).where(Student.email == email and Student.password == password)
-            if student_query:
-                return jsonify({"message": "This is a student"})
-
-        except:
-            pass
+        student = Student.query.filter_by(email=email, password=password)
+        if student:
+            return jsonify({"message": "This is a student successfully logging in"})
+        tutor = Tutor.query.filter_by(email=email, password=password)
+        if tutor:
+            return jsonify({"message": "This is a tutor successfully logging in"})
     except:
-        pass
-
-
+        return jsonify({"message": "You are not a user. GET OUT."})
 
 
 @app.route('/tutors', methods=['GET'])
