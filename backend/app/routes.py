@@ -42,7 +42,7 @@ def create_student():
                                     'email': new_student.email,
                                     "emailVerified": new_student.emailVerified}}), 201
     except:
-        return jsonify({'message': "Student not created"}), 400
+        return jsonify({'error': "Student not created"}), 400
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -51,15 +51,19 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
+    student = None
+    tutor = None
+
     try:
-        student = Student.query.filter_by(email=email, password=password)
+        student = Student.query.filter_by(email=email, password=password).first()
         if student:
-            return jsonify({"message": "This is a student successfully logging in"})
-        tutor = Tutor.query.filter_by(email=email, password=password)
+            return jsonify({"message": "This is a student successfully logging in"}), 201
+        tutor = Tutor.query.filter_by(email=email, password=password).first()
         if tutor:
-            return jsonify({"message": "This is a tutor successfully logging in"})
+            return jsonify({"message": "This is a tutor successfully logging in"}), 201
+        return jsonify({"error": "Unsuccessful login"}), 400
     except:
-        return jsonify({"message": "You are not a user. GET OUT."})
+        return jsonify({"error": "You are not a user. GET OUT."}), 400
 
 
 @app.route('/tutors', methods=['GET'])
