@@ -1,6 +1,8 @@
 from app import app, db
 from app.models import Student, Tutor, Module, Booking, Report
 from flask import jsonify, request
+from sqlalchemy import select
+
 
 # API Routes are instantiated here
 # Each decorator such as @app.route defines an endpoint (such as /students) and a method for that endpoint
@@ -13,7 +15,7 @@ def get_students():
                                   'last_name': student.last_name,
                                   'email': student.email} for student in students]})
 
-@app.route('/students', methods=['POST'])
+@app.route('/add-student', methods=['POST'])
 def create_student():
     data = request.get_json()
 
@@ -41,6 +43,25 @@ def create_student():
                                     "emailVerified": new_student.emailVerified}}), 201
     except:
         return jsonify({'message': "Student not created"}), 400
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+
+    email = data.get("email")
+    password = data.get("password")
+
+    try:
+        try:
+            student_query = select(Student).where(Student.email == email and Student.password == password)
+            if student_query:
+                return jsonify({"message": "This is a student"})
+
+        except:
+            pass
+    except:
+        pass
+
 
 
 
