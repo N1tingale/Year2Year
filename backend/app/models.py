@@ -23,6 +23,7 @@ class Tutor(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    emailVerified = db.Column(db.Boolean, default=False, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     contact_number = db.Column(db.String(10), nullable=False)
@@ -30,7 +31,6 @@ class Tutor(db.Model):
     modules = db.relationship('Module', backref='tutor', lazy=True)
     bookings = db.relationship('Booking', backref='tutor', lazy=True)
     reports = db.relationship('Report', backref='tutor', lazy=True)
-
 
     def __repr__(self):
         return f"<Tutor {self.first_name} {self.last_name}>"

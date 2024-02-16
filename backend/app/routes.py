@@ -2,7 +2,7 @@ from app import app, db
 from app.models import Student, Tutor, Module, Booking, Report
 from flask import jsonify, request
 
-# API Routes are instantiated here 
+# API Routes are instantiated here
 # Each decorator such as @app.route defines an endpoint (such as /students) and a method for that endpoint
 # The function below the decorator handles the data sent/received by the endpoint
 @app.route('/students', methods=['GET'])
@@ -21,20 +21,28 @@ def create_student():
     last_name = data.get('last_name')
     email = data.get('email')
     password = data.get('password')
+    emailVerified = False
 
-    if not all([first_name, last_name, email, password]):
-        return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
-    new_student = Student(first_name=first_name, last_name=last_name, email=email, password=password)
+    try:
+        if not all([first_name, last_name, email, password]):
+            return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
-    db.session.add(new_student)
-    db.session.commit()
+        new_student = Student(first_name=first_name, last_name=last_name, email=email, password=password, emailVerified=emailVerified)
 
-    return jsonify({'message': 'Student created successfully',
-                    'student': {'id': new_student.id,
-                                'first_name': new_student.first_name,
-                                'last_name': new_student.last_name,
-                                'email': new_student.email}}), 201
+        db.session.add(new_student)
+        db.session.commit()
+
+        return jsonify({'message': 'Student created successfully',
+                        'student': {'id': new_student.id,
+                                    'first_name': new_student.first_name,
+                                    'last_name': new_student.last_name,
+                                    'email': new_student.email,
+                                    "emailVerified": new_student.emailVerified}}), 201
+    except:
+        return jsonify({'message': "Student not created"}), 400
+
+
 
 @app.route('/tutors', methods=['GET'])
 def get_tutors():
@@ -43,6 +51,7 @@ def get_tutors():
                                 'first_name': tutor.first_name,
                                 'last_name': tutor.last_name,
                                 'email': tutor.email} for tutor in tutors]})
+
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
 def get_tutor_id(tutorId):
@@ -63,21 +72,28 @@ def create_tutor():
     year = data.get('year')
     contact_number = data.get('contact_number')
     description = data.get('description')
+    emailVerified = False
 
-    if not all([first_name, last_name, email, password]):
-        return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
-    
-    new_tutor = Tutor(first_name=first_name, last_name=last_name, email=email, password=password, year=year, \
-                     contact_number=contact_number, description= description)
-    
-    db.session.add(new_tutor)
-    db.session.commit()
+    try:
 
-    return jsonify({'message': 'Student created successfully',
-                    'student': {'id': new_tutor.id,
-                                'first_name': new_tutor.first_name,
-                                'last_name': new_tutor.last_name,
-                                'email': new_tutor.email}}), 201
+        if not all([first_name, last_name, email, password]):
+            return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
+
+        new_tutor = Tutor(first_name=first_name, last_name=last_name, email=email, password=password, year=year, \
+                        contact_number=contact_number, description= description, emailVerified=emailVerified)
+
+        db.session.add(new_tutor)
+        db.session.commit()
+
+        return jsonify({'message': 'Tutor created successfully',
+                        'tutor': {'id': new_tutor.id,
+                                    'first_name': new_tutor.first_name,
+                                    'last_name': new_tutor.last_name,
+                                    'email': new_tutor.email,
+                                    "emailVerified": new_tutor.emailVerified}}), 201
+
+    except:
+        return jsonify({"error": "Tutor not created"}), 400
 
 @app.route('/modules', methods=['GET'])
 def get_modules():
@@ -111,7 +127,7 @@ def create_bookings():
 
     if not all([student_id, tutor_id, module_id, time, location, description]):
         return jsonify({'error': 'All fields (student_id, tutor_id, module_id, time, location, description) are required'}), 400
-    
+
     new_booking = Booking(student_id=student_id, tutor_id=tutor_id, module_id=module_id, time=time, location=location, description=description)
     db.session.add(new_booking)
     db.session.commit()
@@ -125,3 +141,5 @@ def get_reports():
                                  'module_id': report.module_id,
                                  'type': report.type,
                                  'description': report.description}for report in reports]})
+
+
