@@ -1,54 +1,90 @@
 import Navbar from "./Navbar";
+import Footer from "./Footer";
+import Input from "./Input";
+import { useState } from "react";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 export default function SignUp() {
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [reenterPassword, setReenterPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showReEnterPassword, setShowReEnterPassword] = useState(false);
+
+  const onPasswordClick = () => {
+    setShowPassword((state) => !state);
+  };
+
+  const onReEnterPasswordClick = () => {
+    setShowReEnterPassword((state) => !state);
+  };
+
   return (
     <div className="h-screen overflow-hidden">
       <Navbar />
-      <div className="flex flex-col justify-center items-center h-screen">
-        <h1 className="text-5xl font-semibold mb-2">Sign Up</h1>
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Enter a student email</span>
-          </div>
-          <input
-            type="email"
-            placeholder="Email"
-            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
+      <div className="flex flex-col justify-center items-center m-4">
+        <h1 className="text-5xl font-semibold mb-2 text-primaryColor">
+          Sign Up
+        </h1>
+        <p className="text-2xl font-semibold text-primaryColor">
+          MADE BY STUDENTS.
+        </p>
+        <p className="text-2xl font-semibold text-primaryColor">
+          DESIGNED FOR STUDENTS.
+        </p>
+        <p className="text-lg text-primaryColor">
+          Your learning trip starts here!
+        </p>
+        <div className="w-80 mt-2">
+          <Input type={"email"} placeholder={"Email"} setState={setEmail} />
+          <Input
+            type={"text"}
+            placeholder={"First name"}
+            setState={setFirstName}
           />
-        </label>
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Enter your first name</span>
-          </div>
-          <input
-            type="text"
-            placeholder="First name"
-            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
+          <Input
+            type={"text"}
+            placeholder={"Last name"}
+            setState={setLastName}
           />
-        </label>
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Enter your last name</span>
-          </div>
-          <input
-            type="text"
-            placeholder="Last name"
-            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
-          />
-        </label>
 
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Enter a password</span>
-          </div>
-          <input
-            type="password"
-            placeholder="Password"
-            className="input input-bordered w-full max-w-xs placeholder:text-primaryColor-800"
-          />
-        </label>
-        <button className="btn btn-primary mt-4">Sign Up</button>
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder={"Password"}
+            setState={setPassword}
+            showPassword={showPassword}
+            onClick={onPasswordClick}
+          >
+            {showPassword ? (
+              <FaEye className="text-primaryColor h-6 w-6" />
+            ) : (
+              <FaEyeSlash className="text-primaryColor h-6 w-6" />
+            )}
+          </Input>
+
+          <Input
+            type={showReEnterPassword ? "text" : "password"}
+            placeholder={"Re-enter Password"}
+            setState={setReenterPassword}
+            onClick={onReEnterPasswordClick}
+          >
+            {showReEnterPassword ? (
+              <FaEye className="text-primaryColor h-6 w-6" />
+            ) : (
+              <FaEyeSlash className="text-primaryColor h-6 w-6" />
+            )}
+          </Input>
+
+          <button className="btn bg-white mt-1 rounded-3xl w-full">
+            Sign Up
+          </button>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }
