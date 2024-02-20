@@ -4,6 +4,7 @@ import Input from "./Input";
 import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -83,6 +84,9 @@ export default function SignUp() {
             Sign Up
           </button>
         </div>
+        <small className="mt-1 underline">
+          <Link to="/login">HAVE AN ACCOUNT?</Link>
+        </small>
       </div>
       <Footer />
     </div>
