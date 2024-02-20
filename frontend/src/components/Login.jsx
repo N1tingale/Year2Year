@@ -62,10 +62,10 @@ export default function Login() {
           </button>
         </div>
         <small className="mt-1 underline">
-          <Link to="/login">DON'T HAVE AN ACCOUNT?</Link>
+          <Link to="/signup">DON'T HAVE AN ACCOUNT?</Link>
         </small>
         <small className="mt-1 underline">
-          <Link to="/login">FORGOT PASSWORD?</Link>
+          <Link to="/forgotpassword">FORGOT PASSWORD?</Link>
         </small>
       </div>
       <Footer />
