@@ -5,6 +5,7 @@ import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -23,6 +24,17 @@ export default function SignUp() {
   const onReEnterPasswordClick = () => {
     setShowReEnterPassword((state) => !state);
   };
+
+  const sendSignUpData = () => {
+    axios.post("http://127.0.0.1:5000/add-student", {
+        "first_name":firstName,
+        "last_name":lastName,
+        "email":email,
+        "password":password
+    })
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+  }
 
   return (
     <div className="h-screen overflow-hidden">
@@ -80,7 +92,7 @@ export default function SignUp() {
             )}
           </Input>
 
-          <button className="btn bg-white mt-1 rounded-3xl w-full">
+          <button onClick={sendSignUpData} className="btn bg-white mt-1 rounded-3xl w-full">
             Sign Up
           </button>
         </div>
