@@ -38,6 +38,10 @@ def create_student():
     hashed_password = hash_data(password)
 
     try:
+        existing_tutor = Tutor.query.filter_by(email=email).first()
+        if existing_tutor:
+            return jsonify({"error": "User already exists as tutor"}), 400
+            
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
@@ -120,6 +124,10 @@ def create_tutor():
     emailVerified = False
 
     try:
+
+        existing_student = Student.query.filter_by(email=email).first()
+        if existing_student:
+            return jsonify({"error": "User already exists as student"}), 400
 
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
