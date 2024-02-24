@@ -1,12 +1,32 @@
 from app import app, db
 from app.models import Student, Tutor, Module, Booking, Report
 from flask import jsonify, request
+import jwt
+import datetime
 from sqlalchemy import select
 from app.hash_pass import hash_data
+from functools import wraps
 
 # API Routes are instantiated here
 # Each decorator such as @app.route defines an endpoint (such as /students) and a method for that endpoint
 # The function below the decorator handles the data sent/received by the endpoint
+
+app.config['SECRET_KEY'] = 'thisissecret'
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.args.get('token')
+        if not token:
+            return jsonify({'error': 'Token is missing'}), 401
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token has expired'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Invalid token'}), 401
+        return f(*args, **kwargs)
+    return decorated
 
 
 @app.route('/students', methods=['GET'])
@@ -16,7 +36,6 @@ def get_students():
                                   'first_name': student.first_name,
                                   'last_name': student.last_name,
                                   'email': student.email} for student in students]})
-
 
 @app.route('/add-student', methods=['POST'])
 def create_student():
@@ -64,23 +83,29 @@ def login():
     try:
         student = Student.query.filter_by(
             email=email, password=hashed_password).first()
+
         if student:
-            return jsonify({"message": "This is a student successfully logging in",
-                            'student': {'id':student.id,
-                                    'first_name':student.first_name,
-                                    'last_name':student.last_name,
-                                    'email':student.email,
-                                    "emailVerified":student.emailVerified}}), 201
+            token = jwt.encode({'email': student.email, 'exp': datetime.datetime.utcnow(
+                ) + datetime.timedelta(minutes=60)}, app.config['SECRET_KEY'])
+            return jsonify({"token": token.decode("UTF-8")}), 201
+
         tutor = Tutor.query.filter_by(
             email=email, password=hashed_password).first()
+
         if tutor:
-            return jsonify({"message": "This is a tutor successfully logging in"}), 201
+            token = jwt.encode({'email': tutor.email, 'exp': datetime.datetime.utcnow(
+                ) + datetime.timedelta(minutes=60)}, app.config['SECRET_KEY'])
+            return jsonify({"token": token.decode("UTF-8")}), 201
+
         return jsonify({"error": "Unsuccessful login"}), 400
+
     except:
+
         return jsonify({"error": "You are not a user. GET OUT."}), 400
 
 
 @app.route('/tutors', methods=['GET'])
+@token_required
 def get_tutors():
     tutors = Tutor.query.all()
     return jsonify({'tutors': [{'id': tutor.id,
@@ -134,6 +159,7 @@ def create_tutor():
         return jsonify({"error": "Tutor not created"}), 400
 
 @app.route("/add-module", methods=["POST"])
+@token_required
 def add_module():
     data = request.get_json()
     module_code = data.get("module_code")
@@ -159,6 +185,7 @@ def add_module():
         return jsonify({"error": "Module not created"}), 400
 
 @app.route('/edit-name', methods=["POST"])
+@token_required
 def edit_name():
     data = request.get_json()
     email = data.get("email")
@@ -193,6 +220,7 @@ def edit_name():
         return jsonify({"error": "Name not updated"}), 400
 
 @app.route('/edit-email', methods=["POST"])
+@token_required
 def edit_email():
     data = request.get_json()
     email = data.get("email")
@@ -224,6 +252,7 @@ def edit_email():
         return jsonify({"error": "Email not updated"}), 400
 
 @app.route('/edit-password', methods=["POST"])
+@token_required
 def edit_password():
     data = request.get_json()
     email = data.get("email")
@@ -278,6 +307,7 @@ def get_bookings():
 
 
 @app.route('/bookings', methods=['POST'])
+@token_required
 def create_bookings():
     data = request.get_json()
 
