@@ -90,7 +90,7 @@ def get_tutors():
 
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
-def get_tutor_id(tutorId):
+def get_tutor(tutorId):
     tutor = Tutor.query.get(tutorId)
     return jsonify({'tutor': {'id': tutor.id,
                               'first_name': tutor.first_name,
@@ -132,6 +132,31 @@ def create_tutor():
 
     except:
         return jsonify({"error": "Tutor not created"}), 400
+
+@app.route("/add-module", methods=["POST"])
+def add_module():
+    data = request.get_json()
+    module_code = data.get("module_code")
+    module_name = data.get("module_name")
+    tutor_email = data.get("tutor_email")
+    tutor = Tutor.query.filter_by(email=tutor_email).first()
+    tutor_id = tutor.id
+
+    try:
+        if not all([module_code, module_name, tutor_id]):
+            return jsonify({"error": "All fields (module_code, module_name, tutor_id) are required"}), 400
+
+        new_module = Module(module_code=module_code, module_name=module_name, tutor_id=tutor_id)
+        db.session.add(new_module)
+        db.session.commit()
+
+        return jsonify({"message": "Module created successfully",
+                        "module": {"id": new_module.id,
+                                   "module_code": new_module.module_code,
+                                   "module_name": new_module.module_name,
+                                   "tutor_id": new_module.tutor_id}}), 201
+    except:
+        return jsonify({"error": "Module not created"}), 400
 
 @app.route('/edit-name', methods=["POST"])
 def edit_name():
