@@ -16,7 +16,14 @@ def get_students():
                                   'first_name': student.first_name,
                                   'last_name': student.last_name,
                                   'email': student.email} for student in students]})
-
+    
+@app.route('/students/<studentId>', methods=['GET'])
+def get_student(studentId):
+    student = Student.query.get(studentId)
+    return jsonify({'student': {'id': student.id,
+                                'first_name': student.first_name,
+                                'last_name': student.last_name,
+                                'email': student.email}})
 
 @app.route('/add-student', methods=['POST'])
 def create_student():
