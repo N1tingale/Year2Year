@@ -133,6 +133,103 @@ def create_tutor():
     except:
         return jsonify({"error": "Tutor not created"}), 400
 
+@app.route('/edit-name', methods=["POST"])
+def edit_name():
+    data = request.get_json()
+    email = data.get("email")
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+
+    try:
+        student = Student.query.filter_by(email=email).first()
+        if student:
+            student.first_name = first_name
+            student.last_name = last_name
+            db.session.commit()
+            return jsonify({"message": "Name updated successfully",
+                            "student": {"id": student.id,
+                                        "first_name": student.first_name,
+                                        "last_name": student.last_name,
+                                        "email": student.email,
+                                        "emailVerified": student.emailVerified}}), 201
+        tutor = Tutor.query.filter_by(email=email).first()
+        if tutor:
+            tutor.first_name = first_name
+            tutor.last_name = last_name
+            db.session.commit()
+            return jsonify({"message": "Name updated successfully",
+                            "tutor": {"id": tutor.id,
+                                      "first_name": tutor.first_name,
+                                      "last_name": tutor.last_name,
+                                      "email": tutor.email,
+                                      "emailVerified": tutor.emailVerified}}), 201
+        return jsonify({"error": "User not found"}), 400
+    except:
+        return jsonify({"error": "Name not updated"}), 400
+
+@app.route('/edit-email', methods=["POST"])
+def edit_email():
+    data = request.get_json()
+    email = data.get("email")
+    new_email = data.get("new_email")
+
+    try:
+        student = Student.query.filter_by(email=email).first()
+        if student:
+            student.email = new_email
+            db.session.commit()
+            return jsonify({"message": "Email updated successfully",
+                            "student": {"id": student.id,
+                                        "first_name": student.first_name,
+                                        "last_name": student.last_name,
+                                        "email": student.email,
+                                        "emailVerified": student.emailVerified}}), 201
+        tutor = Tutor.query.filter_by(email=email).first()
+        if tutor:
+            tutor.email = new_email
+            db.session.commit()
+            return jsonify({"message": "Email updated successfully",
+                            "tutor": {"id": tutor.id,
+                                      "first_name": tutor.first_name,
+                                      "last_name": tutor.last_name,
+                                      "email": tutor.email,
+                                      "emailVerified": tutor.emailVerified}}), 201
+        return jsonify({"error": "User not found"}), 400
+    except:
+        return jsonify({"error": "Email not updated"}), 400
+
+@app.route('/edit-password', methods=["POST"])
+def edit_password():
+    data = request.get_json()
+    email = data.get("email")
+    new_password = data.get("new_password")
+    hashed_password = hash_data(new_password)
+
+    try:
+        student = Student.query.filter_by(email=email).first()
+        if student:
+            student.password = hashed_password
+            db.session.commit()
+            return jsonify({"message": "Password updated successfully",
+                            "student": {"id": student.id,
+                                        "first_name": student.first_name,
+                                        "last_name": student.last_name,
+                                        "email": student.email,
+                                        "emailVerified": student.emailVerified}}), 201
+        tutor = Tutor.query.filter_by(email=email).first()
+        if tutor:
+            tutor.password = hashed_password
+            db.session.commit()
+            return jsonify({"message": "Password updated successfully",
+                            "tutor": {"id": tutor.id,
+                                      "first_name": tutor.first_name,
+                                      "last_name": tutor.last_name,
+                                      "email": tutor.email,
+                                      "emailVerified": tutor.emailVerified}}), 201
+        return jsonify({"error": "User not found"}), 400
+    except:
+        return jsonify({"error": "Password not updated"}), 400
+
 
 @app.route('/modules', methods=['GET'])
 def get_modules():
