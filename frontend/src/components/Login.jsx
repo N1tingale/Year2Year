@@ -5,7 +5,11 @@ import Footer from "./Footer";
 import Input from "./Input";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
@@ -22,7 +26,21 @@ export default function Login() {
         email: email,
         password: password,
       })
-      .then((res) => console.log(res))
+      .then((res) => {
+
+        if (res.data.student) {
+          for (const field in res.data.student) {
+            localStorage.setItem(field, res.data.student[field]);
+          }
+        } else if (res.data.tutor) {
+          for (const field in res.data.tutor) {
+            localStorage.setItem(field, res.data.tutor[field]);
+          }
+        }
+        
+        navigate("/profile");
+        console.log(res);
+      })
       .catch((err) => console.log(err));
   };
 

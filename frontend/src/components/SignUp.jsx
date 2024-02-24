@@ -6,8 +6,12 @@ import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
 
 export default function SignUp() {
+
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -32,7 +36,19 @@ export default function SignUp() {
         "email":email,
         "password":password
     })
-    .then(res => console.log(res))
+    .then(res => {
+      if (res.data.student) {
+          for (const field in res.data.student) {
+            localStorage.setItem(field, res.data.student[field]);
+          }
+        } else if (res.data.tutor) {
+          for (const field in res.data.tutor) {
+            localStorage.setItem(field, res.data.tutor[field]);
+          }
+        }
+        
+      navigate("/profile");
+      console.log(res)})
     .catch(err => console.log(err))
   }
 
