@@ -65,7 +65,12 @@ def login():
         student = Student.query.filter_by(
             email=email, password=hashed_password).first()
         if student:
-            return jsonify({"message": "This is a student successfully logging in"}), 201
+            return jsonify({"message": "This is a student successfully logging in",
+                            'student': {'id':student.id,
+                                    'first_name':student.first_name,
+                                    'last_name':student.last_name,
+                                    'email':student.email,
+                                    "emailVerified":student.emailVerified}}), 201
         tutor = Tutor.query.filter_by(
             email=email, password=hashed_password).first()
         if tutor:
