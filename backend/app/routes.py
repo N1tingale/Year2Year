@@ -13,21 +13,42 @@ from functools import wraps
 
 app.config['SECRET_KEY'] = 'thisissecret'
 
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = request.args.get('token')
-        if not token:
-            return jsonify({'error': 'Token is missing'}), 401
-        try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])
-        except jwt.ExpiredSignatureError:
-            return jsonify({'error': 'Token has expired'}), 401
-        except jwt.InvalidTokenError:
-            return jsonify({'error': 'Invalid token'}), 401
-        return f(*args, **kwargs)
-    return decorated
+def token_required(allowed_user_type=None):
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            token = None
+            if 'x-access-token' in request.headers:
+                token = request.headers['x-access-token']
 
+            if not token:
+                return jsonify({'error': 'Token is missing'}), 401
+
+            try:
+                data = jwt.decode(token, app.config['SECRET_KEY'])
+                current_user = None
+                user_type = None
+
+                current_user = Student.query.filter_by(email=data['email']).first()
+                user_type = "student"
+                if not current_user:
+                    current_user = Tutor.query.filter_by(email=data['email']).first()
+                    user_type = "tutor"
+
+                if not current_user:
+                    return jsonify({'error': 'User not found'}), 401
+
+                if allowed_user_type and user_type not in allowed_user_type:
+                    return jsonify({'error': 'User not allowed'}), 401
+
+            except jwt.ExpiredSignatureError:
+                return jsonify({'error': 'Token has expired'}), 401
+            except jwt.InvalidTokenError:
+                return jsonify({'error': 'Invalid token'}), 401
+
+            return f(current_user, *args, **kwargs)
+        return decorated
+    return decorator
 
 @app.route('/students', methods=['GET'])
 def get_students():
@@ -50,6 +71,11 @@ def create_student():
     hashed_password = hash_data(password)
 
     try:
+
+        existing_tutor = Tutor.query.filter_by(email=email).first()
+        if existing_tutor:
+            return jsonify({"error": "User already exists as tutor"}), 400
+
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
@@ -105,14 +131,12 @@ def login():
 
 
 @app.route('/tutors', methods=['GET'])
-@token_required
 def get_tutors():
     tutors = Tutor.query.all()
     return jsonify({'tutors': [{'id': tutor.id,
                                 'first_name': tutor.first_name,
                                 'last_name': tutor.last_name,
                                 'email': tutor.email} for tutor in tutors]})
-
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
 def get_tutor(tutorId):
@@ -139,6 +163,10 @@ def create_tutor():
 
     try:
 
+        existing_student = Student.query.filter_by(email=email).first()
+        if existing_student:
+            return jsonify({"error": "User already exists as student"}), 400
+
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
@@ -159,8 +187,8 @@ def create_tutor():
         return jsonify({"error": "Tutor not created"}), 400
 
 @app.route("/add-module", methods=["POST"])
-@token_required
-def add_module():
+@token_required(allowed_user_type=["tutor"])
+def add_module(current_user):
     data = request.get_json()
     module_code = data.get("module_code")
     module_name = data.get("module_name")
@@ -186,7 +214,7 @@ def add_module():
 
 @app.route('/edit-name', methods=["POST"])
 @token_required
-def edit_name():
+def edit_name(current_user):
     data = request.get_json()
     email = data.get("email")
     first_name = data.get("first_name")
@@ -221,7 +249,7 @@ def edit_name():
 
 @app.route('/edit-email', methods=["POST"])
 @token_required
-def edit_email():
+def edit_email(current_user):
     data = request.get_json()
     email = data.get("email")
     new_email = data.get("new_email")
@@ -253,7 +281,7 @@ def edit_email():
 
 @app.route('/edit-password', methods=["POST"])
 @token_required
-def edit_password():
+def edit_password(current_user):
     data = request.get_json()
     email = data.get("email")
     new_password = data.get("new_password")
@@ -286,7 +314,8 @@ def edit_password():
 
 
 @app.route('/modules', methods=['GET'])
-def get_modules():
+@token_required
+def get_modules(current_user):
     modules = Module.query.all()
     return jsonify({'modules': [{'id': module.id,
                                  'module_code': module.module_code,
@@ -295,7 +324,8 @@ def get_modules():
 
 
 @app.route('/bookings', methods=['GET'])
-def get_bookings():
+@token_required
+def get_bookings(current_user):
     bookings = Booking.query.all()
     return jsonify({'bookings': [{'id': booking.id,
                                   'student_id': booking.student_id,
@@ -307,8 +337,8 @@ def get_bookings():
 
 
 @app.route('/bookings', methods=['POST'])
-@token_required
-def create_bookings():
+@token_required(allowed_user_type=["student"])
+def create_bookings(current_user):
     data = request.get_json()
 
     student_id = data.get('student_id')
@@ -328,7 +358,8 @@ def create_bookings():
 
 
 @app.route('/reports', methods=['GET'])
-def get_reports():
+@token_required
+def get_reports(current_user):
     reports = Report.query.all()
     return jsonify({'reports': [{'id': report.id,
                                  'student_id': report.student_id,
