@@ -321,3 +321,30 @@ def get_reports():
                                  'module_id': report.module_id,
                                  'type': report.type,
                                  'description': report.description}for report in reports]})
+
+
+@app.route('/create-report', methods=['POST'])
+def create_reports():
+    data = request.get_json()
+
+    student_id = data.get('student_id')
+    tutor_id = data.get('tutor_id')
+    module_id = data.get('module_id')
+    type = data.get('type')
+    description = data.get('description')
+
+    if not all([student_id, tutor_id, module_id, type, description]):
+        return jsonify({'error': 'All fields (student_id, tutor_id, module_id, type, description) are required'}), 400
+
+    new_report = Report(student_id=student_id, tutor_id=tutor_id,
+                          module_id=module_id, type=type, description=description)
+    db.session.add(new_report)
+    db.session.commit()
+
+    return jsonify({'message': 'Report created successfully',
+                        'report': {'id': new_report.id,
+                                  'student_id': new_report.student_id,
+                                  'tutor_id': new_report.tutor_id,
+                                  'module_id': new_report.module_id,
+                                  "type": new_report.type,
+                                  "description": new_report.description}}), 201
