@@ -16,7 +16,14 @@ def get_students():
                                   'first_name': student.first_name,
                                   'last_name': student.last_name,
                                   'email': student.email} for student in students]})
-
+    
+@app.route('/students/<studentId>', methods=['GET'])
+def get_student(studentId):
+    student = Student.query.get(studentId)
+    return jsonify({'student': {'id': student.id,
+                                'first_name': student.first_name,
+                                'last_name': student.last_name,
+                                'email': student.email}})
 
 @app.route('/add-student', methods=['POST'])
 def create_student():
@@ -31,6 +38,10 @@ def create_student():
     hashed_password = hash_data(password)
 
     try:
+        existing_tutor = Tutor.query.filter_by(email=email).first()
+        if existing_tutor:
+            return jsonify({"error": "User already exists as tutor"}), 400
+            
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
@@ -90,7 +101,7 @@ def get_tutors():
 
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
-def get_tutor_id(tutorId):
+def get_tutor(tutorId):
     tutor = Tutor.query.get(tutorId)
     return jsonify({'tutor': {'id': tutor.id,
                               'first_name': tutor.first_name,
@@ -114,6 +125,10 @@ def create_tutor():
 
     try:
 
+        existing_student = Student.query.filter_by(email=email).first()
+        if existing_student:
+            return jsonify({"error": "User already exists as student"}), 400
+
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
@@ -132,6 +147,128 @@ def create_tutor():
 
     except:
         return jsonify({"error": "Tutor not created"}), 400
+
+@app.route("/add-module", methods=["POST"])
+def add_module():
+    data = request.get_json()
+    module_code = data.get("module_code")
+    module_name = data.get("module_name")
+    tutor_email = data.get("tutor_email")
+    tutor = Tutor.query.filter_by(email=tutor_email).first()
+    tutor_id = tutor.id
+
+    try:
+        if not all([module_code, module_name, tutor_id]):
+            return jsonify({"error": "All fields (module_code, module_name, tutor_id) are required"}), 400
+
+        new_module = Module(module_code=module_code, module_name=module_name, tutor_id=tutor_id)
+        db.session.add(new_module)
+        db.session.commit()
+
+        return jsonify({"message": "Module created successfully",
+                        "module": {"id": new_module.id,
+                                   "module_code": new_module.module_code,
+                                   "module_name": new_module.module_name,
+                                   "tutor_id": new_module.tutor_id}}), 201
+    except:
+        return jsonify({"error": "Module not created"}), 400
+
+@app.route('/edit-name', methods=["POST"])
+def edit_name():
+    data = request.get_json()
+    email = data.get("email")
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+
+    try:
+        student = Student.query.filter_by(email=email).first()
+        if student:
+            student.first_name = first_name
+            student.last_name = last_name
+            db.session.commit()
+            return jsonify({"message": "Name updated successfully",
+                            "student": {"id": student.id,
+                                        "first_name": student.first_name,
+                                        "last_name": student.last_name,
+                                        "email": student.email,
+                                        "emailVerified": student.emailVerified}}), 201
+        tutor = Tutor.query.filter_by(email=email).first()
+        if tutor:
+            tutor.first_name = first_name
+            tutor.last_name = last_name
+            db.session.commit()
+            return jsonify({"message": "Name updated successfully",
+                            "tutor": {"id": tutor.id,
+                                      "first_name": tutor.first_name,
+                                      "last_name": tutor.last_name,
+                                      "email": tutor.email,
+                                      "emailVerified": tutor.emailVerified}}), 201
+        return jsonify({"error": "User not found"}), 400
+    except:
+        return jsonify({"error": "Name not updated"}), 400
+
+@app.route('/edit-email', methods=["POST"])
+def edit_email():
+    data = request.get_json()
+    email = data.get("email")
+    new_email = data.get("new_email")
+
+    try:
+        student = Student.query.filter_by(email=email).first()
+        if student:
+            student.email = new_email
+            db.session.commit()
+            return jsonify({"message": "Email updated successfully",
+                            "student": {"id": student.id,
+                                        "first_name": student.first_name,
+                                        "last_name": student.last_name,
+                                        "email": student.email,
+                                        "emailVerified": student.emailVerified}}), 201
+        tutor = Tutor.query.filter_by(email=email).first()
+        if tutor:
+            tutor.email = new_email
+            db.session.commit()
+            return jsonify({"message": "Email updated successfully",
+                            "tutor": {"id": tutor.id,
+                                      "first_name": tutor.first_name,
+                                      "last_name": tutor.last_name,
+                                      "email": tutor.email,
+                                      "emailVerified": tutor.emailVerified}}), 201
+        return jsonify({"error": "User not found"}), 400
+    except:
+        return jsonify({"error": "Email not updated"}), 400
+
+@app.route('/edit-password', methods=["POST"])
+def edit_password():
+    data = request.get_json()
+    email = data.get("email")
+    new_password = data.get("new_password")
+    hashed_password = hash_data(new_password)
+
+    try:
+        student = Student.query.filter_by(email=email).first()
+        if student:
+            student.password = hashed_password
+            db.session.commit()
+            return jsonify({"message": "Password updated successfully",
+                            "student": {"id": student.id,
+                                        "first_name": student.first_name,
+                                        "last_name": student.last_name,
+                                        "email": student.email,
+                                        "emailVerified": student.emailVerified}}), 201
+        tutor = Tutor.query.filter_by(email=email).first()
+        if tutor:
+            tutor.password = hashed_password
+            db.session.commit()
+            return jsonify({"message": "Password updated successfully",
+                            "tutor": {"id": tutor.id,
+                                      "first_name": tutor.first_name,
+                                      "last_name": tutor.last_name,
+                                      "email": tutor.email,
+                                      "emailVerified": tutor.emailVerified}}), 201
+        return jsonify({"error": "User not found"}), 400
+    except:
+        return jsonify({"error": "Password not updated"}), 400
 
 
 @app.route('/modules', methods=['GET'])
@@ -184,3 +321,30 @@ def get_reports():
                                  'module_id': report.module_id,
                                  'type': report.type,
                                  'description': report.description}for report in reports]})
+
+
+@app.route('/create-report', methods=['POST'])
+def create_reports():
+    data = request.get_json()
+
+    student_id = data.get('student_id')
+    tutor_id = data.get('tutor_id')
+    module_id = data.get('module_id')
+    type = data.get('type')
+    description = data.get('description')
+
+    if not all([student_id, tutor_id, module_id, type, description]):
+        return jsonify({'error': 'All fields (student_id, tutor_id, module_id, type, description) are required'}), 400
+
+    new_report = Report(student_id=student_id, tutor_id=tutor_id,
+                          module_id=module_id, type=type, description=description)
+    db.session.add(new_report)
+    db.session.commit()
+
+    return jsonify({'message': 'Report created successfully',
+                        'report': {'id': new_report.id,
+                                  'student_id': new_report.student_id,
+                                  'tutor_id': new_report.tutor_id,
+                                  'module_id': new_report.module_id,
+                                  "type": new_report.type,
+                                  "description": new_report.description}}), 201
