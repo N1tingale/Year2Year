@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="absolute left-0 bottom-0 footer items-center p-2 bg-primaryColor">
+    <footer className="absolute left-0 bottom-0 footer items-center px-2 py-1 bg-primaryColor">
       <aside className="text-white items-center grid-flow-col">
         <svg
           width="36"
