@@ -16,7 +16,7 @@ export default function Footer() {
         <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
       </aside>
       <nav className="grid-flow-col gap-4 text-white flex md:place-self-center md:justify-self-end">
-        <div className="text-lg font-semibold text-right">
+        <div className="flex gap-2 text-lg font-semibold text-right">
           <p>Contact Us</p>
           <p>Privacy Policy</p>
         </div>
