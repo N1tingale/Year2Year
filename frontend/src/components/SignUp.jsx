@@ -6,10 +6,10 @@ import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
+import { RxCrossCircled } from "react-icons/rx";
 
 export default function SignUp() {
-
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -17,6 +17,8 @@ export default function SignUp() {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [reenterPassword, setReenterPassword] = useState("");
+
+  const [passwordError, setPasswordError] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showReEnterPassword, setShowReEnterPassword] = useState(false);
@@ -30,14 +32,20 @@ export default function SignUp() {
   };
 
   const sendSignUpData = () => {
-    axios.post("http://127.0.0.1:5000/add-student", {
-        "first_name":firstName,
-        "last_name":lastName,
-        "email":email,
-        "password":password
-    })
-    .then(res => {
-      if (res.data.student) {
+    if (password != reenterPassword) {
+      setPasswordError(true);
+      return;
+    }
+
+    axios
+      .post("http://127.0.0.1:5000/add-student", {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        if (res.data.student) {
           for (const field in res.data.student) {
             localStorage.setItem(field, res.data.student[field]);
           }
@@ -46,11 +54,12 @@ export default function SignUp() {
             localStorage.setItem(field, res.data.tutor[field]);
           }
         }
-        
-      navigate("/profile");
-      console.log(res)})
-    .catch(err => console.log(err))
-  }
+
+        navigate("/profile");
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="h-screen overflow-hidden">
@@ -107,8 +116,18 @@ export default function SignUp() {
               <FaEyeSlash className="text-primaryColor h-6 w-6" />
             )}
           </Input>
-
-          <button onClick={sendSignUpData} className="btn bg-white mt-1 rounded-3xl w-full">
+          {passwordError && (
+            <div className="alert alert-error">
+              <span className="flex items-center">
+                <RxCrossCircled className="mx-1 w-5 h-5" /> The passwords should
+                match!
+              </span>
+            </div>
+          )}
+          <button
+            onClick={sendSignUpData}
+            className="btn bg-white mt-1 rounded-3xl w-full"
+          >
             Sign Up
           </button>
         </div>
