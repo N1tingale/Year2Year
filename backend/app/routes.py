@@ -1,4 +1,5 @@
 from app import app, db
+from config import Config
 from app.models import Student, Tutor, Module, Booking, Report
 from flask import jsonify, request
 import jwt
@@ -11,7 +12,7 @@ from functools import wraps
 # Each decorator such as @app.route defines an endpoint (such as /students) and a method for that endpoint
 # The function below the decorator handles the data sent/received by the endpoint
 
-app.config['SECRET_KEY'] = 'thisissecret'
+secret_key = Config.SECRET_KEY
 
 def token_required(allowed_user_type=None):
     def decorator(f):
@@ -58,6 +59,14 @@ def get_students():
                                   'last_name': student.last_name,
                                   'email': student.email} for student in students]})
 
+@app.route('/students/<studentId>', methods=['GET'])
+def get_student(studentId):
+    student = Student.query.get(studentId)
+    return jsonify({'student': {'id': student.id,
+                                'first_name': student.first_name,
+                                'last_name': student.last_name,
+                                'email': student.email}})
+
 @app.route('/add-student', methods=['POST'])
 def create_student():
     data = request.get_json()
@@ -71,7 +80,6 @@ def create_student():
     hashed_password = hash_data(password)
 
     try:
-
         existing_tutor = Tutor.query.filter_by(email=email).first()
         if existing_tutor:
             return jsonify({"error": "User already exists as tutor"}), 400
@@ -109,24 +117,18 @@ def login():
     try:
         student = Student.query.filter_by(
             email=email, password=hashed_password).first()
-
         if student:
             token = jwt.encode({'email': student.email, 'exp': datetime.datetime.utcnow(
                 ) + datetime.timedelta(minutes=60)}, app.config['SECRET_KEY'])
             return jsonify({"token": token.decode("UTF-8")}), 201
-
         tutor = Tutor.query.filter_by(
             email=email, password=hashed_password).first()
-
         if tutor:
             token = jwt.encode({'email': tutor.email, 'exp': datetime.datetime.utcnow(
                 ) + datetime.timedelta(minutes=60)}, app.config['SECRET_KEY'])
             return jsonify({"token": token.decode("UTF-8")}), 201
-
         return jsonify({"error": "Unsuccessful login"}), 400
-
     except:
-
         return jsonify({"error": "You are not a user. GET OUT."}), 400
 
 
