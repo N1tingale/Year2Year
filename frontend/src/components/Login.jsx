@@ -52,13 +52,13 @@ export default function Login() {
     <div className="overflow-hidden h-screen">
       <Navbar />
       <div className="flex flex-col justify-center items-center mt-20">
-        <h1 className="text-5xl font-semibold mb-2 text-primaryColor">
+        <h1 className="text-4xl font-semibold mb-2 text-primaryColor">
           Log In
         </h1>
-        <p className="text-2xl font-semibold text-primaryColor">
+        <p className="text-xl font-semibold text-primaryColor">
           MADE BY STUDENTS.
         </p>
-        <p className="text-2xl font-semibold text-primaryColor">
+        <p className="text-xl font-semibold text-primaryColor">
           DESIGNED FOR STUDENTS.
         </p>
         <form onSubmit={handleSubmit(onSubmit)}>

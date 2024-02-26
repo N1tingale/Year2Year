@@ -96,12 +96,12 @@ export default function SignUp() {
     <div className="h-screen overflow-hidden">
       <Navbar />
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="h-screen flex flex-col items-center">
-          <h1 className="text-5xl font-semibold text-primaryColor">Sign Up</h1>
-          <p className="text-2xl font-semibold text-primaryColor">
+        <div className="h-screen flex flex-col items-center mt-4">
+          <h1 className="text-4xl font-semibold text-primaryColor">Sign Up</h1>
+          <p className="text-xl font-semibold text-primaryColor">
             MADE BY STUDENTS.
           </p>
-          <p className="text-2xl font-semibold text-primaryColor">
+          <p className="text-xl font-semibold text-primaryColor">
             DESIGNED FOR STUDENTS.
           </p>
           <p className="text-lg text-primaryColor">
