@@ -3,22 +3,68 @@ from app.models import Student, Tutor, Module, Booking, Report
 from flask import jsonify, request
 from sqlalchemy import select
 from app.hash_pass import hash_data
+import jwt
+import datetime
+from functools import wraps
+from config import Config
 
 # API Routes are instantiated here
 # Each decorator such as @app.route defines an endpoint (such as /students) and a method for that endpoint
 # The function below the decorator handles the data sent/received by the endpoint
 
+secret_key = Config.SECRET_KEY
+
+def token_required(allowed_user_type=None):
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            token = None
+            if 'x-access-token' in request.headers:
+                token = request.headers['x-access-token']
+
+            if not token:
+                return jsonify({'error': 'Token is missing'}), 401
+
+            try:
+                data = jwt.decode(token, secret_key)
+                current_user = None
+                user_type = None
+
+                current_user = Student.query.filter_by(email=data['emaik']).first()
+                user_type = "student"
+                if not current_user:
+                    current_user = Tutor.query.filter_by(email=data['email']).first()
+                    user_type = "tutor"
+
+                if not current_user:
+                    return jsonify({'error': "User not found"}), 401
+
+                if allowed_user_type and user_type != allowed_user_type:
+                    return jsonify({'error': "User not allowed"}), 401
+
+            except jwt.ExpiredSignatureError:
+                return jsonify({'error': 'Token has expired'}), 401
+
+            except jwt.InvalidTokenError:
+                return jsonify({'error': 'Invalid token'}), 401
+
+            return f(current_user, *args, **kwargs)
+        return decorated
+    return decorator
+
 
 @app.route('/students', methods=['GET'])
-def get_students():
+@token_required
+def get_students(current_user):
     students = Student.query.all()
     return jsonify({'students': [{'id': student.id,
                                   'first_name': student.first_name,
                                   'last_name': student.last_name,
                                   'email': student.email} for student in students]})
-    
+
 @app.route('/students/<studentId>', methods=['GET'])
-def get_student(studentId):
+@token_required
+def get_student(current_user, studentId):
     student = Student.query.get(studentId)
     return jsonify({'student': {'id': student.id,
                                 'first_name': student.first_name,
@@ -40,8 +86,12 @@ def create_student():
     try:
         existing_tutor = Tutor.query.filter_by(email=email).first()
         if existing_tutor:
-            return jsonify({"error": "User already exists as tutor"}), 400
-            
+            return jsonify({"error": "This email is already in use by a tutor."}), 401
+
+        existing_student = Student.query.filter_by(email=email).first()
+        if existing_student:
+            return jsonify({"error": "This email is already in use by a student."}), 401
+
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
@@ -61,38 +111,68 @@ def create_student():
         return jsonify({'error': "Student not created"}), 400
 
 
-@app.route("/login", methods=["POST"])
-def login():
+@app.route("/login-student", methods=["POST"])
+def login_student():
     data = request.get_json()
 
     email = data.get("email")
     password = data.get("password")
     hashed_password = hash_data(password)
 
-    student = None
-    tutor = None
 
     try:
-        student = Student.query.filter_by(
-            email=email, password=hashed_password).first()
-        if student:
-            return jsonify({"message": "This is a student successfully logging in",
-                            'student': {'id':student.id,
-                                    'first_name':student.first_name,
-                                    'last_name':student.last_name,
-                                    'email':student.email,
-                                    "emailVerified":student.emailVerified}}), 201
-        tutor = Tutor.query.filter_by(
-            email=email, password=hashed_password).first()
-        if tutor:
-            return jsonify({"message": "This is a tutor successfully logging in"}), 201
-        return jsonify({"error": "Unsuccessful login"}), 400
+        student = Student.query.filter_by(email=email, password=hashed_password).first()
+        if not student:
+            return jsonify({"error": "Unsuccessful login"}), 400
+        emailVerified = student.emailVerified
+        token = jwt.encode({'email': student.email,
+                            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
+                            secret_key)
+        if not emailVerified:
+            token = None
+        return jsonify({"message": "This is a student successfully logging in",
+                        'student': {'id':student.id,
+                        'first_name':student.first_name,
+                        'last_name':student.last_name,
+                        'email':student.email,
+                        "token":token,
+                        "emailVerified":student.emailVerified}}), 201
+    except:
+        return jsonify({"error": "You are not a user. GET OUT."}), 400
+
+@app.route("/login-tutor", methods=["POST"])
+def login_tutor():
+    data = request.get_json()
+
+    email = data.get("email")
+    password = data.get("password")
+    hashed_password = hash_data(password)
+
+    try:
+        tutor = Tutor.query.filter_by(email=email, password=hashed_password).first()
+        if not tutor:
+            return jsonify({"error": "Unsuccessful login"}), 400
+        emailVerified = tutor.emailVerified
+        token = jwt.encode({'email': tutor.email,
+                            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
+                            secret_key)
+        if not emailVerified:
+            token = None
+        return jsonify({"message": "This is a tutor successfully logging in",
+                        'tutor': {'id':tutor.id,
+                        'first_name':tutor.first_name,
+                        'last_name':tutor.last_name,
+                        'email':tutor.email,
+                        "token":token,
+                        "emailVerified":tutor.emailVerified}}), 201
     except:
         return jsonify({"error": "You are not a user. GET OUT."}), 400
 
 
+
 @app.route('/tutors', methods=['GET'])
-def get_tutors():
+@token_required(allowed_user_type="student")
+def get_tutors(current_user):
     tutors = Tutor.query.all()
     return jsonify({'tutors': [{'id': tutor.id,
                                 'first_name': tutor.first_name,
@@ -101,7 +181,8 @@ def get_tutors():
 
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
-def get_tutor(tutorId):
+@token_required
+def get_tutor(current_user, tutorId):
     tutor = Tutor.query.get(tutorId)
     return jsonify({'tutor': {'id': tutor.id,
                               'first_name': tutor.first_name,
@@ -127,7 +208,11 @@ def create_tutor():
 
         existing_student = Student.query.filter_by(email=email).first()
         if existing_student:
-            return jsonify({"error": "User already exists as student"}), 400
+            return jsonify({"error": "This email is already in use by a student."}), 401
+
+        existing_tutor = Tutor.query.filter_by(email=email).first()
+        if existing_tutor:
+            return jsonify({"error": "This email is already in use by a tutor."}), 401
 
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
@@ -149,7 +234,8 @@ def create_tutor():
         return jsonify({"error": "Tutor not created"}), 400
 
 @app.route("/add-module", methods=["POST"])
-def add_module():
+@token_required(allowed_user_type="tutor")
+def add_module(current_user):
     data = request.get_json()
     module_code = data.get("module_code")
     module_name = data.get("module_name")
@@ -174,7 +260,8 @@ def add_module():
         return jsonify({"error": "Module not created"}), 400
 
 @app.route('/edit-name', methods=["POST"])
-def edit_name():
+@token_required
+def edit_name(current_user):
     data = request.get_json()
     email = data.get("email")
     first_name = data.get("first_name")
@@ -208,7 +295,8 @@ def edit_name():
         return jsonify({"error": "Name not updated"}), 400
 
 @app.route('/edit-email', methods=["POST"])
-def edit_email():
+@token_required
+def edit_email(current_user):
     data = request.get_json()
     email = data.get("email")
     new_email = data.get("new_email")
@@ -239,7 +327,8 @@ def edit_email():
         return jsonify({"error": "Email not updated"}), 400
 
 @app.route('/edit-password', methods=["POST"])
-def edit_password():
+@token_required
+def edit_password(current_user):
     data = request.get_json()
     email = data.get("email")
     new_password = data.get("new_password")
@@ -272,7 +361,8 @@ def edit_password():
 
 
 @app.route('/modules', methods=['GET'])
-def get_modules():
+@token_required
+def get_modules(current_user):
     modules = Module.query.all()
     return jsonify({'modules': [{'id': module.id,
                                  'module_code': module.module_code,
@@ -281,7 +371,8 @@ def get_modules():
 
 
 @app.route('/bookings', methods=['GET'])
-def get_bookings():
+@token_required
+def get_bookings(current_user):
     bookings = Booking.query.all()
     return jsonify({'bookings': [{'id': booking.id,
                                   'student_id': booking.student_id,
@@ -293,7 +384,8 @@ def get_bookings():
 
 
 @app.route('/bookings', methods=['POST'])
-def create_bookings():
+@token_required(allowed_user_type="student")
+def create_bookings(current_user):
     data = request.get_json()
 
     student_id = data.get('student_id')
@@ -313,7 +405,8 @@ def create_bookings():
 
 
 @app.route('/reports', methods=['GET'])
-def get_reports():
+@token_required
+def get_reports(current_user):
     reports = Report.query.all()
     return jsonify({'reports': [{'id': report.id,
                                  'student_id': report.student_id,
@@ -324,7 +417,8 @@ def get_reports():
 
 
 @app.route('/create-report', methods=['POST'])
-def create_reports():
+@token_required
+def create_reports(current_user):
     data = request.get_json()
 
     student_id = data.get('student_id')
