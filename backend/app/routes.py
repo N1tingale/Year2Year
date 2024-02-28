@@ -30,7 +30,7 @@ def token_required(allowed_user_type=None):
                 current_user = None
                 user_type = None
 
-                current_user = Student.query.filter_by(email=data['emaik']).first()
+                current_user = Student.query.filter_by(email=data['email']).first()
                 user_type = "student"
                 if not current_user:
                     current_user = Tutor.query.filter_by(email=data['email']).first()
@@ -54,8 +54,7 @@ def token_required(allowed_user_type=None):
 
 
 @app.route('/students', methods=['GET'])
-@token_required
-def get_students(current_user):
+def get_students():
     students = Student.query.all()
     return jsonify({'students': [{'id': student.id,
                                   'first_name': student.first_name,
@@ -63,8 +62,7 @@ def get_students(current_user):
                                   'email': student.email} for student in students]})
 
 @app.route('/students/<studentId>', methods=['GET'])
-@token_required
-def get_student(current_user, studentId):
+def get_student(studentId):
     student = Student.query.get(studentId)
     return jsonify({'student': {'id': student.id,
                                 'first_name': student.first_name,
@@ -171,8 +169,8 @@ def login_tutor():
 
 
 @app.route('/tutors', methods=['GET'])
-@token_required(allowed_user_type="student")
-def get_tutors(current_user):
+#@token_required(allowed_user_type="student")
+def get_tutors(): #current_user
     tutors = Tutor.query.all()
     return jsonify({'tutors': [{'id': tutor.id,
                                 'first_name': tutor.first_name,
@@ -181,8 +179,8 @@ def get_tutors(current_user):
 
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
-@token_required
-def get_tutor(current_user, tutorId):
+#@token_required
+def get_tutor(tutorId): #current_user, tutorId
     tutor = Tutor.query.get(tutorId)
     return jsonify({'tutor': {'id': tutor.id,
                               'first_name': tutor.first_name,
@@ -234,8 +232,8 @@ def create_tutor():
         return jsonify({"error": "Tutor not created"}), 400
 
 @app.route("/add-module", methods=["POST"])
-@token_required(allowed_user_type="tutor")
-def add_module(current_user):
+#@token_required(allowed_user_type="tutor")
+def add_module(): #current_user
     data = request.get_json()
     module_code = data.get("module_code")
     module_name = data.get("module_name")
@@ -260,8 +258,8 @@ def add_module(current_user):
         return jsonify({"error": "Module not created"}), 400
 
 @app.route('/edit-name', methods=["POST"])
-@token_required
-def edit_name(current_user):
+#@token_required
+def edit_name(): #current_user
     data = request.get_json()
     email = data.get("email")
     first_name = data.get("first_name")
@@ -295,8 +293,8 @@ def edit_name(current_user):
         return jsonify({"error": "Name not updated"}), 400
 
 @app.route('/edit-email', methods=["POST"])
-@token_required
-def edit_email(current_user):
+#@token_required
+def edit_email(): #current_user
     data = request.get_json()
     email = data.get("email")
     new_email = data.get("new_email")
@@ -327,8 +325,8 @@ def edit_email(current_user):
         return jsonify({"error": "Email not updated"}), 400
 
 @app.route('/edit-password', methods=["POST"])
-@token_required
-def edit_password(current_user):
+#@token_required
+def edit_password(): #current_user
     data = request.get_json()
     email = data.get("email")
     new_password = data.get("new_password")
@@ -361,8 +359,8 @@ def edit_password(current_user):
 
 
 @app.route('/modules', methods=['GET'])
-@token_required
-def get_modules(current_user):
+#@token_required
+def get_modules(): #current_user
     modules = Module.query.all()
     return jsonify({'modules': [{'id': module.id,
                                  'module_code': module.module_code,
@@ -371,8 +369,8 @@ def get_modules(current_user):
 
 
 @app.route('/bookings', methods=['GET'])
-@token_required
-def get_bookings(current_user):
+#@token_required
+def get_bookings(): #current_user
     bookings = Booking.query.all()
     return jsonify({'bookings': [{'id': booking.id,
                                   'student_id': booking.student_id,
@@ -384,8 +382,8 @@ def get_bookings(current_user):
 
 
 @app.route('/bookings', methods=['POST'])
-@token_required(allowed_user_type="student")
-def create_bookings(current_user):
+#@token_required(allowed_user_type="student")
+def create_bookings(): #current_user
     data = request.get_json()
 
     student_id = data.get('student_id')
@@ -405,8 +403,7 @@ def create_bookings(current_user):
 
 
 @app.route('/reports', methods=['GET'])
-@token_required
-def get_reports(current_user):
+def get_reports():
     reports = Report.query.all()
     return jsonify({'reports': [{'id': report.id,
                                  'student_id': report.student_id,
@@ -417,8 +414,8 @@ def get_reports(current_user):
 
 
 @app.route('/create-report', methods=['POST'])
-@token_required
-def create_reports(current_user):
+#@token_required
+def create_reports(): #current_user
     data = request.get_json()
 
     student_id = data.get('student_id')
