@@ -8,6 +8,7 @@ module.exports = {
       colors: {
         primaryColor: "#0c2d1c",
         "primaryColor-800": "#154732",
+        "secondaryColor":"#ffeccc"
       },
       fontFamily: {
         sans: ['"Lexend"', ...defaultTheme.fontFamily.sans],
@@ -21,6 +22,8 @@ module.exports = {
       {
         mytheme: {
           primary: "#0c2d1c",
+
+          secondary:"#ffeccc",
 
           "base-100": "#e8c497",
         },

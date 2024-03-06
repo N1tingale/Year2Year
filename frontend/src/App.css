@@ -8,4 +8,18 @@
     body {
         @apply font-sans;
     }
+
+    ::-webkit-scrollbar {
+        width: 0.675rem;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 2rem;
+        background: #0c2d1c;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #0c2d1c;
+    }
+
 }
