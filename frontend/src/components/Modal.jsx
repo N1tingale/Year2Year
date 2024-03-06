@@ -6,23 +6,27 @@ export default function Modal({ children, tutorName }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
+  const userId = localStorage.getItem("id")
+
+  const socket = io.connect("ws://localhost:5000");
+
   useEffect(() => {
-    socket.on("message", (message) => {
-      setMessages((messages) => [...messages, message]);
+    socket.on("message", (data) => {
+      console.log(data)
+      setMessages((prevMessages) => [...prevMessages, data]);
     });
   }, []);
 
   const sendMessage = () => {
-    socket.emit("message", message);
+    socket.emit("message", { message });
     setMessage("");
   };
 
-
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-       sendMessage()
-   }
- }
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  };
 
   return (
     <button onClick={() => document.getElementById("my_modal_1").showModal()}>
@@ -36,25 +40,28 @@ export default function Modal({ children, tutorName }) {
               </button>
             </form>
           </div>
-          <div className="chat chat-start">
-            <div className="chat-image">
-              <RxAvatar className="w-12 h-12" />
-            </div>
-            <div className="chat-bubble bg-primaryColor">Lorem ipsum</div>
+
+          <div className="chat-container">
+            {messages.map((msg, index) => (
+              <div key={index} className={`chat ${msg.data.sender_id == userId ? 'chat-start' : 'chat-end'}`}>
+                <div className="chat-image">
+                  <RxAvatar className="w-12 h-12" />
+                </div>
+                <div className={`chat-bubble bg-primaryColor ${index % 2 === 0 ? 'ml-12' : 'mr-12'}`}>
+                  {msg.user}: {msg.message}
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="chat chat-end">
-            <div className="chat-image avatar">
-              <RxAvatar className="w-12 h-12" />
-            </div>
-            <div className="chat-bubble bg-primaryColor">Dolor sit amet</div>
-          </div>
+
           <input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             type="text"
             placeholder="Write a message..."
             className="mt-4 text-white input input-bordered w-full max-w-screen-lg bg-primaryColor"
           />
-          <div className="modal-action"></div>
         </div>
       </dialog>
       {children}
