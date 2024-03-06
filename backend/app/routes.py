@@ -1,5 +1,6 @@
-from app import app, db
-from app.models import Student, Tutor, Module, Booking, Report
+from app import app, db, socketio
+from flask_socketio import send, emit, join_room, leave_room
+from app.models import Student, Tutor, Module, Booking, Report, Chat, Message
 from flask import jsonify, request
 from sqlalchemy import select
 from app.hash_pass import hash_data
@@ -439,3 +440,41 @@ def create_reports(): #current_user
                                   'module_id': new_report.module_id,
                                   "type": new_report.type,
                                   "description": new_report.description}}), 201
+
+@socketio.on("message")
+def handle_message(data):
+    chat_id = data["chat_id"]
+    sender_id = data["sender_id"]
+    content = data["content"]
+    timestamp = data["timestamp"]
+    new_message = Message(sender_id=sender_id, chat_id=chat_id, content=content, timestamp=timestamp)
+    db.session.add(new_message)
+    db.session.commit()
+
+    emit("message", {"sender_id": sender_id, "chat_id": chat_id, "content": content, "timestamp": timestamp}, room=chat_id)
+
+@socketio.on("chat")
+def handle_chat(data):
+    student_id = data["student_id"]
+    tutor_id = data["tutor_id"]
+    chat = Chat.query.filter_by(student_id=student_id, tutor_id=tutor_id).first()
+    if not chat:
+        new_chat = Chat(student_id=student_id, tutor_id=tutor_id)
+        db.session.add(new_chat)
+        db.session.commit()
+        chat = new_chat
+    chat_id = chat.id
+    join_room(chat_id)
+    messages = Message.query.filter_by(chat_id=chat_id).all()
+    messages_data = [
+        {"sender_id": message.sender_id, "content": message.content, "timestamp": message.timestamp}
+        for message in messages
+    ]
+    emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
+
+@socketio.on("get-messages")
+def handle_get_messages(data):
+    chat_id = data["chat_id"]
+    messages = Message.query.filter_by(chat_id=chat_id).all()
+    messages = [{"sender_id": message.sender_id, "chat_id": message.chat_id, "content": message.content, "timestamp": message.timestamp} for message in messages]
+    emit("get-messages", {"messages": messages})
