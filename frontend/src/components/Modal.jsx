@@ -5,20 +5,24 @@ import io from "socket.io-client";
 export default function Modal({ children, tutorName }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const userId = localStorage.getItem("id");
 
-  const userId = localStorage.getItem("id")
-
-  const socket = io.connect("ws://localhost:5000");
+  const socket = io.connect("http://localhost:5000");
 
   useEffect(() => {
     socket.on("message", (data) => {
-      console.log(data)
+      console.log(data);
       setMessages((prevMessages) => [...prevMessages, data]);
     });
   }, []);
 
   const sendMessage = () => {
-    socket.emit("message", { message });
+    socket.emit("message", {
+      chat_id: messages[0]?.chat_id,
+      sender_id: userId,
+      content: message,
+      timestamp: new Date().toISOString(),
+    });
     setMessage("");
   };
 
@@ -41,14 +45,25 @@ export default function Modal({ children, tutorName }) {
             </form>
           </div>
 
-          <div className="chat-container">
+          <div>
             {messages.map((msg, index) => (
-              <div key={index} className={`chat ${msg.data.sender_id == userId ? 'chat-start' : 'chat-end'}`}>
-                <div className="chat-image">
+              <div
+                key={index}
+                className={`flex items-center chat ${
+                  msg.sender_id === userId ? "chat-start" : "chat-end"
+                }`}
+              >
+                <div className="chat-image avatar">
                   <RxAvatar className="w-12 h-12" />
                 </div>
-                <div className={`chat-bubble bg-primaryColor ${index % 2 === 0 ? 'ml-12' : 'mr-12'}`}>
-                  {msg.user}: {msg.message}
+                <div
+                  className={`chat-bubble bg-primaryColor ${
+                    msg.sender_id != userId
+                      ? "bg-white text-primaryColor"
+                      : "bg-primaryColor text-white"
+                  }`}
+                >
+                  {msg.sender_id}: {msg.content}
                 </div>
               </div>
             ))}
