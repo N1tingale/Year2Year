@@ -73,9 +73,15 @@ class Chat(db.Model):
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.id'), nullable=False)
 
+    def __repr__(self):
+        return f"<Chat {self.student_id} {self.tutor_id}>"
+
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, nullable=False)
     chat_id = db.Column(db.Integer, db.ForeignKey('chat.id'), nullable=False)
     content = db.Column(db.String(255), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)
+
+    def __repr__(self):
+        return f"<Message {self.sender_id} {self.chat_id} {self.content} {self.timestamp}>"
