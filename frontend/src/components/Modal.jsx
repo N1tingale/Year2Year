@@ -1,6 +1,29 @@
 import { RxAvatar, RxCross2 } from "react-icons/rx";
+import { useState, useEffect } from "react";
+import io from "socket.io-client";
 
 export default function Modal({ children, tutorName }) {
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    socket.on("message", (message) => {
+      setMessages((messages) => [...messages, message]);
+    });
+  }, []);
+
+  const sendMessage = () => {
+    socket.emit("message", message);
+    setMessage("");
+  };
+
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+       sendMessage()
+   }
+ }
+
   return (
     <button onClick={() => document.getElementById("my_modal_1").showModal()}>
       <dialog id="my_modal_1" className="modal">
@@ -26,6 +49,7 @@ export default function Modal({ children, tutorName }) {
             <div className="chat-bubble bg-primaryColor">Dolor sit amet</div>
           </div>
           <input
+            onKeyDown={handleKeyDown}
             type="text"
             placeholder="Write a message..."
             className="mt-4 text-white input input-bordered w-full max-w-screen-lg bg-primaryColor"
