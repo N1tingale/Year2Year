@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div className="flex text-primaryColor justify-center">
@@ -14,7 +14,12 @@ export default function Navbar() {
         >
           Home
         </Link>
-        <Link className="text-xl font-semibold" to="/profile">
+        <Link
+          className={`text-xl font-semibold
+        ${location === "/profile" ? "font-bold" : ""}
+        `}
+          to="/profile"
+        >
           Profile
         </Link>
         <Link className="text-xl font-semibold" to="/tutors-list">

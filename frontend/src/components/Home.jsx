@@ -19,26 +19,26 @@ export default function Home() {
       <div className="flex justify-center items-center mt-4">
         <div className="card bg-primaryColor text-white mx-4 shadow-xl outline-primary">
           <div className="card-body p-6">
-            <p className="text-2xl whitespace-nowrap">
+            <div className="text-2xl whitespace-nowrap">
               <p className="font-bold">SIGN UP USING</p>
               YOUR UNIVERSITY EMAIL
-            </p>
+            </div>
           </div>
         </div>
         <div className="bg-white card mx-4 shadow-xl outline-primary">
           <div className="card-body p-6">
-            <p className="text-2xl whitespace-nowrap">
+            <div className="text-2xl whitespace-nowrap">
               <p className="font-bold">PICK THE MODULES</p>
               YOU NEED HELP WITH
-            </p>
+            </div>
           </div>
         </div>
         <div className="card mx-4 bg-primaryColor text-white shadow-xl outline-primary">
           <div className="card-body p-6">
-            <p className="text-2xl whitespace-nowrap">
+            <div className="text-2xl whitespace-nowrap">
               <p className="font-bold">SCHEDULE A MEETING</p>
               WITH YOUR NEW TUTOR
-            </p>
+            </div>
           </div>
         </div>
       </div>
@@ -49,12 +49,12 @@ export default function Home() {
         </h1>
         <p className="text-xl mt-1">Don't Miss Out on Success:</p>
         <p className="text-xl font-bold">Book Your Tutor Now!</p>
-        <button className="shadow-xl text-white btn btn-primary mt-4 rounded-3xl pr-0">
+        <div className="shadow-xl text-white btn btn-primary mt-4 rounded-3xl pr-0">
           Sign Up
           <button className="btn btn-circle bg-white outline outline-primaryColor hover:bg-white">
             <FaArrowRightLong className="h-5 w-5" />
           </button>
-        </button>
+        </div>
       </div>
       <Footer />
     </div>
