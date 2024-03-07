@@ -89,7 +89,12 @@ export default function SignUp() {
         navigate("/profile");
         console.log(res);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setError("reenterPassword", {
+          type:"manual",
+          message:err.data.message
+        })
+      });
   };
 
   return (

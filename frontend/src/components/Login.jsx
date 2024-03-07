@@ -45,7 +45,12 @@ export default function Login() {
         navigate("/profile");
         console.log(res);
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>{
+        setError("password", {
+          type:"manual",
+          message:err.data.message
+        })
+      });
   };
 
   return (

@@ -5,6 +5,7 @@ import SignUp from "./components/SignUp";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import ForgotPassword from "./components/ForgotPassword";
+import Tutors from "./components/Tutors";
 function App() {
   return (
     <div className="App">
@@ -23,6 +24,9 @@ function App() {
         </Route>
         <Route path="/forgotpassword" Component={ForgotPassword}>
           Forgot Password
+        </Route>
+        <Route path="tutors-list" Component={Tutors}>
+          Tutors list
         </Route>
       </Routes>
     </div>
