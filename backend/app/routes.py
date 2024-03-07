@@ -472,9 +472,9 @@ def handle_chat(data):
     ]
     emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
 
-@socketio.on("get-messages")
+@app.route("/get-messages", methods=["POST"])
 def handle_get_messages(data):
     chat_id = data["chat_id"]
     messages = Message.query.filter_by(chat_id=chat_id).all()
     messages = [{"sender_id": message.sender_id, "chat_id": message.chat_id, "content": message.content, "timestamp": message.timestamp} for message in messages]
-    emit("get-messages", {"messages": messages})
+    return jsonify({"messages": messages})
