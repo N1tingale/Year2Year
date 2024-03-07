@@ -1,4 +1,5 @@
 import { RxAvatar, RxCross2 } from "react-icons/rx";
+import { IoMdSend } from "react-icons/io";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
 
@@ -69,14 +70,24 @@ export default function Modal({ children, tutorName }) {
             ))}
           </div>
 
-          <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            type="text"
-            placeholder="Write a message..."
-            className="mt-4 text-white input input-bordered w-full max-w-screen-lg bg-primaryColor"
-          />
+          <div className="flex justify-between items-center">
+            <div className="relative w-full">
+              <input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                type="text"
+                placeholder="Write a message..."
+                className="mt-4 text-white input input-bordered w-full max-w-screen-lg bg-primaryColor pr-12"
+              />
+              <button
+                onClick={sendMessage}
+                className="absolute right-2 top-2 h-full px-3 flex items-center text-white"
+              >
+                <IoMdSend className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
         </div>
       </dialog>
       {children}
