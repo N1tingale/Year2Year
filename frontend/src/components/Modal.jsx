@@ -23,17 +23,25 @@ export default function Modal({ children, tutorName }) {
   useEffect(() => {
     socket.on("message", (data) => {
       console.log(data);
-      setMessages((prevMessages) => [...prevMessages, data]);
+      setMessages((prevMessages) => [...prevMessages, message]);
     });
   }, []);
 
   const sendMessage = () => {
+    const chatId = 5;
     socket.emit("message", {
-      chat_id: messages[0]?.chat_id,
+      chat_id: chatId,
       sender_id: userId,
       content: message,
       timestamp: new Date().toISOString(),
     });
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        sender_id: userId,
+        content: message,
+      },
+    ]);
     setMessage("");
   };
 
@@ -61,7 +69,7 @@ export default function Modal({ children, tutorName }) {
               <div
                 key={index}
                 className={`flex items-center chat ${
-                  msg.sender_id === userId ? "chat-start" : "chat-end"
+                  msg.sender_id === userId ? "chat-end" : "chat-start"
                 }`}
               >
                 <div className="chat-image avatar">
@@ -71,7 +79,7 @@ export default function Modal({ children, tutorName }) {
                   className={`chat-bubble bg-primaryColor ${
                     msg.sender_id != userId
                       ? "bg-white text-primaryColor"
-                      : "bg-primaryColor text-white"
+                      : "bg-primaryColor text-white right-0"
                   }`}
                 >
                   {msg.sender_id}: {msg.content}
