@@ -5,7 +5,7 @@ export default function Navbar() {
 
   return (
     <div className="flex text-primaryColor justify-center">
-      <div className="navbar bg-base-100 justify-evenly w-10/12 border-b border-primary">
+      <div className="navbar bg-base-100 justify-evenly w-10/12 gap-4 border-b border-primary">
         <Link
           className={`text-xl font-semibold ${
             !localStorage.getItem("id") ? "ml-52" : "ml-0"
@@ -14,12 +14,7 @@ export default function Navbar() {
         >
           Home
         </Link>
-        <Link
-          className={`text-xl font-semibold
-        ${location === "/profile" ? "font-bold" : ""}
-        `}
-          to="/profile"
-        >
+        <Link className="text-xl font-semibold" to="/profile">
           Profile
         </Link>
         <Link className="text-xl font-semibold" to="/tutors-list">
