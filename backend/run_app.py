@@ -1,5 +1,4 @@
 from app import app
-from app import socketio
 import os
 
 if not os.path.exists("backend/instance/site.db"):
@@ -10,4 +9,3 @@ if not os.path.exists("backend/instance/site.db"):
 
 if __name__ == '__main__':
     app.run(debug=True)
-    socketio.run(app, debug=True)

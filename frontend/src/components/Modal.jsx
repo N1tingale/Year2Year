@@ -8,7 +8,17 @@ export default function Modal({ children, tutorName }) {
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
 
-  const socket = io.connect("http://localhost:5000");
+  const socket = io("http://127.0.0.1:5001", {
+    withCredentials: true,
+  });
+
+  socket.on("connect", () => {
+    console.log("Socket connected");
+  });
+
+  socket.on("connect_error", (error) => {
+    console.error("Socket connection error:", error);
+  });
 
   useEffect(() => {
     socket.on("message", (data) => {
@@ -34,7 +44,7 @@ export default function Modal({ children, tutorName }) {
   };
 
   return (
-    <button onClick={() => document.getElementById("my_modal_1").showModal()}>
+    <div onClick={() => document.getElementById("my_modal_1").showModal()}>
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box max-w-screen-lg mx-auto p-4">
           <div className="bg-primaryColor text-white p-4 flex justify-between rounded-2xl text-left text-3xl font-bold mb-4">
@@ -91,6 +101,6 @@ export default function Modal({ children, tutorName }) {
         </div>
       </dialog>
       {children}
-    </button>
+    </div>
   );
 }
