@@ -11,6 +11,8 @@ export default function Profile() {
   useEffect(() => {
     if (localStorage.getItem("id") == null) {
       setTimeout(() => navigate("/login"), 2500);
+    } else {
+      setAuthenticated(true);
     }
   }, []);
   return (
@@ -31,18 +33,22 @@ export default function Profile() {
                 <ChatCard
                   tutorName={"Tutor 1"}
                   message={"Lorem ipsum dolor sit amet"}
+                  key={1}
                 />
                 <ChatCard
                   tutorName={"Tutor 2"}
                   message={"Lorem ipsum dolor sit amet"}
+                  key={2}
                 />
                 <ChatCard
                   tutorName={"Tutor 3"}
                   message={"Lorem ipsum dolor sit amet"}
+                  key={3}
                 />
                 <ChatCard
                   tutorName={"Tutor 4"}
                   message={"Lorem ipsum dolor sit amet"}
+                  key={4}
                 />
               </div>
             </div>
@@ -54,7 +60,7 @@ export default function Profile() {
           login...
         </div>
       )}
-      <Footer relative={true} />
+      {/* <Footer /> */}
     </>
   );
 }

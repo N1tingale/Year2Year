@@ -25,10 +25,10 @@ export default function Login() {
   };
 
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
 
     axios
-      .post("http://127.0.0.1:5000/login", {
+      .post("http://127.0.0.1:5000/login-student", {
         email: data.email,
         password: data.password,
       })
@@ -47,10 +47,11 @@ export default function Login() {
         console.log(res);
       })
       .catch((err) => {
-        if (err) {
+        console.log(err.response.data.error);
+        if (err.response.data.error) {
           setError("password", {
             type: "manual",
-            message: err.data.message,
+            message: err.response.data.error,
           });
         }
       });

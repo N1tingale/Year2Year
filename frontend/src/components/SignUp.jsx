@@ -91,17 +91,17 @@ export default function SignUp() {
       })
       .catch((err) => {
         setError("reenterPassword", {
-          type:"manual",
-          message:err.data.message
-        })
+          type: "manual",
+          message: err.data.message,
+        });
       });
   };
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="h-screen">
       <Navbar />
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="h-screen flex flex-col items-center mt-4">
+        <div className=" flex flex-col justify-center items-center mt-4">
           <h1 className="text-4xl font-semibold text-primaryColor">Sign Up</h1>
           <p className="text-xl font-semibold text-primaryColor">
             MADE BY STUDENTS.

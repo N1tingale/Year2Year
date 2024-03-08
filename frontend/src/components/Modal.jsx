@@ -1,41 +1,47 @@
 import { RxAvatar, RxCross2 } from "react-icons/rx";
 import { IoMdSend } from "react-icons/io";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-export default function Modal({ children, tutorName }) {
+export default function Modal({ children, tutorName, key }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
 
-  let socket;
+  const socketRef = useRef();
 
   useEffect(() => {
-    if (userId) {
-      socket = io("http://127.0.0.1:5000", {
-        withCredentials: true,
-      });
-
-      socket.on("connect", () => {
-        console.log("Socket connected");
-      });
-
-      socket.on("message", (data) => {
-        console.log(data);
-        setMessages((prevMessages) => [...prevMessages, message]);
-      });
-    }
-    return () => {
-      if (socket) {
-        socket.off("connect");
-        socket.off("message");
-      }
-    };
+    socketRef.current = io("http://127.0.0.1:5000", {
+      withCredentials: true,
+    });
+    socketRef.current.on("connect", () => {
+      console.log("Socket connected");
+    });
   }, []);
 
+  if (socketRef.current != undefined) {
+    socketRef.current.on("message", (data) => {
+      console.log(data);
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+    socketRef.current.on("chat", (data) => {
+      console.log(data);
+    });
+  }
+
+  const connectToChat = () => {
+    socketRef.current.emit("chat", {
+      student_id: userId,
+      tutor_id: 1,
+    });
+  };
+
   const sendMessage = () => {
+    if (message.length == 0) {
+      return;
+    }
     const chatId = 5;
-    socket.emit("message", {
+    socketRef.current.emit("message", {
       chat_id: chatId,
       sender_id: userId,
       content: message,
@@ -58,8 +64,13 @@ export default function Modal({ children, tutorName }) {
   };
 
   return (
-    <div onClick={() => document.getElementById("my_modal_1").showModal()}>
-      <dialog id="my_modal_1" className="modal">
+    <div
+      onClick={() => {
+        document.getElementById(`my_modal_${key}`).showModal();
+        connectToChat();
+      }}
+    >
+      <dialog id={`my_modal_${key}`} className="modal">
         <div className="modal-box max-w-screen-lg mx-auto p-4">
           <div className="bg-primaryColor text-white p-4 flex justify-between rounded-2xl text-left text-3xl font-bold mb-4">
             {tutorName}
@@ -74,21 +85,22 @@ export default function Modal({ children, tutorName }) {
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`flex items-center chat ${
+                className={`chat ${
                   msg.sender_id === userId ? "chat-end" : "chat-start"
                 }`}
               >
                 <div className="chat-image avatar">
-                  <RxAvatar className="w-12 h-12" />
+                  <RxAvatar size={45} />
                 </div>
+                <div className="chat-header">Sender id: {msg.sender_id}</div>
                 <div
                   className={`chat-bubble bg-primaryColor ${
                     msg.sender_id != userId
                       ? "bg-white text-primaryColor"
-                      : "bg-primaryColor text-white right-0"
+                      : "bg-primaryColor text-white"
                   }`}
                 >
-                  {msg.sender_id}: {msg.content}
+                  {msg.content}
                 </div>
               </div>
             ))}
