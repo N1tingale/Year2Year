@@ -8,24 +8,30 @@ export default function Modal({ children, tutorName }) {
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
 
-  const socket = io("http://127.0.0.1:5001", {
-    withCredentials: true,
-  });
-
-  socket.on("connect", () => {
-    console.log("Socket connected");
-  });
-
-  socket.on("connect_error", (error) => {
-    console.error("Socket connection error:", error);
-  });
+  let socket;
 
   useEffect(() => {
-    socket.on("message", (data) => {
-      console.log(data);
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
-  }, []);
+    if (userId) {
+      socket = io("http://127.0.0.1:5001", {
+        withCredentials: true,
+      });
+
+      socket.on("connect", () => {
+        console.log("Socket connected");
+      });
+
+      socket.on("message", (data) => {
+        console.log(data);
+        setMessages((prevMessages) => [...prevMessages, message]);
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off("connect");
+        socket.off("message");
+      }
+    };
+  }, [userId]);
 
   const sendMessage = () => {
     const chatId = 5;
