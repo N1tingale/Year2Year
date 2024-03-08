@@ -14,6 +14,7 @@ export default function Login() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm();
 
@@ -45,11 +46,13 @@ export default function Login() {
         navigate("/profile");
         console.log(res);
       })
-      .catch((err) =>{
-        setError("password", {
-          type:"manual",
-          message:err.data.message
-        })
+      .catch((err) => {
+        if (err) {
+          setError("password", {
+            type: "manual",
+            message: err.data.message,
+          });
+        }
       });
   };
 

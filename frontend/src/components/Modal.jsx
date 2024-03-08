@@ -12,7 +12,7 @@ export default function Modal({ children, tutorName }) {
 
   useEffect(() => {
     if (userId) {
-      socket = io("http://127.0.0.1:5001", {
+      socket = io("http://127.0.0.1:5000", {
         withCredentials: true,
       });
 
@@ -31,7 +31,7 @@ export default function Modal({ children, tutorName }) {
         socket.off("message");
       }
     };
-  }, [userId]);
+  }, []);
 
   const sendMessage = () => {
     const chatId = 5;

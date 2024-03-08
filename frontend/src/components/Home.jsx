@@ -1,6 +1,7 @@
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { FaArrowRightLong } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
@@ -51,9 +52,9 @@ export default function Home() {
         <p className="text-xl font-bold">Book Your Tutor Now!</p>
         <div className="shadow-xl text-white btn btn-primary mt-4 rounded-3xl pr-0">
           Sign Up
-          <button className="btn btn-circle bg-white outline outline-primaryColor hover:bg-white">
+          <Link to='/signup' className="btn btn-circle bg-white outline outline-primaryColor hover:bg-white">
             <FaArrowRightLong className="h-5 w-5" />
-          </button>
+          </Link>
         </div>
       </div>
       <Footer />

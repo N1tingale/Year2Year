@@ -1,6 +1,6 @@
-export default function Footer() {
+export default function Footer({relative}) {
   return (
-    <footer className="absolute left-0 bottom-0 footer items-center px-2 py-1 bg-primaryColor">
+    <footer className={`${relative ? "relative" : "absolute left-0 bottom-0"} footer items-center px-2 py-1 bg-primaryColor`}>
       <aside className="text-white items-center grid-flow-col">
         <svg
           width="36"
