@@ -3,6 +3,7 @@ import Footer from "./Footer";
 import ChatCard from "./ChatCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 export default function Profile() {
   const navigate = useNavigate();
 
@@ -15,6 +16,7 @@ export default function Profile() {
       setAuthenticated(true);
     }
   }, []);
+
   return (
     <>
       <Navbar />
@@ -29,27 +31,14 @@ export default function Profile() {
             </div>
             <div className="p-2 rounded-xl my-2 border-2 border-black bg-secondaryColor">
               <h1 className="text-xl font-bold p-2">Chat preview</h1>
-              <div className="my-2 flex flex-col">
-                <ChatCard
-                  tutorName={"Tutor 1"}
-                  message={"Lorem ipsum dolor sit amet"}
-                  key={1}
-                />
-                <ChatCard
-                  tutorName={"Tutor 2"}
-                  message={"Lorem ipsum dolor sit amet"}
-                  key={2}
-                />
-                <ChatCard
-                  tutorName={"Tutor 3"}
-                  message={"Lorem ipsum dolor sit amet"}
-                  key={3}
-                />
-                <ChatCard
-                  tutorName={"Tutor 4"}
-                  message={"Lorem ipsum dolor sit amet"}
-                  key={4}
-                />
+              <div className="my-2 flex flex-col overflow-y-auto max-h-96">
+                {[...Array(10)].map((elementInArray, index) => (
+                  <ChatCard
+                    tutorName={`Tutor ${index}`}
+                    message={"Lorem ipsum dolor sit amet"}
+                    key={index}
+                  />
+                ))}
               </div>
             </div>
           </div>
