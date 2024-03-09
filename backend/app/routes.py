@@ -5,7 +5,7 @@ from flask import jsonify, request
 from sqlalchemy import select
 from app.hash_pass import hash_data
 import jwt
-import datetime
+from datetime import datetime
 from functools import wraps
 from config import Config
 
@@ -443,15 +443,26 @@ def create_reports(): #current_user
 
 @socketio.on("message")
 def handle_message(data):
+    print("YESSSSS \n\n\n")
     chat_id = data["chat_id"]
     sender_id = data["sender_id"]
     content = data["content"]
-    timestamp = data["timestamp"]
+    timestamp_str = data["timestamp"]
+    timestamp = datetime.fromisoformat(timestamp_str)
     new_message = Message(sender_id=sender_id, chat_id=chat_id, content=content, timestamp=timestamp)
     db.session.add(new_message)
     db.session.commit()
+    timestamp_str = timestamp.isoformat()
+    emit("message", {"sender_id": sender_id, "chat_id": chat_id, "content": content, "timestamp": timestamp_str}, room=chat_id)
 
-    emit("message", {"sender_id": sender_id, "chat_id": chat_id, "content": content, "timestamp": timestamp}, room=chat_id)
+@app.route("/get-messages/<int:chat_id>", methods=["GET"])
+def get_messages(chat_id):
+    messages = Message.query.filter_by(chat_id=chat_id).all()
+    messages_data = [
+        {"sender_id": message.sender_id, "content": message.content, "timestamp": message.timestamp}
+        for message in messages
+    ]
+    return jsonify({"messages": messages_data})
 
 @socketio.on("chat")
 def handle_chat(data):
@@ -471,10 +482,3 @@ def handle_chat(data):
         for message in messages
     ]
     emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
-
-@app.route("/get-messages", methods=["POST"])
-def handle_get_messages(data):
-    chat_id = data["chat_id"]
-    messages = Message.query.filter_by(chat_id=chat_id).all()
-    messages = [{"sender_id": message.sender_id, "chat_id": message.chat_id, "content": message.content, "timestamp": message.timestamp} for message in messages]
-    return jsonify({"messages": messages})
