@@ -9,9 +9,13 @@ export default function Modal({ children, tutorName, index }) {
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
   const userType = localStorage.getItem("userType");
-  const [chatId, setChatId] = useState(1);
+  const [chatId, setChatId] = useState(4);
 
   const socketRef = useRef();
+
+  useEffect(() => {
+    console.log("Messages updates:", messages);
+  }, [messages]);
 
   // Runs once when the element is instantiated, to prevent constantly reconnecting to the socket
   useEffect(() => {
@@ -26,14 +30,20 @@ export default function Modal({ children, tutorName, index }) {
     if (socketRef.current) {
       socketRef.current.on("message", (data) => {
         console.log("Incoming message: ", data);
-        setMessages((prevMessages) => [...prevMessages, message]);
+        if (data.sender_id != userId) {
+          setMessages((prevMessages) => [...prevMessages, data]);
+        }
       });
       socketRef.current.on("chat", (data) => {
         console.log("Incoming chat request", data);
       });
     }
-
     fetchMessages();
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
   }, []);
 
   // Fetches messages from the backend to display chat history
@@ -42,6 +52,7 @@ export default function Modal({ children, tutorName, index }) {
       .get(`http://127.0.0.1:5000/get-messages/${chatId}`)
       .then((response) => {
         if (response.data) {
+          console.log("Messages fetched:", response.data);
           setMessages(response.data.messages);
         } else {
           console.error("Invalid response format:", response);
@@ -53,7 +64,7 @@ export default function Modal({ children, tutorName, index }) {
   // This function should emit a chat request based on the sender and recipient id
   const connectToChat = () => {
     // The value is hardcoded to be 2 for now, but should be fetched at some point from the backend
-    const recipientId = 2;
+    const recipientId = userType === "student" ? 2 : 1;
 
     socketRef.current.emit("chat", {
       student_id: userType === "student" ? userId : recipientId,
@@ -118,27 +129,32 @@ export default function Modal({ children, tutorName, index }) {
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`chat ${msg.sender_id === userId ? "chat-end" : "chat-start"
-                  }`}
+                className={`chat ${
+                  msg.sender_id == userId ? "chat-end" : "chat-start"
+                }`}
               >
                 <div className="chat-image avatar">
                   <RxAvatar size={45} />
                 </div>
-                <div className="chat-header">Sender id: {msg.sender_id}</div>
+                <div className="chat-header">
+                  Sender id: {msg.sender_id}
+                  <time className="text-xs opacity-50 mx-1">
+                    {/* msg.timestamp.slice(0, -3) */}
+                    {new Date().toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </time>
+                </div>
                 <div
-                  className={`chat-bubble ${msg.sender_id === userId
+                  className={`chat-bubble ${
+                    msg.sender_id == userId
                       ? "bg-primaryColor text-white"
                       : "bg-white text-primaryColor"
-                    }`}
+                  }`}
                 >
                   {msg.content}
                 </div>
-                <time className="text-xs opacity-50">
-                  {new Date(msg.timestamp.slice(0, -3)).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </time>
               </div>
             ))}
           </div>

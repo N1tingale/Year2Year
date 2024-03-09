@@ -444,7 +444,7 @@ def create_reports(): #current_user
 
 @socketio.on("message")
 def handle_message(data):
-    print("YESSSSS \n\n\n")
+    print(f"\nMessage data received: {data}\n")
     chat_id = data["chat_id"]
     sender_id = data["sender_id"]
     content = data["content"]
@@ -467,6 +467,7 @@ def get_messages(chat_id):
 
 @socketio.on("chat")
 def handle_chat(data):
+    print(f"\nChat data received: {data}\n")
     student_id = data["student_id"]
     tutor_id = data["tutor_id"]
     chat = Chat.query.filter_by(student_id=student_id, tutor_id=tutor_id).first()
@@ -479,7 +480,7 @@ def handle_chat(data):
     join_room(chat_id)
     messages = Message.query.filter_by(chat_id=chat_id).all()
     messages_data = [
-        {"sender_id": message.sender_id, "content": message.content, "timestamp": message.timestamp}
+        {"sender_id": message.sender_id, "content": message.content, "timestamp": message.timestamp.isoformat()}
         for message in messages
     ]
     emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
