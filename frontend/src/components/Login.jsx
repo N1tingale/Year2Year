@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 export default function Login() {
+  const [loginAsTutor, setLoginAsTutor] = useState(false);
+
   const navigate = useNavigate();
 
   const {
@@ -25,10 +27,12 @@ export default function Login() {
   };
 
   const onSubmit = (data) => {
-    // console.log(data);
+    console.log(data);
+
+    const path = loginAsTutor ? "login-tutor" : "login-student";
 
     axios
-      .post("http://127.0.0.1:5000/login-student", {
+      .post(`http://127.0.0.1:5000/${path}`, {
         email: data.email,
         password: data.password,
       })
@@ -75,7 +79,7 @@ export default function Login() {
             <Input
               type={"text"}
               name={"email"}
-              placeholder={"Email"}
+              placeholder={loginAsTutor ? "Tutor email" : "Email"}
               register={register}
               validation={{
                 required: "Email is required",
@@ -115,6 +119,14 @@ export default function Login() {
         </small>
         <small className="mt-1 underline">
           <Link to="/forgotpassword">FORGOT PASSWORD?</Link>
+        </small>
+        <small className="mt-1">
+          <button
+            onClick={() => setLoginAsTutor((value) => !value)}
+            className="underline"
+          >
+            {loginAsTutor ? "LOG IN AS STUDENT" : "LOG IN AS TUTOR"}
+          </button>
         </small>
       </div>
       <Footer />
