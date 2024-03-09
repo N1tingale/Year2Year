@@ -9,7 +9,7 @@ export default function Modal({ children, tutorName, index }) {
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
   const userType = localStorage.getItem("userType");
-  const [chatId, setChatId] = useState(5);
+  const [chatId, setChatId] = useState(1);
 
   const socketRef = useRef();
 
@@ -25,7 +25,7 @@ export default function Modal({ children, tutorName, index }) {
     // Sets up message listening when the component is mounted
     if (socketRef.current) {
       socketRef.current.on("message", (data) => {
-        console.log(data);
+        console.log("Incoming message: ", data);
         setMessages((prevMessages) => [...prevMessages, message]);
       });
       socketRef.current.on("chat", (data) => {
@@ -50,12 +50,10 @@ export default function Modal({ children, tutorName, index }) {
       .catch((error) => console.error("Error fetching messages:", error));
   };
 
-  
-
   // This function should emit a chat request based on the sender and recipient id
   const connectToChat = () => {
-    // The value is hardcoded to be 1 for now, but should be fetched at some point from the backend
-    const recipientId = 1;
+    // The value is hardcoded to be 2 for now, but should be fetched at some point from the backend
+    const recipientId = 2;
 
     socketRef.current.emit("chat", {
       student_id: userType === "student" ? userId : recipientId,
@@ -70,6 +68,12 @@ export default function Modal({ children, tutorName, index }) {
     }
     const current_timestamp = new Date().toISOString();
     socketRef.current.emit("message", {
+      chat_id: chatId,
+      sender_id: userId,
+      content: message,
+      timestamp: current_timestamp,
+    });
+    console.log("Message sent:", {
       chat_id: chatId,
       sender_id: userId,
       content: message,
@@ -114,25 +118,23 @@ export default function Modal({ children, tutorName, index }) {
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`chat ${
-                  msg.sender_id === userId ? "chat-end" : "chat-start"
-                }`}
+                className={`chat ${msg.sender_id === userId ? "chat-end" : "chat-start"
+                  }`}
               >
                 <div className="chat-image avatar">
                   <RxAvatar size={45} />
                 </div>
                 <div className="chat-header">Sender id: {msg.sender_id}</div>
                 <div
-                  className={`chat-bubble bg-primaryColor ${
-                    msg.sender_id === userId
+                  className={`chat-bubble ${msg.sender_id === userId
                       ? "bg-primaryColor text-white"
                       : "bg-white text-primaryColor"
-                  }`}
+                    }`}
                 >
                   {msg.content}
                 </div>
                 <time className="text-xs opacity-50">
-                  {new Date(msg.timestamp).toLocaleTimeString([], {
+                  {new Date(msg.timestamp.slice(0, -3)).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
