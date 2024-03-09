@@ -40,10 +40,12 @@ export default function Login() {
         if (res.data.student) {
           for (const field in res.data.student) {
             localStorage.setItem(field, res.data.student[field]);
+            localStorage.setItem("userType", "student");
           }
         } else if (res.data.tutor) {
           for (const field in res.data.tutor) {
             localStorage.setItem(field, res.data.tutor[field]);
+            localStorage.setItem("userType", "tutor");
           }
         }
 

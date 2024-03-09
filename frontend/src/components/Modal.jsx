@@ -8,6 +8,7 @@ export default function Modal({ children, tutorName, index }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
+  const userType = localStorage.getItem("userType");
   const [chatId, setChatId] = useState(5);
 
   const socketRef = useRef();
@@ -36,7 +37,7 @@ export default function Modal({ children, tutorName, index }) {
       .catch((error) => console.error("Error fetching messages:", error));
   };
 
-  if (socketRef.current != undefined) {
+  if (socketRef.current) {
     socketRef.current.on("message", (data) => {
       console.log(data);
       setMessages((prevMessages) => [...prevMessages, message]);
@@ -48,8 +49,8 @@ export default function Modal({ children, tutorName, index }) {
 
   const connectToChat = () => {
     socketRef.current.emit("chat", {
-      student_id: userId,
-      tutor_id: 1,
+      student_id: userType === "student" ? userId : 1,
+      tutor_id: userType === "tutor" ? tutor_id : 1,
     });
   };
 
