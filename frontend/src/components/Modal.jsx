@@ -26,9 +26,12 @@ export default function Modal({ children, tutorName, index }) {
   const fetchMessages = () => {
     axios
       .get(`http://127.0.0.1:5000/get-messages/${chatId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setMessages(data.messages);
+      .then((response) => {
+        if (response.data) {
+          setMessages(response.data.messages);
+        } else {
+          console.error("Invalid response format:", response);
+        }
       })
       .catch((error) => console.error("Error fetching messages:", error));
   };
