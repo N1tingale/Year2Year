@@ -13,6 +13,7 @@ export default function Modal({ children, tutorName, index }) {
 
   const socketRef = useRef();
 
+  // Runs once when the element is instantiated, to prevent constantly reconnecting to the socket
   useEffect(() => {
     socketRef.current = io("http://127.0.0.1:5000", {
       withCredentials: true,
@@ -21,9 +22,21 @@ export default function Modal({ children, tutorName, index }) {
       console.log("Socket connected");
     });
 
+    // Sets up message listening when the component is mounted
+    if (socketRef.current) {
+      socketRef.current.on("message", (data) => {
+        console.log(data);
+        setMessages((prevMessages) => [...prevMessages, message]);
+      });
+      socketRef.current.on("chat", (data) => {
+        console.log("Incoming chat request", data);
+      });
+    }
+
     fetchMessages();
   }, []);
 
+  // Fetches messages from the backend to display chat history
   const fetchMessages = () => {
     axios
       .get(`http://127.0.0.1:5000/get-messages/${chatId}`)
@@ -37,23 +50,20 @@ export default function Modal({ children, tutorName, index }) {
       .catch((error) => console.error("Error fetching messages:", error));
   };
 
-  if (socketRef.current) {
-    socketRef.current.on("message", (data) => {
-      console.log(data);
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
-    socketRef.current.on("chat", (data) => {
-      console.log(data);
-    });
-  }
+  
 
+  // This function should emit a chat request based on the sender and recipient id
   const connectToChat = () => {
+    // The value is hardcoded to be 1 for now, but should be fetched at some point from the backend
+    const recipientId = 1;
+
     socketRef.current.emit("chat", {
-      student_id: userType === "student" ? userId : 1,
-      tutor_id: userType === "tutor" ? tutor_id : 1,
+      student_id: userType === "student" ? userId : recipientId,
+      tutor_id: userType === "tutor" ? userId : recipientId,
     });
   };
 
+  // Send message function, emits a message to the backend and updates the frontend UI
   const sendMessage = () => {
     if (message.length == 0) {
       return;
@@ -114,9 +124,9 @@ export default function Modal({ children, tutorName, index }) {
                 <div className="chat-header">Sender id: {msg.sender_id}</div>
                 <div
                   className={`chat-bubble bg-primaryColor ${
-                    msg.sender_id != userId
-                      ? "bg-white text-primaryColor"
-                      : "bg-primaryColor text-white"
+                    msg.sender_id === userId
+                      ? "bg-primaryColor text-white"
+                      : "bg-white text-primaryColor"
                   }`}
                 >
                   {msg.content}
