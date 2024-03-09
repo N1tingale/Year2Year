@@ -449,7 +449,7 @@ def handle_message(data):
     sender_id = data["sender_id"]
     content = data["content"]
     timestamp_str = data["timestamp"]
-    timestamp = datetime.datetime.fromisoformat(timestamp_str)
+    timestamp = datetime.datetime.fromisoformat(timestamp_str[:-1])
     new_message = Message(sender_id=sender_id, chat_id=chat_id, content=content, timestamp=timestamp)
     db.session.add(new_message)
     db.session.commit()
