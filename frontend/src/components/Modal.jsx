@@ -3,7 +3,8 @@ import { IoMdSend } from "react-icons/io";
 import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-export default function Modal({ children, tutorName, key }) {
+export default function Modal({ children, tutorName, index }) {
+
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
@@ -23,7 +24,7 @@ export default function Modal({ children, tutorName, key }) {
   }, []);
 
   const fetchMessages = () => {
-    fetch(`http://127.0.0.1:5000/get-messages/${chatId}`)
+    axios.get(`http://127.0.0.1:5000/get-messages/${chatId}`)
       .then((response) => response.json())
       .then((data) => {
         setMessages(data.messages);
@@ -79,11 +80,11 @@ export default function Modal({ children, tutorName, key }) {
   return (
     <div
       onClick={() => {
-        document.getElementById(`my_modal_${key}`).showModal();
+        document.getElementById(`my_modal_${index}`).showModal();
         connectToChat();
       }}
     >
-      <dialog id={`my_modal_${key}`} className="modal">
+      <dialog id={`my_modal_${index}`} className="modal">
         <div className="modal-box max-w-screen-lg mx-auto p-4">
           <div className="bg-primaryColor text-white p-4 flex justify-between rounded-2xl text-left text-3xl font-bold mb-4">
             {tutorName}

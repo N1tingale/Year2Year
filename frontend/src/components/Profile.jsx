@@ -37,6 +37,7 @@ export default function Profile() {
                     tutorName={`Tutor ${index}`}
                     message={"Lorem ipsum dolor sit amet"}
                     key={index}
+                    index={index}
                   />
                 ))}
               </div>
