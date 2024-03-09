@@ -102,6 +102,12 @@ export default function Modal({ children, tutorName, key }) {
                 >
                   {msg.content}
                 </div>
+                <time className="text-xs opacity-50">
+                  {new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </time>
               </div>
             ))}
           </div>
