@@ -2,9 +2,9 @@ import { RxAvatar, RxCross2 } from "react-icons/rx";
 import { IoMdSend } from "react-icons/io";
 import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
+import axios from "axios";
 
 export default function Modal({ children, tutorName, index }) {
-
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
@@ -24,7 +24,8 @@ export default function Modal({ children, tutorName, index }) {
   }, []);
 
   const fetchMessages = () => {
-    axios.get(`http://127.0.0.1:5000/get-messages/${chatId}`)
+    axios
+      .get(`http://127.0.0.1:5000/get-messages/${chatId}`)
       .then((response) => response.json())
       .then((data) => {
         setMessages(data.messages);
@@ -117,7 +118,7 @@ export default function Modal({ children, tutorName, index }) {
                   {msg.content}
                 </div>
                 <time className="text-xs opacity-50">
-                  {new Date().toLocaleTimeString([], {
+                  {new Date(msg.timestamp).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}

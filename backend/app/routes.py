@@ -5,7 +5,7 @@ from flask import jsonify, request
 from sqlalchemy import select
 from app.hash_pass import hash_data
 import jwt
-from datetime import datetime
+import datetime
 from functools import wraps
 from config import Config
 
@@ -79,7 +79,6 @@ def create_student():
     email = data.get('email')
     password = data.get('password')
     emailVerified = False
-
     hashed_password = hash_data(password)
 
     try:
@@ -129,6 +128,7 @@ def login_student():
                             secret_key)
         if not emailVerified:
             token = None
+            print(True)
         return jsonify({"message": "This is a student successfully logging in",
                         'student': {'id':student.id,
                         'first_name':student.first_name,
@@ -136,8 +136,8 @@ def login_student():
                         'email':student.email,
                         "token":token,
                         "emailVerified":student.emailVerified}}), 201
-    except:
-        return jsonify({"error": "You are not a user. GET OUT."}), 400
+    except Exception as e:
+        return jsonify({"error": "You are not a student. GET OUT."}), 400
 
 @app.route("/login-tutor", methods=["POST"])
 def login_tutor():
@@ -165,7 +165,7 @@ def login_tutor():
                         "token":token,
                         "emailVerified":tutor.emailVerified}}), 201
     except:
-        return jsonify({"error": "You are not a user. GET OUT."}), 400
+        return jsonify({"error": "You are not a tutor. GET OUT."}), 400
 
 
 
@@ -448,7 +448,7 @@ def handle_message(data):
     sender_id = data["sender_id"]
     content = data["content"]
     timestamp_str = data["timestamp"]
-    timestamp = datetime.fromisoformat(timestamp_str)
+    timestamp = datetime.datetime.fromisoformat(timestamp_str)
     new_message = Message(sender_id=sender_id, chat_id=chat_id, content=content, timestamp=timestamp)
     db.session.add(new_message)
     db.session.commit()
