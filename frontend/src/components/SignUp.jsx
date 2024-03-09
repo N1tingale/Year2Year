@@ -14,12 +14,13 @@ export default function SignUp() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showReEnterPassword, setShowReEnterPassword] = useState(false);
+  const [signUpAsTutor, setSignUpAsTutor] = useState(false);
 
   const {
     register,
-    handleSubmit,
     setError,
     formState: { errors },
+    handleSubmit,
     getValues,
   } = useForm();
 
@@ -44,7 +45,7 @@ export default function SignUp() {
     return true;
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data, e) => {
     const passwordValidationResult = validatePassword(data.password);
 
     if (passwordValidationResult !== true) {
@@ -67,9 +68,11 @@ export default function SignUp() {
     }
 
     console.log(data);
+    const path = signUpAsTutor ? "add-tutor" : "add-student";
+    console.log(path);
 
     axios
-      .post("http://127.0.0.1:5000/add-student", {
+      .post(`http://127.0.0.1:5000/${path}`, {
         first_name: data.firstName,
         last_name: data.lastName,
         email: data.email,
@@ -92,11 +95,10 @@ export default function SignUp() {
       .catch((err) => {
         setError("reenterPassword", {
           type: "manual",
-          message: err.data.message,
+          message: err.response.data.message,
         });
       });
   };
-
   return (
     <div className="h-screen">
       <Navbar />
@@ -140,7 +142,10 @@ export default function SignUp() {
               type={"text"}
               placeholder={"Last name"}
               register={register}
-              validation={{ required: "Last name is required", maxLength: 35 }}
+              validation={{
+                required: "Last name is required",
+                maxLength: 35,
+              }}
               errorMessage={errors.lastName?.message}
             />
             <Input
@@ -182,7 +187,15 @@ export default function SignUp() {
             </button>
           </div>
           <small className="mt-1 underline">
-            <Link to="/login">HAVE AN ACCOUNT?</Link>
+            <Link to="/forgotpassword">FORGOT PASSWORD?</Link>
+          </small>
+          <small className="mt-1">
+            <button
+              onClick={() => setSignUpAsTutor((value) => !value)}
+              className="underline"
+            >
+              {signUpAsTutor ? "SIGN UP AS STUDENT" : "SIGN UP AS TUTOR"}
+            </button>
           </small>
         </div>
       </form>

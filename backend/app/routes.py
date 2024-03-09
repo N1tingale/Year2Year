@@ -189,18 +189,19 @@ def get_tutor(tutorId): #current_user, tutorId
                               'email': tutor.email}})
 
 
-@app.route('/tutors', methods=['POST'])
+@app.route('/add-tutor', methods=['POST'])
 def create_tutor():
     data = request.get_json()
+    print(data)
 
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     email = data.get('email')
     password = data.get('password')
     hashed_password = hash_data(password)
-    year = data.get('year')
-    contact_number = data.get('contact_number')
-    description = data.get('description')
+    year = 0
+    contact_number = ""
+    description = ""
     emailVerified = False
 
     try:
