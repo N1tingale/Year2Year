@@ -7,6 +7,7 @@ export default function Modal({ children, tutorName, key }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
+  const [chatId, setChatId] = useState(5);
 
   const socketRef = useRef();
 
@@ -17,7 +18,18 @@ export default function Modal({ children, tutorName, key }) {
     socketRef.current.on("connect", () => {
       console.log("Socket connected");
     });
+
+    fetchMessages();
   }, []);
+
+  const fetchMessages = () => {
+    fetch(`http://127.0.0.1:5000/get-messages/${chatId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setMessages(data.messages);
+      })
+      .catch((error) => console.error("Error fetching messages:", error));
+  };
 
   if (socketRef.current != undefined) {
     socketRef.current.on("message", (data) => {
@@ -40,18 +52,19 @@ export default function Modal({ children, tutorName, key }) {
     if (message.length == 0) {
       return;
     }
-    const chatId = 5;
+    const current_timestamp = new Date().toISOString();
     socketRef.current.emit("message", {
       chat_id: chatId,
       sender_id: userId,
       content: message,
-      timestamp: new Date().toISOString(),
+      timestamp: current_timestamp,
     });
     setMessages((prevMessages) => [
       ...prevMessages,
       {
         sender_id: userId,
         content: message,
+        timestamp: current_timestamp,
       },
     ]);
     setMessage("");
