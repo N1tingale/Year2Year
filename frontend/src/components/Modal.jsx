@@ -5,25 +5,22 @@ import io from "socket.io-client";
 import axios from "axios";
 
 export default function Modal({ children, tutorName, index }) {
-
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
   const userType = localStorage.getItem("userType");
 
-  // The chatId should be set to the appropriate hardcoded value for now
-  const chatId = 4;
+  // This is a temporary thing for convenience, but should be fetched and passed here instead
+  // The chatId will be set when the socket receives a chat signal
+  const [chatId, setChatId] = useState(1);
 
   const socketRef = useRef();
 
   // Runs once when the element is instantiated, to prevent constantly reconnecting to the socket
   useEffect(() => {
-
-    
     socketRef.current = io("http://127.0.0.1:5000", {
       withCredentials: true,
     });
-
 
     socketRef.current.on("connect", () => {
       console.log("Socket connected");
@@ -31,18 +28,16 @@ export default function Modal({ children, tutorName, index }) {
 
     // Sets up message listening when the component is mounted
     if (socketRef.current) {
-
       socketRef.current.on("message", (data) => {
-
         console.log("Incoming message: ", data);
         if (data.sender_id != userId) {
           setMessages((prevMessages) => [...prevMessages, data]);
         }
       });
 
-
       socketRef.current.on("chat", (data) => {
         console.log("Incoming chat request", data);
+        setChatId(data.chat_id);
       });
     }
 
@@ -61,10 +56,8 @@ export default function Modal({ children, tutorName, index }) {
       .get(`http://127.0.0.1:5000/get-messages/${chatId}`)
       .then((response) => {
         if (response.data) {
-
           console.log("Messages fetched:", response.data);
           setMessages(response.data.messages);
-          
         } else {
           console.error("Invalid response format:", response);
         }
@@ -74,9 +67,7 @@ export default function Modal({ children, tutorName, index }) {
 
   // This function should emit a chat request based on the sender and recipient id
   const connectToChat = () => {
-    /* Some spaghetti code here, but recipientId is coded in to be 
-       either the id of the tutor or the student
-    */
+    // Some spaghetti code, but for testing, replace 2 with the tutor id and 1 with the student id 
     const recipientId = userType === "student" ? 2 : 1;
 
     socketRef.current.emit("chat", {
