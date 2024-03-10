@@ -143,8 +143,7 @@ export default function Modal({ children, tutorName, index }) {
                 <div className="chat-header">
                   Sender id: {msg.sender_id}
                   <time className="text-xs opacity-50 mx-1">
-                    {/* msg.timestamp.slice(0, -3) */}
-                    {new Date().toLocaleTimeString([], {
+                    {new Date(msg.timestamp).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
