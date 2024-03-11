@@ -93,9 +93,10 @@ export default function SignUp() {
         console.log(res);
       })
       .catch((err) => {
+        const errorMessage = err.response?.data?.error || "An error occurred";
         setError("reenterPassword", {
           type: "manual",
-          message: err.response.data.message,
+          message: errorMessage,
         });
       });
   };
@@ -183,7 +184,7 @@ export default function SignUp() {
               type="submit"
               className="btn bg-white mt-1 rounded-3xl w-full"
             >
-              Sign Up
+              Sign Up As A {signUpAsTutor ? "Tutor" : "Student"}
             </button>
           </div>
           <small className="mt-1 underline">
