@@ -36,8 +36,7 @@ export default function Tutors() {
       .get("http://127.0.0.1:5000/tutors")
       .then((res) => {
         console.log(res);
-        // setIsLoading(false)
-        setTimeout(() => setIsLoading(false), 250);
+        setIsLoading(false);
         setTutors(res.data.tutors);
       })
       .catch((err) => console.debug(err));
@@ -46,10 +45,10 @@ export default function Tutors() {
   return (
     <div className="h-screen">
       <Navbar />
-      <div className="p-8">
+      <div className="container mx-auto p-8">
         <h1 className="text-4xl font-bold mb-4">Tutors</h1>
         {isLoading ? (
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg-grid-cols-4 gap-4">
             {[...Array(4)].map((index) => (
               <TutorCardSkeleton key={index} />
             ))}
