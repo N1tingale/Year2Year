@@ -2,6 +2,8 @@
 
 ## Getting Started
 
+### Backend
+
 1. Navigate to the backend directory and install the necessary dependencies 📦
 
 ```
@@ -19,6 +21,8 @@ and
 ```
 python run_socketio.py
 ```
+
+### Frontend
 
 3. Navigate to the frontend directory and install the necessary dependencies 🛠️
 
