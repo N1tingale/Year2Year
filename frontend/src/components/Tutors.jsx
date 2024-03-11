@@ -38,6 +38,7 @@ export default function Tutors() {
         console.log(res);
         setIsLoading(false);
         setTutors(res.data.tutors);
+        console.log(res.data.tutors);
       })
       .catch((err) => console.debug(err));
   }, []);

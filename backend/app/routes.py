@@ -176,6 +176,8 @@ def get_tutors(): #current_user
     return jsonify({'tutors': [{'id': tutor.id,
                                 'first_name': tutor.first_name,
                                 'last_name': tutor.last_name,
+                                'modules': tutor.modules if tutor.modules else "There are no modules available for this tutor.",
+                                'description': tutor.description if tutor.description else "There is no description available for this tutor.",
                                 'email': tutor.email} for tutor in tutors]})
 
 
