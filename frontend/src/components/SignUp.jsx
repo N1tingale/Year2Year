@@ -309,6 +309,9 @@ export default function SignUp() {
           </button>
         </div>
         <small className="mt-1 underline">
+          <Link to="/login">ALREADY HAVE AN ACCOUNT?</Link>
+        </small>
+        <small className="mt-1 underline">
           <Link to="/forgotpassword">FORGOT PASSWORD?</Link>
         </small>
         <small className="mt-1">

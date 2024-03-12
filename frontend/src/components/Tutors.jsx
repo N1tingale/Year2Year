@@ -4,14 +4,23 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import TutorCard from "./TutorCard";
 import TutorCardSkeleton from "./TutorCardSkeleton";
+import { useNavigate } from "react-router-dom";
 
 export default function Tutors() {
   const containerRef = useRef(null);
-
   const [isFooterAbsolute, setIsFooterAbsolute] = useState(true);
-
   const [isLoading, setIsLoading] = useState(true);
   const [tutors, setTutors] = useState([]);
+  const [authenticated, setAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("id") == null) {
+      setTimeout(() => navigate("/login"), 2500);
+    } else {
+      setAuthenticated(true);
+    }
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -46,22 +55,29 @@ export default function Tutors() {
   return (
     <div className="h-screen">
       <Navbar />
-      <div className="container mx-auto p-8">
-        <h1 className="text-4xl font-bold mb-4">Tutors</h1>
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg-grid-cols-4 gap-4">
-            {[...Array(4)].map((index) => (
-              <TutorCardSkeleton key={index} />
-            ))}
-          </div>
-        ) : (
-          <div ref={containerRef} className="grid grid-cols-4 gap-4">
-            {tutors.map((tutor, index) => (
-              <TutorCard key={index} tutor={tutor} index={index} />
-            ))}
-          </div>
-        )}
-      </div>
+      {authenticated ? (
+        <div className="container mx-auto p-8">
+          <h1 className="text-4xl font-bold mb-4">Tutors</h1>
+          {isLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg-grid-cols-4 gap-4">
+              {[...Array(4)].map((index) => (
+                <TutorCardSkeleton key={index} />
+              ))}
+            </div>
+          ) : (
+            <div ref={containerRef} className="grid grid-cols-4 gap-4">
+              {tutors.map((tutor, index) => (
+                <TutorCard key={index} tutor={tutor} index={index} />
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="h-screen flex items-center justify-center">
+          You have to be authenticated to view the tutors page, redirecting to
+          login...
+        </div>
+      )}
       <Footer relative={!isFooterAbsolute} />
     </div>
   );
