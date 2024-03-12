@@ -201,9 +201,9 @@ def create_tutor():
     email = data.get('email')
     password = data.get('password')
     hashed_password = hash_data(password)
-    year = 0
-    contact_number = ""
-    description = ""
+    year = data.get('year')
+    contact_number = data.get('contact_number')
+    description = data.get('description')
     emailVerified = False
 
     try:
