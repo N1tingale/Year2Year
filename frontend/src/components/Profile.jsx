@@ -32,13 +32,13 @@ export default function Profile() {
               <div className="flex flex-col items-center rounded-xl border-2 border-black m-2 bg-white w-1/3s p-2">
                 <h1 className="text-xl font-bold p-2">Your name</h1>
                 
-                <input type="text" placeholder="Type here" class="input input-bordered w-full" />
+                <input type="text" placeholder="Type here" className="input input-bordered w-full" />
                
               </div>
               
               <div className="flex flex-col items-center rounded-xl border-2 border-black m-2 bg-white w-1/3s p-2">
                 <h1 className="text-xl font-bold p-2">About</h1>
-                <textarea class="textarea textarea-bordered w-full" placeholder="Bio"></textarea>
+                <textarea className="textarea textarea-bordered w-full" placeholder="Bio"></textarea>
               </div>
 
 

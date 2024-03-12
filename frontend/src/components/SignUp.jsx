@@ -77,6 +77,8 @@ export default function SignUp() {
         last_name: data.lastName,
         email: data.email,
         password: data.password,
+        year: 0,
+        contact_number: ""
       })
       .then((res) => {
         if (res.data.student) {
