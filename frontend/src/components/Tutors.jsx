@@ -19,7 +19,7 @@ export default function Tutors() {
         const containerHeight = containerRef.current.offsetHeight;
         const windowHeight = window.innerHeight;
 
-        setIsFooterAbsolute(containerHeight > windowHeight);
+        setIsFooterAbsolute(containerHeight < windowHeight);
         console.log(isFooterAbsolute);
       }
     };
