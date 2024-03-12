@@ -105,7 +105,7 @@ def create_student():
                                     'last_name': new_student.last_name,
                                     'email': new_student.email,
                                     "emailVerified": new_student.emailVerified}}), 201
-    except:
+    except Exception:
         return jsonify({'error': "Student not created"}), 400
 
 
@@ -136,7 +136,7 @@ def login_student():
                         'email':student.email,
                         "token":token,
                         "emailVerified":student.emailVerified}}), 201
-    except Exception as e:
+    except Exception:
         return jsonify({"error": "You are not a student. GET OUT."}), 400
 
 @app.route("/login-tutor", methods=["POST"])
@@ -164,7 +164,7 @@ def login_tutor():
                         'email':tutor.email,
                         "token":token,
                         "emailVerified":tutor.emailVerified}}), 201
-    except:
+    except Exception:
         return jsonify({"error": "You are not a tutor. GET OUT."}), 400
 
 
@@ -203,7 +203,7 @@ def create_tutor():
     hashed_password = hash_data(password)
     year = data.get('year')
     contact_number = data.get('contact_number')
-    description = data.get('description')
+    description = ""
     emailVerified = False
 
     try:
@@ -232,7 +232,7 @@ def create_tutor():
                                   'email': new_tutor.email,
                                   "emailVerified": new_tutor.emailVerified}}), 201
 
-    except:
+    except Exception:
         return jsonify({"error": "Tutor not created"}), 400
 
 @app.route("/add-module", methods=["POST"])
@@ -258,7 +258,7 @@ def add_module(): #current_user
                                    "module_code": new_module.module_code,
                                    "module_name": new_module.module_name,
                                    "tutor_id": new_module.tutor_id}}), 201
-    except:
+    except Exception:
         return jsonify({"error": "Module not created"}), 400
 
 @app.route('/edit-name', methods=["POST"])
@@ -293,7 +293,7 @@ def edit_name(): #current_user
                                       "email": tutor.email,
                                       "emailVerified": tutor.emailVerified}}), 201
         return jsonify({"error": "User not found"}), 400
-    except:
+    except Exception:
         return jsonify({"error": "Name not updated"}), 400
 
 @app.route('/edit-email', methods=["POST"])
@@ -325,7 +325,7 @@ def edit_email(): #current_user
                                       "email": tutor.email,
                                       "emailVerified": tutor.emailVerified}}), 201
         return jsonify({"error": "User not found"}), 400
-    except:
+    except Exception:
         return jsonify({"error": "Email not updated"}), 400
 
 @app.route('/edit-password', methods=["POST"])
@@ -358,7 +358,7 @@ def edit_password(): #current_user
                                       "email": tutor.email,
                                       "emailVerified": tutor.emailVerified}}), 201
         return jsonify({"error": "User not found"}), 400
-    except:
+    except Exception:
         return jsonify({"error": "Password not updated"}), 400
 
 
