@@ -176,7 +176,7 @@ def get_tutors(): #current_user
     return jsonify({'tutors': [{'id': tutor.id,
                                 'first_name': tutor.first_name,
                                 'last_name': tutor.last_name,
-                                'modules': tutor.modules if tutor.modules else "There are no modules available for this tutor.",
+                                'modules': format_modules(tutor.modules) if tutor.modules else "There are no modules available for this tutor.",
                                 'description': tutor.description if tutor.description else "There is no description available for this tutor.",
                                 'email': tutor.email} for tutor in tutors]})
 
@@ -188,13 +188,14 @@ def get_tutor(tutorId): #current_user, tutorId
     return jsonify({'tutor': {'id': tutor.id,
                               'first_name': tutor.first_name,
                               'last_name': tutor.last_name,
+                              'modules': format_modules(tutor.modules) if tutor.modules else "There are no modules available for this tutor.",
+                              'description': tutor.description if tutor.description else "There is no description available for this tutor.",
                               'email': tutor.email}})
 
 
 @app.route('/add-tutor', methods=['POST'])
 def create_tutor():
     data = request.get_json()
-    print(data)
 
     first_name = data.get('first_name')
     last_name = data.get('last_name')
@@ -206,33 +207,25 @@ def create_tutor():
     modules = ", ".join(data.get('modules'))
     description = ""
     emailVerified = False
-    print(first_name, last_name, email, password, year, contact_number, modules, description, emailVerified)
 
     try:
-        print("Trying to create tutor")
         existing_student = Student.query.filter_by(email=email).first()
         if existing_student:
             return jsonify({"error": "This email is already in use by a student."}), 401
 
-        print("No student found")
 
         existing_tutor = Tutor.query.filter_by(email=email).first()
 
-        print(existing_tutor)
         if existing_tutor:
             return jsonify({"error": "This email is already in use by a tutor."}), 401
-
-        print("No tutor found")
 
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year, contact number) are required'}), 400
 
-        print("All fields are present")
 
         new_tutor = Tutor(first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
                           contact_number=contact_number, description=description, emailVerified=emailVerified)
 
-        print(new_tutor)
 
         db.session.add(new_tutor)
         db.session.commit()
@@ -458,7 +451,6 @@ def create_reports(): #current_user
 
 @socketio.on("message")
 def handle_message(data):
-    print(f"\nMessage data received: {data}\n")
     chat_id = data["chat_id"]
     sender_id = data["sender_id"]
     content = data["content"]
@@ -498,3 +490,8 @@ def handle_chat(data):
         for message in messages
     ]
     emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
+
+def format_modules(modules):
+    modules = modules.split(", ")
+    print(modules)
+    return modules

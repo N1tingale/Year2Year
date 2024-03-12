@@ -22,7 +22,7 @@ export default function DescriptionModal({
           </div>
           <div>
             <p className="text-2xl font-bold">Modules</p>
-            <p className="text-lg mt-2 text-gray-700">{modules}</p>
+            <p className="text-lg mt-2 text-gray-700">{modules.join(", ")}</p>
           </div>
         </div>
       </div>

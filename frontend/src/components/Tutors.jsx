@@ -13,6 +13,19 @@ export default function Tutors() {
   const [tutors, setTutors] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const [filteredTutors, setFilteredTutors] = useState([]);
+  const [selectedModules, setSelectedModules] = useState([]);
+
+  let modules = [
+    "COMP12111",
+    "COMP15111",
+    "COMP13212",
+    "COMP15212",
+    "COMP16321",
+    "COMP16412",
+    "COMP11120",
+    "COMP11212",
+  ];
 
   useEffect(() => {
     if (localStorage.getItem("id") == null) {
@@ -47,10 +60,22 @@ export default function Tutors() {
         console.log(res);
         setTimeout(() => setIsLoading(false), 250);
         setTutors(res.data.tutors);
+        setFilteredTutors(res.data.tutors);
         console.log(res.data.tutors);
       })
       .catch((err) => console.debug(err));
   }, []);
+
+  useEffect(() => {
+    if (selectedModules.length > 0) {
+      const filtered = tutors.filter((tutor) =>
+        selectedModules.every((module) => tutor.modules.includes(module))
+      );
+      setFilteredTutors(filtered);
+    } else {
+      setFilteredTutors(tutors);
+    }
+  }, [selectedModules, tutors]);
 
   return (
     <div className="h-screen">
@@ -58,6 +83,30 @@ export default function Tutors() {
       {authenticated ? (
         <div className="container mx-auto p-8">
           <h1 className="text-4xl font-bold mb-4">Tutors</h1>
+          <div className="flex items-center mb-4">
+            <label className="text-xl font-bold mr-4">Filter by module:</label>
+            {modules.map((module, index) => (
+              <button
+                key={index}
+                className={`mr-4 px-4 py-2 border rounded-3xl ${
+                  selectedModules.includes(module)
+                    ? "bg-primaryColor text-white"
+                    : "bg-white border border-primaryColor text-primaryColor hover:bg-primaryColor hover:text-white"
+                }`}
+                onClick={() => {
+                  if (selectedModules.includes(module)) {
+                    setSelectedModules(
+                      selectedModules.filter((mod) => mod !== module)
+                    );
+                  } else {
+                    setSelectedModules([...selectedModules, module]);
+                  }
+                }}
+              >
+                {module}
+              </button>
+            ))}
+          </div>
           {isLoading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg-grid-cols-4 gap-4">
               {[...Array(4)].map((index) => (
@@ -66,7 +115,7 @@ export default function Tutors() {
             </div>
           ) : (
             <div ref={containerRef} className="grid grid-cols-4 gap-4">
-              {tutors.map((tutor, index) => (
+              {filteredTutors.map((tutor, index) => (
                 <TutorCard key={index} tutor={tutor} index={index} />
               ))}
             </div>
