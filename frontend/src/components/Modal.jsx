@@ -85,6 +85,7 @@ export default function Modal({ children, tutorName, index }) {
     socketRef.current.emit("message", {
       chat_id: chatId,
       sender_id: userId,
+      recipient_id: userType === "student" ? 2 : 1,
       content: message,
       timestamp: current_timestamp,
     });
