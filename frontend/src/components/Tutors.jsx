@@ -36,7 +36,7 @@ export default function Tutors() {
       .get("http://127.0.0.1:5000/tutors")
       .then((res) => {
         console.log(res);
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 250);
         setTutors(res.data.tutors);
         console.log(res.data.tutors);
       })
