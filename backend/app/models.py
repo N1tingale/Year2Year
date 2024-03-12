@@ -28,7 +28,7 @@ class Tutor(db.Model):
     year = db.Column(db.Integer, nullable=False)
     contact_number = db.Column(db.String(10), nullable=False)
     description = db.Column(db.String(255), nullable=False)
-    modules = db.relationship('Module', backref='tutor', lazy=True)
+    modules = db.Column(db.String(255), nullable=True)
     bookings = db.relationship('Booking', backref='tutor', lazy=True)
     reports = db.relationship('Report', backref='tutor', lazy=True)
 
@@ -72,7 +72,7 @@ class Chat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.id'), nullable=False)
-    
+
 
     def __repr__(self):
         return f"<Chat {self.student_id} {self.tutor_id}>"

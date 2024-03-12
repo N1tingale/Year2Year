@@ -107,8 +107,9 @@ export default function SignUp() {
         last_name: data.lastName,
         email: data.email,
         password: data.password,
-        year: 0,
-        contact_number: "",
+        modules: selectedModules,
+        year: data.year,
+        contact_number: data.contactNumber,
       })
       .then((res) => {
         if (res.data.student || res.data.tutor) {
@@ -270,6 +271,34 @@ export default function SignUp() {
                   ))}
                 </div>
               )}
+              <Input
+                type={"text"}
+                name={"year"}
+                placeholder={"Year"}
+                register={register}
+                validation={{
+                  required: "Year is required",
+                  pattern: {
+                    value: /^(2|3|4)$/,
+                    message: "Invalid year group",
+                  },
+                }}
+                errorMessage={errors.year?.message}
+              />
+              <Input
+                type={"text"}
+                name={"contactNumber"}
+                placeholder={"Contact Number"}
+                register={register}
+                validation={{
+                  required: "Contact number is required",
+                  pattern: {
+                    value: /^[0-9]{11}$/,
+                    message: "Invalid contact number",
+                  },
+                }}
+                errorMessage={errors.contactNumber?.message}
+              />
             </div>
           )}
           <button

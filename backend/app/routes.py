@@ -203,24 +203,36 @@ def create_tutor():
     hashed_password = hash_data(password)
     year = data.get('year')
     contact_number = data.get('contact_number')
+    modules = ", ".join(data.get('modules'))
     description = ""
     emailVerified = False
+    print(first_name, last_name, email, password, year, contact_number, modules, description, emailVerified)
 
     try:
-
+        print("Trying to create tutor")
         existing_student = Student.query.filter_by(email=email).first()
         if existing_student:
             return jsonify({"error": "This email is already in use by a student."}), 401
 
+        print("No student found")
+
         existing_tutor = Tutor.query.filter_by(email=email).first()
+
+        print(existing_tutor)
         if existing_tutor:
             return jsonify({"error": "This email is already in use by a tutor."}), 401
 
-        if not all([first_name, last_name, email, password]):
-            return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
+        print("No tutor found")
 
-        new_tutor = Tutor(first_name=first_name, last_name=last_name, email=email, password=hashed_password, year=year,
+        if not all([first_name, last_name, email, password]):
+            return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year, contact number) are required'}), 400
+
+        print("All fields are present")
+
+        new_tutor = Tutor(first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
                           contact_number=contact_number, description=description, emailVerified=emailVerified)
+
+        print(new_tutor)
 
         db.session.add(new_tutor)
         db.session.commit()
