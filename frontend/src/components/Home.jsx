@@ -50,12 +50,14 @@ export default function Home() {
         </h1>
         <p className="text-xl mt-1">Don't Miss Out on Success:</p>
         <p className="text-xl font-bold">Book Your Tutor Now!</p>
-        <div className="shadow-xl text-white btn btn-primary mt-4 rounded-3xl pr-0">
-          Sign Up
-          <Link to='/signup' className="btn btn-circle bg-white outline outline-primaryColor hover:bg-white">
-            <FaArrowRightLong className="h-5 w-5" />
-          </Link>
-        </div>
+        <Link to="/signup">
+          <div className="shadow-xl text-white btn btn-primary mt-4 rounded-3xl pr-0">
+            Sign Up
+            <div className="btn btn-circle bg-white outline outline-primaryColor hover:bg-white">
+              <FaArrowRightLong className="h-5 w-5" />
+            </div>
+          </div>
+        </Link>
       </div>
       <Footer />
     </div>
