@@ -30,7 +30,7 @@ export default function TutorCard({ tutor, index }) {
           console.log(showDescriptionModal);
         }}
       >
-        View Description <FaInfoCircle size={20} />
+        Description <FaInfoCircle size={20} />
       </button>
 
       {showDescriptionModal && (
