@@ -1,11 +1,36 @@
 # Year 2 Year 🧑‍🎓
 
-1. Install dependencies 🧰
+## Getting Started
+
+### Backend
+
+1. Navigate to the backend directory and install the necessary dependencies 📦
+
 ```
-npm i
+pip install -r requirements.txt
 ```
 
-2. Navigate to frontend directory and start project 💻
+2. Start the server by running the following commands in separate terminals 🐍
+
+```
+python run_app.py
+```
+
+and
+
+```
+python run_socketio.py
+```
+
+### Frontend
+
+3. Navigate to the frontend directory and install the necessary dependencies 🛠️
+
+```
+npm install
+```
+
+4. Start the frontend 🌐
 
 ```
 npm run dev
