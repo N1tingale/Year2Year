@@ -4,6 +4,7 @@ import ChatCard from "./ChatCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ChatCardSkeleton from "./ChatCardSkeleton";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -68,20 +69,21 @@ export default function Profile() {
             <div className="p-2 rounded-xl my-2 border-2 border-black bg-secondaryColor">
               <h1 className="text-xl font-bold p-2">Chat preview</h1>
               <div className="my-2 flex flex-col overflow-y-auto max-h-96">
-                {!isLoading &&
-                  chats.map((chat, index) => (
-                    <ChatCard
-                      recipientId={
-                        localStorage.getItem("userType") == "student"
-                          ? chat.tutor_id
-                          : chat.student_id
-                      }
-                      tutorName={`Tutor id ${chat.tutor_id}`}
-                      message={"Lorem ipsum dolor sit amet"}
-                      key={index}
-                      index={index}
-                    />
-                  ))}
+                {!isLoading
+                  ? chats.map((chat, index) => (
+                      <ChatCard
+                        recipientId={
+                          localStorage.getItem("userType") == "student"
+                            ? chat.tutor_id
+                            : chat.student_id
+                        }
+                        tutorName={`Tutor id ${chat.tutor_id}`}
+                        message={"Lorem ipsum dolor sit amet"}
+                        key={index}
+                        index={index}
+                      />
+                    ))
+                  : [...Array(5)].map(() => <ChatCardSkeleton />)}
               </div>
             </div>
           </div>
