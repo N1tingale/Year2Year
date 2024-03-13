@@ -83,7 +83,9 @@ export default function Profile() {
                         index={index}
                       />
                     ))
-                  : [...Array(5)].map((element, index) => <ChatCardSkeleton key={index}/>)}
+                  : [...Array(5)].map((element, index) => (
+                      <ChatCardSkeleton key={index} />
+                    ))}
               </div>
             </div>
           </div>

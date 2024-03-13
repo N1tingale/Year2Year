@@ -67,11 +67,9 @@ export default function Modal({ children, tutorName, index, recipientId }) {
 
   // This function should emit a chat request based on the sender and recipient id
   const connectToChat = () => {
-    // Some spaghetti code, but for testing, replace 2 with the tutor id and 1 with the student id
-
     socketRef.current.emit("chat", {
-      student_id: userType === "student" ? userId : recipientId,
-      tutor_id: userType === "tutor" ? userId : recipientId,
+      student_id: userType == "student" ? userId : recipientId,
+      tutor_id: userType == "tutor" ? userId : recipientId,
     });
   };
 
@@ -155,8 +153,8 @@ export default function Modal({ children, tutorName, index, recipientId }) {
                 <div
                   className={`chat-bubble ${
                     msg.sender_id == userId
-                      ? "bg-white text-primaryColor"
-                      : "bg-primaryColor text-white"
+                      ? "bg-primaryColor text-white"
+                      : "bg-white text-primaryColor"
                   }`}
                 >
                   {msg.content}

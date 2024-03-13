@@ -8,13 +8,13 @@ import jwt
 import datetime
 from functools import wraps
 from config import Config
+import random
 
 # API Routes are instantiated here
 # Each decorator such as @app.route defines an endpoint (such as /students) and a method for that endpoint
 # The function below the decorator handles the data sent/received by the endpoint
 
 secret_key = Config.SECRET_KEY
-
 
 def token_required(allowed_user_type=None):
     def decorator(f):
@@ -56,7 +56,6 @@ def token_required(allowed_user_type=None):
         return decorated
     return decorator
 
-
 @app.route('/students', methods=['GET'])
 def get_students():
     students = Student.query.all()
@@ -65,7 +64,6 @@ def get_students():
                                   'last_name': student.last_name,
                                   'email': student.email} for student in students]})
 
-
 @app.route('/students/<studentId>', methods=['GET'])
 def get_student(studentId):
     student = Student.query.get(studentId)
@@ -73,7 +71,6 @@ def get_student(studentId):
                                 'first_name': student.first_name,
                                 'last_name': student.last_name,
                                 'email': student.email}})
-
 
 @app.route('/add-student', methods=['POST'])
 def create_student():
@@ -85,6 +82,7 @@ def create_student():
     password = data.get('password')
     emailVerified = False
     hashed_password = hash_data(password)
+    id = generate_unique_id()
 
     try:
         existing_tutor = Tutor.query.filter_by(email=email).first()
@@ -98,7 +96,7 @@ def create_student():
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
-        new_student = Student(first_name=first_name, last_name=last_name,
+        new_student = Student(id=id, first_name=first_name, last_name=last_name,
                               email=email, password=hashed_password, emailVerified=emailVerified)
 
         db.session.add(new_student)
@@ -112,7 +110,6 @@ def create_student():
                                     "emailVerified": new_student.emailVerified}}), 201
     except Exception:
         return jsonify({'error': "Student not created"}), 400
-
 
 @app.route("/login-student", methods=["POST"])
 def login_student():
@@ -144,7 +141,6 @@ def login_student():
     except Exception:
         return jsonify({"error": "You are not a student. GET OUT."}), 400
 
-
 @app.route("/login-tutor", methods=["POST"])
 def login_tutor():
     data = request.get_json()
@@ -174,7 +170,6 @@ def login_tutor():
     except Exception:
         return jsonify({"error": "You are not a tutor. GET OUT."}), 400
 
-
 @app.route('/tutors', methods=['GET'])
 # @token_required(allowed_user_type="student")
 def get_tutors():  # current_user
@@ -186,7 +181,6 @@ def get_tutors():  # current_user
                                 'description': tutor.description if tutor.description else "There is no description available for this tutor.",
                                 'email': tutor.email} for tutor in tutors]})
 
-
 @app.route('/tutors/<tutorId>', methods=['GET'])
 # @token_required
 def get_tutor(tutorId):  # current_user, tutorId
@@ -197,7 +191,6 @@ def get_tutor(tutorId):  # current_user, tutorId
                               'modules': format_modules(tutor.modules) if tutor.modules else "There are no modules available for this tutor.",
                               'description': tutor.description if tutor.description else "There is no description available for this tutor.",
                               'email': tutor.email}})
-
 
 @app.route('/add-tutor', methods=['POST'])
 def create_tutor():
@@ -212,6 +205,7 @@ def create_tutor():
     modules = ", ".join(data.get('modules'))
     description = ""
     emailVerified = False
+    id = generate_unique_id()
 
     try:
         existing_student = Student.query.filter_by(email=email).first()
@@ -226,7 +220,7 @@ def create_tutor():
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year) are required'}), 400
 
-        new_tutor = Tutor(first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
+        new_tutor = Tutor(id=id, first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
                             description=description, emailVerified=emailVerified)
 
         db.session.add(new_tutor)
@@ -241,7 +235,6 @@ def create_tutor():
 
     except Exception:
         return jsonify({"error": "Tutor not created"}), 400
-
 
 @app.route("/add-module", methods=["POST"])
 # @token_required(allowed_user_type="tutor")
@@ -269,7 +262,6 @@ def add_module():  # current_user
                                    "tutor_id": new_module.tutor_id}}), 201
     except Exception:
         return jsonify({"error": "Module not created"}), 400
-
 
 @app.route('/edit-name', methods=["POST"])
 # @token_required
@@ -306,7 +298,6 @@ def edit_name():  # current_user
     except Exception:
         return jsonify({"error": "Name not updated"}), 400
 
-
 @app.route('/edit-email', methods=["POST"])
 # @token_required
 def edit_email():  # current_user
@@ -338,7 +329,6 @@ def edit_email():  # current_user
         return jsonify({"error": "User not found"}), 400
     except Exception:
         return jsonify({"error": "Email not updated"}), 400
-
 
 @app.route('/edit-password', methods=["POST"])
 # @token_required
@@ -373,7 +363,6 @@ def edit_password():  # current_user
     except Exception:
         return jsonify({"error": "Password not updated"}), 400
 
-
 @app.route('/modules', methods=['GET'])
 # @token_required
 def get_modules():  # current_user
@@ -382,7 +371,6 @@ def get_modules():  # current_user
                                  'module_code': module.module_code,
                                  'module_name': module.module_name,
                                  'tutor_id': module.tutor_id}for module in modules]})
-
 
 @app.route('/bookings', methods=['GET'])
 # @token_required
@@ -395,7 +383,6 @@ def get_bookings():  # current_user
                                   'time': booking.time,
                                   'location': booking.location,
                                   'description': booking.description}for booking in bookings]})
-
 
 @app.route('/bookings', methods=['POST'])
 # @token_required(allowed_user_type="student")
@@ -417,7 +404,6 @@ def create_bookings():  # current_user
     db.session.add(new_booking)
     db.session.commit()
 
-
 @app.route('/reports', methods=['GET'])
 def get_reports():
     reports = Report.query.all()
@@ -427,7 +413,6 @@ def get_reports():
                                  'module_id': report.module_id,
                                  'type': report.type,
                                  'description': report.description}for report in reports]})
-
 
 @app.route('/create-report', methods=['POST'])
 # @token_required
@@ -456,7 +441,6 @@ def create_reports():  # current_user
                                "type": new_report.type,
                                "description": new_report.description}}), 201
 
-
 @socketio.on("message")
 def handle_message(data):
     chat_id = data["chat_id"]
@@ -482,7 +466,6 @@ def get_messages(chat_id):
     ]
     return jsonify({"messages": messages_data})
 
-
 @app.route("/get-chats", methods=["GET"])
 def get_user_chats():
     user_id = request.args.get('user_id')
@@ -496,7 +479,6 @@ def get_user_chats():
         for chat in chats
     ]
     return jsonify({"chats": chat_data})
-
 
 @socketio.on("chat")
 def handle_chat(data):
@@ -520,8 +502,14 @@ def handle_chat(data):
     ]
     emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
 
-
 def format_modules(modules):
     modules = modules.split(", ")
     print(modules)
     return modules
+
+def generate_unique_id():
+    while True:
+        new_id = random.randint(10000000, 99999999)
+        if not Student.query.filter_by(id=new_id).first() and not Tutor.query.filter_by(id=new_id).first():
+            return new_id
+
