@@ -67,6 +67,11 @@ export default function Modal({ children, tutorName, index, recipientId }) {
 
   // This function should emit a chat request based on the sender and recipient id
   const connectToChat = () => {
+<<<<<<< HEAD
+=======
+    // Some spaghetti code, but for testing, replace 2 with the tutor id and 1 with the student id
+    const recipientId = userType === "student" ? 2 : 1;
+>>>>>>> c3d123e (Add sender_type to db model and requests)
 
     socketRef.current.emit("chat", {
       student_id: userType === "student" ? userId : recipientId,
@@ -83,13 +88,20 @@ export default function Modal({ children, tutorName, index, recipientId }) {
     socketRef.current.emit("message", {
       chat_id: chatId,
       sender_id: userId,
+<<<<<<< HEAD
       recipient_id: recipientId,
+=======
+      recipient_id: userType === "student" ? 2 : 1,
+      sender_type: userType,
+>>>>>>> c3d123e (Add sender_type to db model and requests)
       content: message,
       timestamp: current_timestamp,
     });
     console.log("Message sent:", {
       chat_id: chatId,
       sender_id: userId,
+      recipient_id: userType === "student" ? 2 : 1,
+      sender_type: userType,
       content: message,
       timestamp: current_timestamp,
     });

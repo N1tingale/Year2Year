@@ -10,16 +10,10 @@
 pip install -r requirements.txt
 ```
 
-2. Start the server by running the following commands in separate terminals 🐍
+2. Start the server by running the following command 🐍
 
 ```
 python run_app.py
-```
-
-and
-
-```
-python run_socketio.py
 ```
 
 ### Frontend 👩‍💻

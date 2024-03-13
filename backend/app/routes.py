@@ -462,17 +462,15 @@ def handle_message(data):
     chat_id = data["chat_id"]
     sender_id = data["sender_id"]
     recipient_id = data["recipient_id"]
+    sender_type = data["sender_type"]
     content = data["content"]
     timestamp_str = data["timestamp"]
     timestamp = datetime.datetime.fromisoformat(timestamp_str[:-1])
-    new_message = Message(sender_id=sender_id, recipient_id=recipient_id,
-                          chat_id=chat_id, content=content, timestamp=timestamp)
+    new_message = Message(sender_id=sender_id, recipient_id=recipient_id, sender_type=sender_type, chat_id=chat_id, content=content, timestamp=timestamp)
     db.session.add(new_message)
     db.session.commit()
     timestamp_str = timestamp.isoformat()
-    emit("message", {"sender_id": sender_id, "recipient_id": recipient_id,
-         "chat_id": chat_id, "content": content, "timestamp": timestamp_str}, room=chat_id)
-
+    emit("message", {"sender_id": sender_id, "recipient_id": recipient_id, "sender_type": sender_type, "chat_id": chat_id, "content": content, "timestamp": timestamp_str}, room=chat_id)
 
 @app.route("/get-messages/<int:chat_id>", methods=["GET"])
 def get_messages(chat_id):
