@@ -3,13 +3,23 @@ import Footer from "./Footer";
 import ChatCard from "./ChatCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
+    // axios
+    //   .get("http://127.0.0.1:5000/get-chats", {
+    //     user_id: localStorage.getItem("id"),
+    //     user_type: localStorage.getItem("userType"),
+    //   })
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
+
     if (localStorage.getItem("id") == null) {
       setTimeout(() => navigate("/login"), 2500);
     } else {
