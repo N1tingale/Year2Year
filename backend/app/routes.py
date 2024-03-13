@@ -453,23 +453,40 @@ def create_reports(): #current_user
 def handle_message(data):
     chat_id = data["chat_id"]
     sender_id = data["sender_id"]
+    recipient_id = data["recipient_id"]
     content = data["content"]
     timestamp_str = data["timestamp"]
     timestamp = datetime.datetime.fromisoformat(timestamp_str[:-1])
-    new_message = Message(sender_id=sender_id, chat_id=chat_id, content=content, timestamp=timestamp)
+    new_message = Message(sender_id=sender_id, recipient_id=recipient_id, chat_id=chat_id, content=content, timestamp=timestamp)
     db.session.add(new_message)
     db.session.commit()
     timestamp_str = timestamp.isoformat()
-    emit("message", {"sender_id": sender_id, "chat_id": chat_id, "content": content, "timestamp": timestamp_str}, room=chat_id)
+    emit("message", {"sender_id": sender_id, "recipient_id": recipient_id, "chat_id": chat_id, "content": content, "timestamp": timestamp_str}, room=chat_id)
 
 @app.route("/get-messages/<int:chat_id>", methods=["GET"])
 def get_messages(chat_id):
     messages = Message.query.filter_by(chat_id=chat_id).all()
     messages_data = [
-        {"sender_id": message.sender_id, "content": message.content, "timestamp": message.timestamp}
+        {"sender_id": message.sender_id, "recipient_id": message.recipient.id, "content": message.content, "timestamp": message.timestamp}
         for message in messages
     ]
     return jsonify({"messages": messages_data})
+
+@app.route("/get-chats", methods=["GET"])
+def get_user_chats():
+    data = request.get_json()
+    user_id = data["user_id"]
+    user_type = data["user_type"]
+    if user_type == "student":
+        chats = Chat.query.filter_by(student_id=user_id)
+    else:
+        chats = Chat.query.filter_by(tutor_id=user_id)
+    chat_data = [
+        {"student_id": chat.student_id, "tutor_id": chat.tutor_id}
+        for chat in chats
+    ]
+    return jsonify({"chats": chat_data})
+
 
 @socketio.on("chat")
 def handle_chat(data):
@@ -486,7 +503,7 @@ def handle_chat(data):
     join_room(chat_id)
     messages = Message.query.filter_by(chat_id=chat_id).all()
     messages_data = [
-        {"sender_id": message.sender_id, "content": message.content, "timestamp": message.timestamp.isoformat()}
+        {"sender_id": message.sender_id, "recipient_id": message.recipient_id, "content": message.content, "timestamp": message.timestamp.isoformat()}
         for message in messages
     ]
     emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
