@@ -31,7 +31,7 @@ export default function Tutors() {
   useEffect(() => {
     if (localStorage.getItem("id") == null) {
       setAuthenticated(false);
-      navigate("/login");
+      setTimeout(() => navigate("/login"), 2500);
     } else {
       setAuthenticated(true);
       if (localStorage.getItem("userType") !== "student") {
