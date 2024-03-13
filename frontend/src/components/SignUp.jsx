@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,6 +11,9 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 
 export default function SignUp() {
   const navigate = useNavigate();
+
+  const containerRef = useRef(null);
+  const [isFooterRelative, setIsFooterRelative] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showReEnterPassword, setShowReEnterPassword] = useState(false);
@@ -130,10 +133,32 @@ export default function SignUp() {
         });
       });
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const containerHeight = containerRef.current.offsetHeight;
+        const windowHeight = window.innerHeight;
+
+        setIsFooterRelative(containerHeight > windowHeight);
+        console.log(
+          `Container height:${containerHeight}, Window heigth:${windowHeight}, isFooterRelative: ${isFooterRelative}`
+        );
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [selectedModules, showModuleDropdown, errors, signUpAsTutor]);
+
   return (
     <div className="h-screen">
       <Navbar />
       <form
+        ref={containerRef}
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col justify-center items-center mt-4"
       >
@@ -323,7 +348,7 @@ export default function SignUp() {
           </button>
         </small>
       </form>
-      <Footer />
+      <Footer relative={isFooterRelative} />
     </div>
   );
 }
