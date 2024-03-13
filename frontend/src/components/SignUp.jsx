@@ -121,6 +121,9 @@ export default function SignUp() {
             localStorage.setItem(field, userType[field]);
           }
         }
+        res.data.student
+          ? localStorage.setItem("userType", "student")
+          : localStorage.setItem("userType", "tutor");
 
         navigate("/profile");
         console.log(res);

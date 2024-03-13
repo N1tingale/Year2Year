@@ -8,23 +8,29 @@ import axios from "axios";
 export default function Profile() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [chats, setChats] = useState([]);
 
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    // axios
-    //   .get("http://127.0.0.1:5000/get-chats", {
-    //     user_id: localStorage.getItem("id"),
-    //     user_type: localStorage.getItem("userType"),
-    //   })
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
-
     if (localStorage.getItem("id") == null) {
       setTimeout(() => navigate("/login"), 2500);
     } else {
       setAuthenticated(true);
     }
+
+    axios
+      .get("http://127.0.0.1:5000/get-chats", {
+        params: {
+          user_id: localStorage.getItem("id"),
+          user_type: localStorage.getItem("userType"),
+        },
+      })
+      .then((res) => {
+        setChats(res.data.chats);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (
@@ -62,14 +68,20 @@ export default function Profile() {
             <div className="p-2 rounded-xl my-2 border-2 border-black bg-secondaryColor">
               <h1 className="text-xl font-bold p-2">Chat preview</h1>
               <div className="my-2 flex flex-col overflow-y-auto max-h-96">
-                {[...Array(10)].map((elementInArray, index) => (
-                  <ChatCard
-                    tutorName={`Tutor ${index}`}
-                    message={"Lorem ipsum dolor sit amet"}
-                    key={index}
-                    index={index}
-                  />
-                ))}
+                {!isLoading &&
+                  chats.map((chat, index) => (
+                    <ChatCard
+                      recipientId={
+                        localStorage.getItem("userType") == "student"
+                          ? chat.tutor_id
+                          : chat.student_id
+                      }
+                      tutorName={`Tutor id ${chat.tutor_id}`}
+                      message={"Lorem ipsum dolor sit amet"}
+                      key={index}
+                      index={index}
+                    />
+                  ))}
               </div>
             </div>
           </div>

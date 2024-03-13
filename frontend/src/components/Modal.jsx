@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-export default function Modal({ children, tutorName, index }) {
+export default function Modal({ children, tutorName, index, recipientId }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
@@ -67,8 +67,6 @@ export default function Modal({ children, tutorName, index }) {
 
   // This function should emit a chat request based on the sender and recipient id
   const connectToChat = () => {
-    // Some spaghetti code, but for testing, replace 2 with the tutor id and 1 with the student id 
-    const recipientId = userType === "student" ? 2 : 1;
 
     socketRef.current.emit("chat", {
       student_id: userType === "student" ? userId : recipientId,
@@ -85,7 +83,7 @@ export default function Modal({ children, tutorName, index }) {
     socketRef.current.emit("message", {
       chat_id: chatId,
       sender_id: userId,
-      recipient_id: userType === "student" ? 2 : 1,
+      recipient_id: recipientId,
       content: message,
       timestamp: current_timestamp,
     });

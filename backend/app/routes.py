@@ -15,6 +15,7 @@ from config import Config
 
 secret_key = Config.SECRET_KEY
 
+
 def token_required(allowed_user_type=None):
     def decorator(f):
         @wraps(f)
@@ -31,10 +32,12 @@ def token_required(allowed_user_type=None):
                 current_user = None
                 user_type = None
 
-                current_user = Student.query.filter_by(email=data['email']).first()
+                current_user = Student.query.filter_by(
+                    email=data['email']).first()
                 user_type = "student"
                 if not current_user:
-                    current_user = Tutor.query.filter_by(email=data['email']).first()
+                    current_user = Tutor.query.filter_by(
+                        email=data['email']).first()
                     user_type = "tutor"
 
                 if not current_user:
@@ -62,6 +65,7 @@ def get_students():
                                   'last_name': student.last_name,
                                   'email': student.email} for student in students]})
 
+
 @app.route('/students/<studentId>', methods=['GET'])
 def get_student(studentId):
     student = Student.query.get(studentId)
@@ -69,6 +73,7 @@ def get_student(studentId):
                                 'first_name': student.first_name,
                                 'last_name': student.last_name,
                                 'email': student.email}})
+
 
 @app.route('/add-student', methods=['POST'])
 def create_student():
@@ -117,27 +122,28 @@ def login_student():
     password = data.get("password")
     hashed_password = hash_data(password)
 
-
     try:
-        student = Student.query.filter_by(email=email, password=hashed_password).first()
+        student = Student.query.filter_by(
+            email=email, password=hashed_password).first()
         if not student:
             return jsonify({"error": "Unsuccessful login"}), 400
         emailVerified = student.emailVerified
         token = jwt.encode({'email': student.email,
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
-                            secret_key)
+                           secret_key)
         if not emailVerified:
             token = None
             print(True)
         return jsonify({"message": "This is a student successfully logging in",
-                        'student': {'id':student.id,
-                        'first_name':student.first_name,
-                        'last_name':student.last_name,
-                        'email':student.email,
-                        "token":token,
-                        "emailVerified":student.emailVerified}}), 201
+                        'student': {'id': student.id,
+                                    'first_name': student.first_name,
+                                    'last_name': student.last_name,
+                                    'email': student.email,
+                                    "token": token,
+                                    "emailVerified": student.emailVerified}}), 201
     except Exception:
         return jsonify({"error": "You are not a student. GET OUT."}), 400
+
 
 @app.route("/login-tutor", methods=["POST"])
 def login_tutor():
@@ -148,30 +154,30 @@ def login_tutor():
     hashed_password = hash_data(password)
 
     try:
-        tutor = Tutor.query.filter_by(email=email, password=hashed_password).first()
+        tutor = Tutor.query.filter_by(
+            email=email, password=hashed_password).first()
         if not tutor:
             return jsonify({"error": "Unsuccessful login"}), 400
         emailVerified = tutor.emailVerified
         token = jwt.encode({'email': tutor.email,
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
-                            secret_key)
+                           secret_key)
         if not emailVerified:
             token = None
         return jsonify({"message": "This is a tutor successfully logging in",
-                        'tutor': {'id':tutor.id,
-                        'first_name':tutor.first_name,
-                        'last_name':tutor.last_name,
-                        'email':tutor.email,
-                        "token":token,
-                        "emailVerified":tutor.emailVerified}}), 201
+                        'tutor': {'id': tutor.id,
+                                  'first_name': tutor.first_name,
+                                  'last_name': tutor.last_name,
+                                  'email': tutor.email,
+                                  "token": token,
+                                  "emailVerified": tutor.emailVerified}}), 201
     except Exception:
         return jsonify({"error": "You are not a tutor. GET OUT."}), 400
 
 
-
 @app.route('/tutors', methods=['GET'])
-#@token_required(allowed_user_type="student")
-def get_tutors(): #current_user
+# @token_required(allowed_user_type="student")
+def get_tutors():  # current_user
     tutors = Tutor.query.all()
     return jsonify({'tutors': [{'id': tutor.id,
                                 'first_name': tutor.first_name,
@@ -182,8 +188,8 @@ def get_tutors(): #current_user
 
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
-#@token_required
-def get_tutor(tutorId): #current_user, tutorId
+# @token_required
+def get_tutor(tutorId):  # current_user, tutorId
     tutor = Tutor.query.get(tutorId)
     return jsonify({'tutor': {'id': tutor.id,
                               'first_name': tutor.first_name,
@@ -213,7 +219,6 @@ def create_tutor():
         if existing_student:
             return jsonify({"error": "This email is already in use by a student."}), 401
 
-
         existing_tutor = Tutor.query.filter_by(email=email).first()
 
         if existing_tutor:
@@ -222,10 +227,8 @@ def create_tutor():
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year, contact number) are required'}), 400
 
-
         new_tutor = Tutor(first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
                           contact_number=contact_number, description=description, emailVerified=emailVerified)
-
 
         db.session.add(new_tutor)
         db.session.commit()
@@ -240,9 +243,10 @@ def create_tutor():
     except Exception:
         return jsonify({"error": "Tutor not created"}), 400
 
+
 @app.route("/add-module", methods=["POST"])
-#@token_required(allowed_user_type="tutor")
-def add_module(): #current_user
+# @token_required(allowed_user_type="tutor")
+def add_module():  # current_user
     data = request.get_json()
     module_code = data.get("module_code")
     module_name = data.get("module_name")
@@ -254,7 +258,8 @@ def add_module(): #current_user
         if not all([module_code, module_name, tutor_id]):
             return jsonify({"error": "All fields (module_code, module_name, tutor_id) are required"}), 400
 
-        new_module = Module(module_code=module_code, module_name=module_name, tutor_id=tutor_id)
+        new_module = Module(module_code=module_code,
+                            module_name=module_name, tutor_id=tutor_id)
         db.session.add(new_module)
         db.session.commit()
 
@@ -266,9 +271,10 @@ def add_module(): #current_user
     except Exception:
         return jsonify({"error": "Module not created"}), 400
 
+
 @app.route('/edit-name', methods=["POST"])
-#@token_required
-def edit_name(): #current_user
+# @token_required
+def edit_name():  # current_user
     data = request.get_json()
     email = data.get("email")
     first_name = data.get("first_name")
@@ -301,9 +307,10 @@ def edit_name(): #current_user
     except Exception:
         return jsonify({"error": "Name not updated"}), 400
 
+
 @app.route('/edit-email', methods=["POST"])
-#@token_required
-def edit_email(): #current_user
+# @token_required
+def edit_email():  # current_user
     data = request.get_json()
     email = data.get("email")
     new_email = data.get("new_email")
@@ -333,9 +340,10 @@ def edit_email(): #current_user
     except Exception:
         return jsonify({"error": "Email not updated"}), 400
 
+
 @app.route('/edit-password', methods=["POST"])
-#@token_required
-def edit_password(): #current_user
+# @token_required
+def edit_password():  # current_user
     data = request.get_json()
     email = data.get("email")
     new_password = data.get("new_password")
@@ -368,8 +376,8 @@ def edit_password(): #current_user
 
 
 @app.route('/modules', methods=['GET'])
-#@token_required
-def get_modules(): #current_user
+# @token_required
+def get_modules():  # current_user
     modules = Module.query.all()
     return jsonify({'modules': [{'id': module.id,
                                  'module_code': module.module_code,
@@ -378,8 +386,8 @@ def get_modules(): #current_user
 
 
 @app.route('/bookings', methods=['GET'])
-#@token_required
-def get_bookings(): #current_user
+# @token_required
+def get_bookings():  # current_user
     bookings = Booking.query.all()
     return jsonify({'bookings': [{'id': booking.id,
                                   'student_id': booking.student_id,
@@ -391,8 +399,8 @@ def get_bookings(): #current_user
 
 
 @app.route('/bookings', methods=['POST'])
-#@token_required(allowed_user_type="student")
-def create_bookings(): #current_user
+# @token_required(allowed_user_type="student")
+def create_bookings():  # current_user
     data = request.get_json()
 
     student_id = data.get('student_id')
@@ -423,8 +431,8 @@ def get_reports():
 
 
 @app.route('/create-report', methods=['POST'])
-#@token_required
-def create_reports(): #current_user
+# @token_required
+def create_reports():  # current_user
     data = request.get_json()
 
     student_id = data.get('student_id')
@@ -437,17 +445,18 @@ def create_reports(): #current_user
         return jsonify({'error': 'All fields (student_id, tutor_id, module_id, type, description) are required'}), 400
 
     new_report = Report(student_id=student_id, tutor_id=tutor_id,
-                          module_id=module_id, type=type, description=description)
+                        module_id=module_id, type=type, description=description)
     db.session.add(new_report)
     db.session.commit()
 
     return jsonify({'message': 'Report created successfully',
-                        'report': {'id': new_report.id,
-                                  'student_id': new_report.student_id,
-                                  'tutor_id': new_report.tutor_id,
-                                  'module_id': new_report.module_id,
-                                  "type": new_report.type,
-                                  "description": new_report.description}}), 201
+                    'report': {'id': new_report.id,
+                               'student_id': new_report.student_id,
+                               'tutor_id': new_report.tutor_id,
+                               'module_id': new_report.module_id,
+                               "type": new_report.type,
+                               "description": new_report.description}}), 201
+
 
 @socketio.on("message")
 def handle_message(data):
@@ -457,30 +466,34 @@ def handle_message(data):
     content = data["content"]
     timestamp_str = data["timestamp"]
     timestamp = datetime.datetime.fromisoformat(timestamp_str[:-1])
-    new_message = Message(sender_id=sender_id, recipient_id=recipient_id, chat_id=chat_id, content=content, timestamp=timestamp)
+    new_message = Message(sender_id=sender_id, recipient_id=recipient_id,
+                          chat_id=chat_id, content=content, timestamp=timestamp)
     db.session.add(new_message)
     db.session.commit()
     timestamp_str = timestamp.isoformat()
-    emit("message", {"sender_id": sender_id, "recipient_id": recipient_id, "chat_id": chat_id, "content": content, "timestamp": timestamp_str}, room=chat_id)
+    emit("message", {"sender_id": sender_id, "recipient_id": recipient_id,
+         "chat_id": chat_id, "content": content, "timestamp": timestamp_str}, room=chat_id)
+
 
 @app.route("/get-messages/<int:chat_id>", methods=["GET"])
 def get_messages(chat_id):
     messages = Message.query.filter_by(chat_id=chat_id).all()
     messages_data = [
-        {"sender_id": message.sender_id, "recipient_id": message.recipient.id, "content": message.content, "timestamp": message.timestamp}
+        {"sender_id": message.sender_id, "recipient_id": message.recipient_id,
+            "content": message.content, "timestamp": message.timestamp}
         for message in messages
     ]
     return jsonify({"messages": messages_data})
 
+
 @app.route("/get-chats", methods=["GET"])
 def get_user_chats():
-    data = request.get_json()
-    user_id = data["user_id"]
-    user_type = data["user_type"]
+    user_id = request.args.get('user_id')
+    user_type = request.args.get('user_type')
     if user_type == "student":
-        chats = Chat.query.filter_by(student_id=user_id)
+        chats = Chat.query.filter_by(student_id=user_id).all()
     else:
-        chats = Chat.query.filter_by(tutor_id=user_id)
+        chats = Chat.query.filter_by(tutor_id=user_id).all()
     chat_data = [
         {"student_id": chat.student_id, "tutor_id": chat.tutor_id}
         for chat in chats
@@ -493,7 +506,8 @@ def handle_chat(data):
     print(f"\nChat data received: {data}\n")
     student_id = data["student_id"]
     tutor_id = data["tutor_id"]
-    chat = Chat.query.filter_by(student_id=student_id, tutor_id=tutor_id).first()
+    chat = Chat.query.filter_by(
+        student_id=student_id, tutor_id=tutor_id).first()
     if not chat:
         new_chat = Chat(student_id=student_id, tutor_id=tutor_id)
         db.session.add(new_chat)
@@ -503,10 +517,12 @@ def handle_chat(data):
     join_room(chat_id)
     messages = Message.query.filter_by(chat_id=chat_id).all()
     messages_data = [
-        {"sender_id": message.sender_id, "recipient_id": message.recipient_id, "content": message.content, "timestamp": message.timestamp.isoformat()}
+        {"sender_id": message.sender_id, "recipient_id": message.recipient_id,
+            "content": message.content, "timestamp": message.timestamp.isoformat()}
         for message in messages
     ]
     emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
+
 
 def format_modules(modules):
     modules = modules.split(", ")
