@@ -26,7 +26,6 @@ class Tutor(db.Model):
     emailVerified = db.Column(db.Boolean, default=False, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     year = db.Column(db.Integer, nullable=False)
-    contact_number = db.Column(db.String(10), nullable=False)
     description = db.Column(db.String(255), nullable=False)
     modules = db.Column(db.String(255), nullable=True)
     bookings = db.relationship('Booking', backref='tutor', lazy=True)

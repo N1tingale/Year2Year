@@ -203,7 +203,6 @@ def create_tutor():
     password = data.get('password')
     hashed_password = hash_data(password)
     year = data.get('year')
-    contact_number = data.get('contact_number')
     modules = ", ".join(data.get('modules'))
     description = ""
     emailVerified = False
@@ -220,11 +219,11 @@ def create_tutor():
             return jsonify({"error": "This email is already in use by a tutor."}), 401
 
         if not all([first_name, last_name, email, password]):
-            return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year, contact number) are required'}), 400
+            return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year) are required'}), 400
 
 
         new_tutor = Tutor(first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
-                          contact_number=contact_number, description=description, emailVerified=emailVerified)
+                            description=description, emailVerified=emailVerified)
 
 
         db.session.add(new_tutor)
