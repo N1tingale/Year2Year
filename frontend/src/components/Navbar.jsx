@@ -14,12 +14,18 @@ export default function Navbar() {
         >
           Home
         </Link>
-        <Link className="text-xl font-semibold" to="/profile">
-          Profile
-        </Link>
-        <Link className="text-xl font-semibold" to="/tutors-list">
-          Tutors
-        </Link>
+        {localStorage.getItem("id") && (
+          <>
+            <Link className="text-xl font-semibold" to="/profile">
+              Profile
+            </Link>
+            {localStorage.getItem("userType") === "student" && (
+              <Link className="text-xl font-semibold" to="/tutors-list">
+                Tutors
+              </Link>
+            )}
+          </>
+        )}
         {!localStorage.getItem("id") ? (
           <>
             {" "}

@@ -12,6 +12,7 @@ export default function Tutors() {
   const [isLoading, setIsLoading] = useState(true);
   const [tutors, setTutors] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
+  const [isStudent, setIsStudent] = useState(false);
   const navigate = useNavigate();
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [selectedModules, setSelectedModules] = useState([]);
@@ -29,9 +30,15 @@ export default function Tutors() {
 
   useEffect(() => {
     if (localStorage.getItem("id") == null) {
-      setTimeout(() => navigate("/login"), 2500);
+      setAuthenticated(false);
+      navigate("/login");
     } else {
       setAuthenticated(true);
+      if (localStorage.getItem("userType") !== "student") {
+        setTimeout(() => navigate("/profile"), 2500);
+      } else {
+        setIsStudent(true);
+      }
     }
   }, []);
 
@@ -81,46 +88,54 @@ export default function Tutors() {
     <div className="h-screen">
       <Navbar />
       {authenticated ? (
-        <div className="container mx-auto p-8">
-          <h1 className="text-4xl font-bold mb-4">Tutors</h1>
-          <div className="flex items-center mb-4">
-            <label className="text-xl font-bold mr-4">Filter by module:</label>
-            {modules.map((module, index) => (
-              <button
-                key={index}
-                className={`mr-4 px-4 py-2 border rounded-3xl ${
-                  selectedModules.includes(module)
-                    ? "bg-primaryColor text-white"
-                    : "bg-white border border-primaryColor text-primaryColor hover:bg-primaryColor hover:text-white"
-                }`}
-                onClick={() => {
-                  if (selectedModules.includes(module)) {
-                    setSelectedModules(
-                      selectedModules.filter((mod) => mod !== module)
-                    );
-                  } else {
-                    setSelectedModules([...selectedModules, module]);
-                  }
-                }}
-              >
-                {module}
-              </button>
-            ))}
+        isStudent ? (
+          <div className="container mx-auto p-8">
+            <h1 className="text-4xl font-bold mb-4">Tutors</h1>
+            <div className="flex items-center mb-4">
+              <label className="text-xl font-bold mr-4">
+                Filter by module:
+              </label>
+              {modules.map((module, index) => (
+                <button
+                  key={index}
+                  className={`mr-4 px-4 py-2 border rounded-3xl ${
+                    selectedModules.includes(module)
+                      ? "bg-primaryColor text-white"
+                      : "bg-white border border-primaryColor text-primaryColor hover:bg-primaryColor hover:text-white"
+                  }`}
+                  onClick={() => {
+                    if (selectedModules.includes(module)) {
+                      setSelectedModules(
+                        selectedModules.filter((mod) => mod !== module)
+                      );
+                    } else {
+                      setSelectedModules([...selectedModules, module]);
+                    }
+                  }}
+                >
+                  {module}
+                </button>
+              ))}
+            </div>
+            {isLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg-grid-cols-4 gap-4">
+                {[...Array(4)].map((index) => (
+                  <TutorCardSkeleton key={index} />
+                ))}
+              </div>
+            ) : (
+              <div ref={containerRef} className="grid grid-cols-4 gap-4">
+                {filteredTutors.map((tutor, index) => (
+                  <TutorCard key={index} tutor={tutor} index={index} />
+                ))}
+              </div>
+            )}
           </div>
-          {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg-grid-cols-4 gap-4">
-              {[...Array(4)].map((index) => (
-                <TutorCardSkeleton key={index} />
-              ))}
-            </div>
-          ) : (
-            <div ref={containerRef} className="grid grid-cols-4 gap-4">
-              {filteredTutors.map((tutor, index) => (
-                <TutorCard key={index} tutor={tutor} index={index} />
-              ))}
-            </div>
-          )}
-        </div>
+        ) : (
+          <div className="h-screen flex items-center justify-center">
+            You have to be a student to view the tutors page, redirecting...
+          </div>
+        )
       ) : (
         <div className="h-screen flex items-center justify-center">
           You have to be authenticated to view the tutors page, redirecting to
