@@ -17,7 +17,11 @@ export default function TutorCard({ tutor, index }) {
         </p>
       </div>
 
-      <Modal tutorName={`${tutor.first_name} ${tutor.last_name}`} index={index}>
+      <Modal
+        recipientId={tutor.id}
+        tutorName={`${tutor.first_name} ${tutor.last_name}`}
+        index={index}
+      >
         <button className="btn btn-primary mt-4">
           Contact <IoIosChatboxes size={20} />
         </button>
