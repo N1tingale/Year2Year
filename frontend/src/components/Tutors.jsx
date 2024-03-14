@@ -49,7 +49,7 @@ export default function Tutors() {
         const windowHeight = window.innerHeight;
 
         setIsFooterAbsolute(containerHeight < windowHeight);
-        console.log(isFooterAbsolute);
+        // console.log(isFooterAbsolute);
       }
     };
     handleResize();

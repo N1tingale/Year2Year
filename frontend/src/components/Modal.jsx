@@ -42,14 +42,10 @@ export default function Modal({
 
       socketRef.current.on("chat", (data) => {
         console.log("Incoming chat request", data);
-        if (chId == undefined) {
-          console.log("setting chId");
-          setChatId(data.chat_id);
-        }
+        setChatId(data.chat_id);
+        fetchMessages(data.chat_id);
       });
     }
-
-    fetchMessages();
 
     return () => {
       if (socketRef.current) {
@@ -59,7 +55,7 @@ export default function Modal({
   }, []);
 
   // Fetches messages from the backend to display chat history
-  const fetchMessages = () => {
+  const fetchMessages = (chatId) => {
     axios
       .get(`http://127.0.0.1:5000/get-messages/${chatId}`)
       .then((response) => {
