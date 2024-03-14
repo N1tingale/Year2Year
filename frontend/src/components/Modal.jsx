@@ -9,12 +9,13 @@ export default function Modal({
   tutorName,
   index,
   recipientId,
-  chatId,
+  chId,
 }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
   const userType = localStorage.getItem("userType");
+  const [chatId, setChatId] = useState(chId);
   // This is a temporary thing for convenience, but should be fetched and passed here instead
   // The chatId will be set when the socket receives a chat signal
 
@@ -41,6 +42,10 @@ export default function Modal({
 
       socketRef.current.on("chat", (data) => {
         console.log("Incoming chat request", data);
+        if (chId == undefined) {
+          console.log("setting chId");
+          setChatId(data.chat_id);
+        }
       });
     }
 
