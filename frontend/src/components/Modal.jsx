@@ -4,15 +4,19 @@ import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-export default function Modal({ children, tutorName, index, recipientId }) {
+export default function Modal({
+  children,
+  tutorName,
+  index,
+  recipientId,
+  chatId,
+}) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
   const userType = localStorage.getItem("userType");
-
   // This is a temporary thing for convenience, but should be fetched and passed here instead
   // The chatId will be set when the socket receives a chat signal
-  const [chatId, setChatId] = useState(1);
 
   const socketRef = useRef();
 
@@ -37,7 +41,6 @@ export default function Modal({ children, tutorName, index, recipientId }) {
 
       socketRef.current.on("chat", (data) => {
         console.log("Incoming chat request", data);
-        setChatId(data.chat_id);
       });
     }
 

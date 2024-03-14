@@ -475,7 +475,7 @@ def get_user_chats():
     else:
         chats = Chat.query.filter_by(tutor_id=user_id).all()
     chat_data = [
-        {"student_id": chat.student_id, "tutor_id": chat.tutor_id}
+        {"student_id": chat.student_id, "tutor_id": chat.tutor_id, "id":chat.id}
         for chat in chats
     ]
     return jsonify({"chats": chat_data})

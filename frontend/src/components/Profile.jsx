@@ -81,6 +81,7 @@ export default function Profile() {
                         message={"Lorem ipsum dolor sit amet"}
                         key={index}
                         index={index}
+                        chatId={chat.id}
                       />
                     ))
                   : [...Array(5)].map((element, index) => (
