@@ -387,6 +387,29 @@ def edit_description():
     except Exception:
         return jsonify({"error": "Description not updated"}), 400
 
+@app.route('/edit-modules', methods=["POST"])
+# @token_required(allowed_user_type="tutor")
+def edit_modules():
+    data = request.get_json()
+    id = data.get("user_id")
+    modules = ", ".join(data.get("modules"))
+
+    try:
+        tutor = Tutor.query.filter_by(id=id).first()
+        if tutor:
+            tutor.modules = modules
+            db.session.commit()
+            return jsonify({"message": "Modules updated successfully",
+                            "tutor": {"id": tutor.id,
+                                      "first_name": tutor.first_name,
+                                      "last_name": tutor.last_name,
+                                      "email": tutor.email,
+                                      "modules": tutor.modules,
+                                      "emailVerified": tutor.emailVerified}}), 201
+        return jsonify({"error": "User not found"}), 400
+    except Exception:
+        return jsonify({"error": "Modules not updated"}), 400
+
 @app.route('/modules', methods=['GET'])
 # @token_required
 def get_modules():  # current_user
