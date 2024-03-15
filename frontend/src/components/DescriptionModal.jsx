@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 
 export default function DescriptionModal({
@@ -6,6 +7,12 @@ export default function DescriptionModal({
   modules,
   close,
 }) {
+  const [descriptionText, setDescriptionText] = useState(description);
+  useEffect(() => {
+    if (descriptionText === "") {
+      setDescriptionText("There is no description available for this tutor.");
+    }
+  }, [description]);
   return (
     <div className="fixed inset-0 flex items-center z-20 justify-center bg-opacity-50 bg-black">
       <div className="modal-box max-w-screen-lg mx-auto p-4 rounded-2xl shadow-xl">
@@ -18,7 +25,7 @@ export default function DescriptionModal({
         <div className="bg-secondary p-4 text-center">
           <div className="mb-4">
             <p className="text-2xl font-bold">Description</p>
-            <p className="text-lg mt-2 text-gray-700">{description}</p>
+            <p className="text-lg mt-2 text-gray-700">{descriptionText}</p>
           </div>
           <div>
             <p className="text-2xl font-bold">Modules</p>

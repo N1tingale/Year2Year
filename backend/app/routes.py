@@ -177,8 +177,8 @@ def get_tutors():  # current_user
     return jsonify({'tutors': [{'id': tutor.id,
                                 'first_name': tutor.first_name,
                                 'last_name': tutor.last_name,
-                                'modules': format_modules(tutor.modules) if tutor.modules else "There are no modules available for this tutor.",
-                                'description': tutor.description if tutor.description else "There is no description available for this tutor.",
+                                'modules': format_modules(tutor.modules),
+                                'description': tutor.description,
                                 'email': tutor.email} for tutor in tutors]})
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
@@ -188,8 +188,8 @@ def get_tutor(tutorId):  # current_user, tutorId
     return jsonify({'tutor': {'id': tutor.id,
                               'first_name': tutor.first_name,
                               'last_name': tutor.last_name,
-                              'modules': format_modules(tutor.modules) if tutor.modules else "There are no modules available for this tutor.",
-                              'description': tutor.description if tutor.description else "There is no description available for this tutor.",
+                              'modules': format_modules(tutor.modules),
+                              'description': tutor.description,
                               'email': tutor.email}})
 
 @app.route('/add-tutor', methods=['POST'])

@@ -43,7 +43,7 @@ export default function TutorCard({ tutor, index }) {
           modules={tutor.modules}
           description={tutor.description}
           close={() => setShowDescriptionModal(!showDescriptionModal)}
-        ></DescriptionModal>
+        />
       )}
     </div>
   );
