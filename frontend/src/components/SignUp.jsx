@@ -121,11 +121,11 @@ export default function SignUp() {
           }
         }
         if (res.data.student != undefined) {
-          localStorage.setItem("userType", "student")
+          localStorage.setItem("userType", "student");
         } else {
           localStorage.setItem("userType", "tutor");
         }
-         
+
         navigate("/profile");
         console.log(res);
       })
@@ -254,7 +254,7 @@ export default function SignUp() {
                   onClick={() => setShowModuleDropdown((state) => !state)}
                 />
                 {showModuleDropdown && (
-                  <div className="absolute top-full left-0 bg-white border rounded-md mt-1">
+                  <div className="absolute bottom-full left-0 bg-white border rounded-md mt-1">
                     {allowedModules.map((module) => (
                       <div
                         key={module}
@@ -278,7 +278,7 @@ export default function SignUp() {
                   />
                 )}
               </div>
-              <div className="text-red-500 text-sm">
+              <div className="text-red-500 mt-1 text-xs p-1 ml-1">
                 {selectedModules.length === 0 && "At least one module required"}
               </div>
               {selectedModules.length > 0 && (
