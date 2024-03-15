@@ -18,6 +18,8 @@ export default function Profile() {
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [selectedModules, setSelectedModules] = useState([]);
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
 
   let allowedModules = [
     "COMP12111",
@@ -150,7 +152,7 @@ export default function Profile() {
                       {isEditingDescription ? "Save" : "Edit"}
                     </button>
                   </div>
-                  <div className="w-full bg-secondaryColor rounded-xl p-1">
+                  <div className="w-full bg-secondaryColor rounded-xl">
                     <textarea
                       className="textarea textarea-bordered h-24 text-base w-full bg-secondaryColor border-none resize-none"
                       style={{ outline: "none" }}
@@ -165,7 +167,7 @@ export default function Profile() {
                   <div className="justify-between flex w-full mb-2">
                     <h1 className="text-xl font-bold p-2">Your Modules</h1>
                   </div>
-                  <div className="w-full bg-secondaryColor rounded-xl p-1">
+                  <div className="w-full bg-secondaryColor rounded-xl p-2">
                     {selectedModules.length > 0 && (
                       <div className="flex flex-wrap mx-auto rounded-3xl justify-center bg-white border mt-2 mb-4 ">
                         {selectedModules.map((module) => (
