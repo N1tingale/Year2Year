@@ -120,15 +120,19 @@ export default function Profile() {
 
             <div className="flex flex-col items-center rounded-xl border-2 border-black m-2 bg-white w-1/3s p-2">
               <h1 className="text-xl font-bold p-1 w-full">Your Name</h1>
-              <p className="text-lg font-normal p-1 w-full">
-                {localStorage.getItem("first_name") +
-                  " " +
-                  localStorage.getItem("last_name")}
-              </p>
+              <div className="bg-secondaryColor rounded-xl w-full p-2">
+                <p className="text-lg font-normal p-1 w-full">
+                  {localStorage.getItem("first_name") +
+                    " " +
+                    localStorage.getItem("last_name")}
+                </p>
+              </div>
               <h1 className="text-xl font-bold p-1 w-full">Your Email</h1>
-              <p className="text-lg font-normal p-1 w-full">
-                {localStorage.getItem("email")}
-              </p>
+              <div className="bg-secondaryColor rounded-xl w-full p-2">
+                <p className="text-lg font-normal p-1 w-full">
+                  {localStorage.getItem("email")}
+                </p>
+              </div>
             </div>
             {localStorage.getItem("userType") === "tutor" && (
               <>
