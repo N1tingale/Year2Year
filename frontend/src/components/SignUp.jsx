@@ -101,6 +101,10 @@ export default function SignUp() {
       return;
     }
 
+    if (selectedModules.length === 0 && signUpAsTutor) {
+      return;
+    }
+
     console.log(data);
     const path = signUpAsTutor ? "add-tutor" : "add-student";
 
