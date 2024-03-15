@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { RiCloseLine as RxCross2 } from "react-icons/ri";
 import Navbar from "./Navbar";
@@ -11,6 +11,10 @@ import { set } from "react-hook-form";
 
 export default function Profile() {
   const navigate = useNavigate();
+
+  const containerRef = useRef(null);
+  const [isFooterRelative, setIsFooterRelative] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
   const [chats, setChats] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
@@ -61,6 +65,23 @@ export default function Profile() {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const containerHeight = containerRef.current.offsetHeight;
+        const windowHeight = window.innerHeight;
+
+        setIsFooterRelative(containerHeight > windowHeight);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isLoading]);
 
   const handleEditDescription = () => {
     setIsEditingDescription(!isEditingDescription);
@@ -120,7 +141,10 @@ export default function Profile() {
     <>
       <Navbar />
       {authenticated ? (
-        <div className="w-2/3 mx-auto mt-2 rounded-xl flex justify-between divider-vertical">
+        <div
+          ref={containerRef}
+          className="w-2/3 mx-auto mt-2 rounded-xl flex justify-between divider-vertical"
+        >
           <div className="rounded-xl shadow-2xl flex flex-col w-5/12 p-4">
             <div className="flex justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-1/3">
               <h1 className="text-3xl font-extrabold p-4 px-16">Profile</h1>
@@ -284,7 +308,7 @@ export default function Profile() {
           login...
         </div>
       )}
-      <Footer />
+      <Footer relative={isFooterRelative} />
     </>
   );
 }
