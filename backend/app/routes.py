@@ -457,26 +457,27 @@ def get_reports():
     return jsonify({'reports': [{'id': report.id,
                                  'student_id': report.student_id,
                                  'tutor_id': report.tutor_id,
-                                 'module_id': report.module_id,
-                                 'type': report.type,
+                                 'user_reported': report.user_reported,
+                                 'report_type': report.report_type,
                                  'description': report.description}for report in reports]})
 
 @app.route('/create-report', methods=['POST'])
 # @token_required
 def create_reports():  # current_user
     data = request.get_json()
+    print(data)
 
     student_id = data.get('student_id')
     tutor_id = data.get('tutor_id')
-    module_id = data.get('module_id')
-    type = data.get('type')
+    user_reported = data.get('user_reported')
+    report_type = data.get('report_type')
     description = data.get('description')
 
-    if not all([student_id, tutor_id, module_id, type, description]):
-        return jsonify({'error': 'All fields (student_id, tutor_id, module_id, type, description) are required'}), 400
+    if not all([student_id, tutor_id, user_reported, report_type, description]):
+        return jsonify({'error': 'All fields (student_id, tutor_id, user_reported, report_type, description) are required'}), 400
 
-    new_report = Report(student_id=student_id, tutor_id=tutor_id,
-                        module_id=module_id, type=type, description=description)
+    new_report = Report(student_id=student_id, tutor_id=tutor_id, user_reported=user_reported, report_type=report_type, description=description)
+    print(new_report)
     db.session.add(new_report)
     db.session.commit()
 
@@ -484,8 +485,8 @@ def create_reports():  # current_user
                     'report': {'id': new_report.id,
                                'student_id': new_report.student_id,
                                'tutor_id': new_report.tutor_id,
-                               'module_id': new_report.module_id,
-                               "type": new_report.type,
+                               "user_reported": new_report.user_reported,
+                               "report_type": new_report.report_type,
                                "description": new_report.description}}), 201
 
 @socketio.on("message")
@@ -548,6 +549,16 @@ def handle_chat(data):
         for message in messages
     ]
     emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
+
+@app.route("/get-user-type/<int:user_id>", methods=["GET"])
+def get_user_type(user_id):
+    student = Student.query.filter_by(id=user_id).first()
+    if student:
+        return jsonify({"user_type": "student"})
+    tutor = Tutor.query.filter_by(id=user_id).first()
+    if tutor:
+        return jsonify({"user_type": "tutor"})
+    return jsonify({"error": "User not found"}), 400
 
 def format_modules(modules):
     modules = modules.split(", ")

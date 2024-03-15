@@ -59,12 +59,12 @@ class Report(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.id'), nullable=False)
-    module_id = db.Column(db.Integer, db.ForeignKey('module.id'), nullable=False)
-    type = db.Column(db.String(20), nullable=False)
+    user_reported = db.Column(db.String(20), nullable=False)
+    report_type = db.Column(db.String(20), nullable=False)
     description = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
-        return f"<Report {self.student_id} {self.tutor_id} {self.module_id} {self.description}>"
+        return f"<Report {self.student_id} {self.tutor_id} {self.user_reported} {self.report_type} {self.description}>"
 
 
 class Chat(db.Model):

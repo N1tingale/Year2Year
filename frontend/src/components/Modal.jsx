@@ -3,6 +3,8 @@ import { IoMdSend } from "react-icons/io";
 import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
+import { GoReport } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
 
 export default function Modal({
   children,
@@ -16,6 +18,7 @@ export default function Modal({
   const userId = localStorage.getItem("id");
   const userType = localStorage.getItem("userType");
   const [chatId, setChatId] = useState(chId);
+  const navigate = useNavigate();
   // This is a temporary thing for convenience, but should be fetched and passed here instead
   // The chatId will be set when the socket receives a chat signal
 
@@ -120,6 +123,10 @@ export default function Modal({
     }
   };
 
+  const launchReport = () => {
+    navigate("/report-user/" + recipientId);
+  };
+
   return (
     <div
       onClick={() => {
@@ -131,11 +138,16 @@ export default function Modal({
         <div className="modal-box max-w-screen-lg mx-auto p-4">
           <div className="bg-primaryColor text-white p-4 flex justify-between rounded-2xl text-left text-3xl font-bold mb-4">
             {tutorName}
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost">
-                <RxCross2 className="w-6 h-6" />
+            <div className="flex items-center gap-8">
+              <button className="" onClick={launchReport}>
+                <GoReport className="w-6 h-6 hover:text-red-500" />
               </button>
-            </form>
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost">
+                  <RxCross2 className="w-6 h-6" />
+                </button>
+              </form>
+            </div>
           </div>
 
           <div>
