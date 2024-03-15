@@ -79,33 +79,41 @@ export default function Profile() {
     }
   };
 
-  const handleSaveModules = async () => {
-    try {
-      const res = await axios.post("http://127.0.0.1:5000/edit-modules", {
-        user_id: localStorage.getItem("id"),
-        modules: selectedModules,
-      });
-      console.log(res);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const removeSelectedModule = (moduleToRemove) => {
-    setSelectedModules(
-      selectedModules.filter((module) => module !== moduleToRemove)
-    );
-    handleSaveModules();
-  };
-
-  const handleModuleSelect = (module) => {
-    if (!selectedModules.includes(module)) {
-      setSelectedModules([...selectedModules, module]);
-      handleSaveModules();
+  const addSelectedModule = async (module) => {
+    if (selectedModules.includes(module)) {
+      alert("You have already selected this module");
     } else {
-      alert("Module already selected");
+      try {
+        await axios.post("http://127.0.0.1:5000/edit-modules", {
+          user_id: localStorage.getItem("id"),
+          modules: [...selectedModules, module],
+        });
+        setSelectedModules((prevModules) => [...prevModules, module]);
+      } catch (err) {
+        console.error("Error adding module:", err);
+      }
     }
     setShowModuleDropdown(false);
+  };
+
+  const removeSelectedModule = async (moduleToRemove) => {
+    if (selectedModules.length === 1) {
+      alert("You must have at least one module selected");
+      return;
+    }
+    try {
+      await axios.post("http://127.0.0.1:5000/edit-modules", {
+        user_id: localStorage.getItem("id"),
+        modules: selectedModules.filter((module) => module !== moduleToRemove),
+      });
+
+      setSelectedModules((prevModules) =>
+        prevModules.filter((module) => module !== moduleToRemove)
+      );
+      setShowModuleDropdown(false);
+    } catch (error) {
+      console.error("Error removing module:", error);
+    }
   };
 
   return (
@@ -192,50 +200,48 @@ export default function Profile() {
                       </div>
                     )}
                     <div className="mt-4 relative">
-                      <div className="relative">
-                        <input
-                          id="modules"
-                          name="modules"
-                          type="text"
-                          placeholder="Modules"
-                          className="w-full p-3 rounded-3xl bg-primaryColor text-white"
-                          readOnly
-                          onClick={() =>
-                            setShowModuleDropdown((state) => !state)
-                          }
-                        />
-                        {showModuleDropdown && (
-                          <div className="absolute top-full left-0 bg-white border rounded-md mt-1">
-                            {allowedModules.map((module) => (
-                              <div
-                                key={module}
-                                className="p-2 w-80 cursor-pointer hover:bg-gray-300"
-                                onClick={() => handleModuleSelect(module)}
-                              >
-                                {module}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        {!showModuleDropdown ? (
-                          <RiArrowDropDownLine
-                            className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white h-6 w-6 cursor-pointer"
+                      <div className="relative mt-4">
+                        <div className="relative justify-center flex mx-auto">
+                          {showModuleDropdown && (
+                            <div className="absolute bottom-full left-0 bg-white border rounded-md mt-1 z-10">
+                              {allowedModules.map((module) => (
+                                <div
+                                  key={module}
+                                  className="p-2 w-80 cursor-pointer hover:bg-gray-300"
+                                  onClick={() => addSelectedModule(module)}
+                                >
+                                  {module}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <input
+                            id="modules"
+                            name="modules"
+                            type="text"
+                            placeholder="Add Modules"
+                            className="w-full p-3 rounded-3xl bg-primaryColor text-white"
+                            readOnly
                             onClick={() =>
                               setShowModuleDropdown((state) => !state)
                             }
                           />
-                        ) : (
-                          <RxCross2
-                            className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white h-6 w-6 cursor-pointer"
-                            onClick={() =>
-                              setShowModuleDropdown((state) => !state)
-                            }
-                          />
-                        )}
-                      </div>
-                      <div className="text-red-500 text-sm">
-                        {selectedModules.length === 0 &&
-                          "At least one module required"}
+                          {!showModuleDropdown ? (
+                            <RiArrowDropDownLine
+                              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white h-6 w-6 cursor-pointer"
+                              onClick={() =>
+                                setShowModuleDropdown((state) => !state)
+                              }
+                            />
+                          ) : (
+                            <RxCross2
+                              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white h-6 w-6 cursor-pointer"
+                              onClick={() =>
+                                setShowModuleDropdown((state) => !state)
+                              }
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
