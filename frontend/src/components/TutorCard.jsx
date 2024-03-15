@@ -31,7 +31,6 @@ export default function TutorCard({ tutor, index }) {
         className="btn btn-primary mt-4"
         onClick={() => {
           setShowDescriptionModal(!showDescriptionModal);
-          console.log(showDescriptionModal);
         }}
       >
         Description <FaInfoCircle size={20} />
@@ -39,9 +38,8 @@ export default function TutorCard({ tutor, index }) {
 
       {showDescriptionModal && (
         <DescriptionModal
-          tutorName={`${tutor.first_name} ${tutor.last_name}`}
-          modules={tutor.modules}
-          description={tutor.description}
+          tutor={tutor}
+          index={index}
           close={() => setShowDescriptionModal(!showDescriptionModal)}
         />
       )}

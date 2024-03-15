@@ -47,6 +47,10 @@ export default function Modal({
       });
     }
 
+    if (chatId) {
+      fetchMessages(chatId);
+    }
+
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
