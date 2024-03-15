@@ -363,6 +363,30 @@ def edit_password():  # current_user
     except Exception:
         return jsonify({"error": "Password not updated"}), 400
 
+
+@app.route('/edit-description', methods=["POST"])
+# @token_required(allowed_user_type="tutor")
+def edit_description():
+    data = request.get_json()
+    id = data.get("user_id")
+    description = data.get("description")
+
+    try:
+        tutor = Tutor.query.filter_by(id=id).first()
+        if tutor:
+            tutor.description = description
+            db.session.commit()
+            return jsonify({"message": "Description updated successfully",
+                            "tutor": {"id": tutor.id,
+                                      "first_name": tutor.first_name,
+                                      "last_name": tutor.last_name,
+                                      "email": tutor.email,
+                                      "description": tutor.description,
+                                      "emailVerified": tutor.emailVerified}}), 201
+        return jsonify({"error": "User not found"}), 400
+    except Exception:
+        return jsonify({"error": "Description not updated"}), 400
+
 @app.route('/modules', methods=['GET'])
 # @token_required
 def get_modules():  # current_user
