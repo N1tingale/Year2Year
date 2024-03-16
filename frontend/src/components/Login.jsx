@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import axios from "axios";
 import Footer from "./Footer";
@@ -25,6 +25,12 @@ export default function Login() {
   const onPasswordClick = () => {
     setShowPassword((state) => !state);
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("id")) {
+      navigate("/profile");
+    }
+  });
 
   const onSubmit = (data) => {
     console.log(data);

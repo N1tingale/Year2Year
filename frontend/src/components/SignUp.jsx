@@ -21,6 +21,12 @@ export default function SignUp() {
   const [selectedModules, setSelectedModules] = useState([]);
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
 
+  useEffect(() => {
+    if (localStorage.getItem("id")) {
+      navigate("/profile");
+    }
+  });
+
   const handleModuleSelect = (selected) => {
     if (selectedModules.includes(selected)) {
       alert("Module already selected");
