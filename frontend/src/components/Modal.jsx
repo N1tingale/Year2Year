@@ -139,7 +139,7 @@ export default function Modal({
           <div className="bg-primaryColor text-white p-4 flex justify-between rounded-2xl text-left text-3xl font-bold mb-4">
             {recipientName}
             <div className="flex items-center gap-8">
-              <button className="" onClick={launchReport}>
+              <button onClick={launchReport}>
                 <GoReport className="w-6 h-6 hover:text-red-500" />
               </button>
               <form method="dialog">

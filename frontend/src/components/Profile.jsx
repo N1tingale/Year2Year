@@ -24,6 +24,7 @@ export default function Profile() {
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [lastMessages, setLastMessages] = useState([]);
 
   let allowedModules = [
     "COMP12111",
@@ -51,7 +52,9 @@ export default function Profile() {
           .catch((err) => console.log(err));
       }
     }
+  }, []);
 
+  useEffect(() => {
     axios
       .get("http://127.0.0.1:5000/get-chats", {
         params: {
@@ -86,6 +89,33 @@ export default function Profile() {
   const handleEditDescription = () => {
     setIsEditingDescription(!isEditingDescription);
   };
+
+  useEffect(() => {
+    const fetchLastMessages = async () => {
+      try {
+        const newLastMessages = [];
+        for (const chat of chats) {
+          const response = await axios.get(
+            `http://127.0.0.1:5000/get-messages/${chat.id}`
+          );
+          if (response.data && response.data.messages.length > 0) {
+            let content =
+              response.data.messages[response.data.messages.length - 1].content;
+            if (content.length > 40) {
+              content = content.slice(0, 40) + "...";
+            }
+            newLastMessages.push(content);
+          } else {
+            console.error("No messages found for chat");
+          }
+        }
+        setLastMessages(newLastMessages);
+      } catch (error) {
+        console.error("Error fetching last messages:", error);
+      }
+    };
+    fetchLastMessages();
+  }, [chats]);
 
   const handleSaveDescription = async () => {
     try {
@@ -288,7 +318,7 @@ export default function Profile() {
                             ? chat.tutor_id
                             : chat.student_id
                         }
-                        message={"Lorem ipsum dolor sit amet"}
+                        message={lastMessages[index]}
                         key={index}
                         index={index}
                         chatId={chat.id}

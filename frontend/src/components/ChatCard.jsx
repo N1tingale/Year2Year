@@ -2,13 +2,7 @@ import { RxAvatar } from "react-icons/rx";
 import Modal from "./Modal";
 import { useEffect, useState } from "react";
 import axios from "axios";
-export default function ChatCard({
-  tutorName,
-  message,
-  index,
-  recipientId,
-  chatId,
-}) {
+export default function ChatCard({ message, index, recipientId, chatId }) {
   const [recipientName, setRecipientName] = useState("");
 
   useEffect(() => {
