@@ -3,7 +3,7 @@ from flask_socketio import send, emit, join_room, leave_room
 from app.models import Student, Tutor, Module, Booking, Report, Chat, Message
 from flask import jsonify, request
 from sqlalchemy import select
-from app.hash_pass import hash_data
+from app.hash_pass import hash_data, verify_password, generate_salt
 import jwt
 import datetime
 from functools import wraps
@@ -81,7 +81,7 @@ def create_student():
     email = data.get('email')
     password = data.get('password')
     emailVerified = False
-    hashed_password = hash_data(password)
+    hashed_password, salt = hash_data(password)
     id = generate_unique_id()
 
     try:
@@ -97,7 +97,7 @@ def create_student():
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
         new_student = Student(id=id, first_name=first_name, last_name=last_name,
-                              email=email, password=hashed_password, emailVerified=emailVerified)
+                              email=email, password=hashed_password, salt=salt, emailVerified=emailVerified)
 
         db.session.add(new_student)
         db.session.commit()
@@ -117,13 +117,14 @@ def login_student():
 
     email = data.get("email")
     password = data.get("password")
-    hashed_password = hash_data(password)
+    print(email, password)
 
     try:
-        student = Student.query.filter_by(
-            email=email, password=hashed_password).first()
+        student = Student.query.filter_by(email=email).first()
         if not student:
-            return jsonify({"error": "Unsuccessful login"}), 400
+            return jsonify({"error": "Unsuccessful login"}), 401
+        if not verify_password(password, student.salt, student.password):
+            return jsonify({"error": "Incorrect email or password."}), 401
         emailVerified = student.emailVerified
         token = jwt.encode({'email': student.email,
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
@@ -139,7 +140,7 @@ def login_student():
                                     "token": token,
                                     "emailVerified": student.emailVerified}}), 201
     except Exception:
-        return jsonify({"error": "You are not a student. GET OUT."}), 400
+        return jsonify({"error": "You are not a student. GET OUT."}), 500
 
 @app.route("/login-tutor", methods=["POST"])
 def login_tutor():
@@ -147,13 +148,13 @@ def login_tutor():
 
     email = data.get("email")
     password = data.get("password")
-    hashed_password = hash_data(password)
 
     try:
-        tutor = Tutor.query.filter_by(
-            email=email, password=hashed_password).first()
+        tutor = Tutor.query.filter_by(email=email).first()
         if not tutor:
-            return jsonify({"error": "Unsuccessful login"}), 400
+            return jsonify({"error": "Unsuccessful login"}), 401
+        if not verify_password(password, tutor.salt, tutor.password):
+            return jsonify({"error": "Incorrect email or password."}), 401
         emailVerified = tutor.emailVerified
         token = jwt.encode({'email': tutor.email,
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
@@ -168,7 +169,7 @@ def login_tutor():
                                   "token": token,
                                   "emailVerified": tutor.emailVerified}}), 201
     except Exception:
-        return jsonify({"error": "You are not a tutor. GET OUT."}), 400
+        return jsonify({"error": "Internal service error."}), 500
 
 @app.route('/tutors', methods=['GET'])
 # @token_required(allowed_user_type="student")
@@ -202,7 +203,7 @@ def create_tutor():
     last_name = data.get('last_name')
     email = data.get('email')
     password = data.get('password')
-    hashed_password = hash_data(password)
+    hashed_password, salt = hash_data(password)
     year = data.get('year')
     modules = ", ".join(data.get('modules'))
     description = ""
@@ -223,7 +224,7 @@ def create_tutor():
             return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year) are required'}), 400
 
         new_tutor = Tutor(id=id, first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
-                            description=description, emailVerified=emailVerified)
+                            description=description, salt=salt, emailVerified=emailVerified)
 
         db.session.add(new_tutor)
         db.session.commit()
