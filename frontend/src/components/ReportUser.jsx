@@ -84,7 +84,7 @@ export default function ReportUser() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center rounded-xl border-2 border-black m-2 bg-white">
               <h1 className="text-3xl font-extrabold p-4 px-16">
-                Report User {reportedName} (#{idBeingReported})
+                Report {reportedName} (#{idBeingReported})
               </h1>
             </div>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
