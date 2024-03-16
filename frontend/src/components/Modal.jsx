@@ -24,6 +24,7 @@ export default function Modal({
   // The chatId will be set when the socket receives a chat signal
 
   const socketRef = useRef();
+  const chatContainerRef = useRef(null);
 
   // Runs once when the element is instantiated, to prevent constantly reconnecting to the socket
   useEffect(() => {
@@ -137,21 +138,23 @@ export default function Modal({
     >
       <dialog id={`my_modal_${index}`} className="modal">
         <div className="modal-box max-w-screen-lg mx-auto p-4">
-          <div className="bg-primaryColor text-white p-4 flex justify-between rounded-2xl text-left text-3xl font-bold mb-4">
-            {recipientName}
-            <div className="flex items-center gap-8">
-              <button onClick={launchReport}>
-                <GoReport className="w-6 h-6 hover:text-red-500" />
-              </button>
-              <form method="dialog">
-                <button className="btn btn-sm btn-circle btn-ghost">
-                  <RxCross2 className="w-6 h-6" />
+          <div className="sticky top-0 z-10">
+            <div className="bg-primaryColor text-white p-4 flex justify-between rounded-2xl text-left text-3xl font-bold mb-4">
+              {recipientName}
+              <div className="flex items-center gap-8">
+                <button onClick={launchReport}>
+                  <GoReport className="w-6 h-6 hover:text-red-500" />
                 </button>
-              </form>
+                <form method="dialog">
+                  <button className="btn btn-sm btn-circle btn-ghost">
+                    <RxCross2 className="w-6 h-6" />
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
 
-          <div>
+          <div ref={chatContainerRef} className="chat-container">
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -192,22 +195,24 @@ export default function Modal({
             ))}
           </div>
 
-          <div className="flex justify-between items-center">
-            <div className="relative w-full">
-              <input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                type="text"
-                placeholder="Write a message..."
-                className="mt-4 text-white input input-bordered w-full max-w-screen-lg bg-primaryColor pr-12"
-              />
-              <button
-                onClick={sendMessage}
-                className="absolute right-2 top-2 h-full px-3 flex items-center text-white"
-              >
-                <IoMdSend className="w-6 h-6" />
-              </button>
+          <div className="sticky bottom-0 z-10">
+            <div className="flex justify-between items-center">
+              <div className="relative w-full">
+                <input
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  type="text"
+                  placeholder="Write a message..."
+                  className="mt-4 text-white input input-bordered w-full max-w-screen-lg bg-primaryColor pr-12"
+                />
+                <button
+                  onClick={sendMessage}
+                  className="absolute right-2 top-2 h-full px-3 flex items-center text-white"
+                >
+                  <IoMdSend className="w-6 h-6" />
+                </button>
+              </div>
             </div>
           </div>
         </div>

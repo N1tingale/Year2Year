@@ -19,7 +19,7 @@ export default function ChatCard({ message, index, recipientId, chatId }) {
     fetchUserName();
   }, [recipientId]);
   return (
-    <div className="bg-white p-4 m-2 rounded-3xl border-2 border-black hover:cursor-pointer">
+    <div className="bg-white p-4 m-2 rounded-3xl border-2 border-black hover:cursor-pointer hover:bg-gray-200">
       <Modal
         chId={chatId}
         recipientId={recipientId}
@@ -32,7 +32,7 @@ export default function ChatCard({ message, index, recipientId, chatId }) {
           <img
             src={recipientImage + ".png"}
             alt="avatar"
-            className="w-12 h-12 rounded-full"
+            className="w-12 h-12 rounded-full mr-2"
           />
 
           <div>
