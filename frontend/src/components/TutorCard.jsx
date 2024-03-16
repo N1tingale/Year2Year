@@ -19,7 +19,7 @@ export default function TutorCard({ tutor, index }) {
 
       <Modal
         recipientId={tutor.id}
-        tutorName={`${tutor.first_name} ${tutor.last_name}`}
+        recipientName={`${tutor.first_name} ${tutor.last_name}`}
         index={index}
       >
         <button className="btn btn-primary mt-4">

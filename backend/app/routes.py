@@ -550,14 +550,20 @@ def handle_chat(data):
     ]
     emit("chat", {"chat_id": chat_id, "messages": messages_data}, room=chat_id)
 
-@app.route("/get-user-type/<int:user_id>", methods=["GET"])
+@app.route("/get-user-details/<int:user_id>", methods=["GET"])
 def get_user_type(user_id):
     student = Student.query.filter_by(id=user_id).first()
     if student:
-        return jsonify({"user_type": "student"})
+        return jsonify({"user_type": "student",
+                        "email": student.email,
+                        "full_name": student.first_name + " " + student.last_name
+                        })
     tutor = Tutor.query.filter_by(id=user_id).first()
     if tutor:
-        return jsonify({"user_type": "tutor"})
+        return jsonify({"user_type": "tutor",
+                        "email": tutor.email,
+                        "full_name": tutor.first_name + " " + tutor.last_name
+                        })
     return jsonify({"error": "User not found"}), 400
 
 def format_modules(modules):

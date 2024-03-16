@@ -7,6 +7,7 @@ export default function ReportUser() {
   const navigate = useNavigate();
   const { idBeingReported } = useParams();
   const [ableToReport, setAbleToReport] = useState(false);
+  const [reportedName, setReportedName] = useState("");
 
   useEffect(() => {
     const fetchUserType = async () => {
@@ -24,12 +25,13 @@ export default function ReportUser() {
         }
 
         const response = await axios
-          .get(`http://127.0.0.1:5000/get-user-type/${idBeingReported}`)
+          .get(`http://127.0.0.1:5000/get-user-details/${idBeingReported}`)
           .catch((error) => {
             console.error("Error fetching user type:", error);
             navigate("/profile");
           });
         const userType = response.data.user_type;
+        setReportedName(response.data.full_name);
 
         if (userType === localStorage.getItem("userType")) {
           console.log("User trying to report user of same type");
@@ -82,7 +84,7 @@ export default function ReportUser() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center rounded-xl border-2 border-black m-2 bg-white">
               <h1 className="text-3xl font-extrabold p-4 px-16">
-                Report User {idBeingReported}
+                Report User {reportedName} (#{idBeingReported})
               </h1>
             </div>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>

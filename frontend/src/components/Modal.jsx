@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Modal({
   children,
-  tutorName,
+  recipientName,
   index,
   recipientId,
   chId,
@@ -137,7 +137,7 @@ export default function Modal({
       <dialog id={`my_modal_${index}`} className="modal">
         <div className="modal-box max-w-screen-lg mx-auto p-4">
           <div className="bg-primaryColor text-white p-4 flex justify-between rounded-2xl text-left text-3xl font-bold mb-4">
-            {tutorName}
+            {recipientName}
             <div className="flex items-center gap-8">
               <button className="" onClick={launchReport}>
                 <GoReport className="w-6 h-6 hover:text-red-500" />

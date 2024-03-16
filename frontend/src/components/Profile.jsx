@@ -288,7 +288,6 @@ export default function Profile() {
                             ? chat.tutor_id
                             : chat.student_id
                         }
-                        tutorName={`Tutor id ${chat.tutor_id}`}
                         message={"Lorem ipsum dolor sit amet"}
                         key={index}
                         index={index}
