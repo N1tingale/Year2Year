@@ -23,6 +23,10 @@ export default function DescriptionModal({ tutor, close, index }) {
         </div>
         <div className="bg-secondary p-4 text-center">
           <div className="mb-4">
+            <p className="text-2xl font-bold">Year</p>
+            <p className="text-lg mt-2 text-gray-700">{tutor.year}</p>
+          </div>
+          <div className="mb-4">
             <p className="text-2xl font-bold">Description</p>
             <p className="text-lg mt-2 text-gray-700">{descriptionText}</p>
           </div>

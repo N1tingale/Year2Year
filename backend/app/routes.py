@@ -178,6 +178,7 @@ def get_tutors():  # current_user
                                 'first_name': tutor.first_name,
                                 'last_name': tutor.last_name,
                                 'modules': format_modules(tutor.modules),
+                                'year': tutor.year,
                                 'description': tutor.description,
                                 'email': tutor.email} for tutor in tutors]})
 
@@ -188,6 +189,7 @@ def get_tutor(tutorId):  # current_user, tutorId
     return jsonify({'tutor': {'id': tutor.id,
                               'first_name': tutor.first_name,
                               'last_name': tutor.last_name,
+                              'year': tutor.year,
                               'modules': format_modules(tutor.modules),
                               'description': tutor.description,
                               'email': tutor.email}})

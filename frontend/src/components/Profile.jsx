@@ -25,6 +25,7 @@ export default function Profile() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [lastMessages, setLastMessages] = useState([]);
+  const [year, setYear] = useState("");
 
   let allowedModules = [
     "COMP12111",
@@ -48,6 +49,7 @@ export default function Profile() {
           .then((res) => {
             setDescription(res.data.tutor.description || "");
             setSelectedModules(res.data.tutor.modules || []);
+            setYear(res.data.tutor.year);
           })
           .catch((err) => console.log(err));
       }
@@ -181,7 +183,7 @@ export default function Profile() {
             </div>
 
             <div className="flex flex-col items-center rounded-xl border-2 border-black m-2 bg-white w-1/3s p-2">
-              <h1 className="text-xl font-bold p-1 w-full">Your Name</h1>
+              <h1 className="text-xl font-bold p-1 w-full">Name</h1>
               <div className="bg-secondaryColor rounded-xl w-full p-2">
                 <p className="text-lg font-normal p-1 w-full">
                   {localStorage.getItem("first_name") +
@@ -189,18 +191,26 @@ export default function Profile() {
                     localStorage.getItem("last_name")}
                 </p>
               </div>
-              <h1 className="text-xl font-bold p-1 w-full">Your Email</h1>
+              <h1 className="text-xl font-bold p-1 w-full">Email</h1>
               <div className="bg-secondaryColor rounded-xl w-full p-2">
                 <p className="text-lg font-normal p-1 w-full">
                   {localStorage.getItem("email")}
                 </p>
               </div>
+              {localStorage.getItem("userType") === "tutor" && (
+                <>
+                  <h1 className="text-xl font-bold p-1 w-full">Year</h1>
+                  <div className="bg-secondaryColor rounded-xl w-full p-2">
+                    <p className="text-lg font-normal p-1 w-full">{year}</p>
+                  </div>
+                </>
+              )}
             </div>
             {localStorage.getItem("userType") === "tutor" && (
               <>
                 <div className="flex flex-col items-center rounded-xl border-2 border-black m-2 bg-white w-1/3s p-2">
                   <div className="justify-between flex w-full mb-2">
-                    <h1 className="text-xl font-bold p-2">Your Description</h1>
+                    <h1 className="text-xl font-bold p-2">Description</h1>
                     <button
                       className={`rounded-3xl bg-${
                         isEditingDescription ? "primaryColor" : "secondaryColor"
@@ -231,7 +241,7 @@ export default function Profile() {
                 </div>
                 <div className="flex flex-col items-center rounded-xl border-2 border-black m-2 bg-white w-1/3s p-2">
                   <div className="justify-between flex w-full mb-2">
-                    <h1 className="text-xl font-bold p-2">Your Modules</h1>
+                    <h1 className="text-xl font-bold p-2">Modules</h1>
                   </div>
                   <div className="w-full bg-secondaryColor rounded-xl p-2">
                     {selectedModules.length > 0 && (
