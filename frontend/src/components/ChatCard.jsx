@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 export default function ChatCard({ message, index, recipientId, chatId }) {
   const [recipientName, setRecipientName] = useState("");
+  const [recipientImage, setRecipientImage] = useState("");
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -13,6 +14,7 @@ export default function ChatCard({ message, index, recipientId, chatId }) {
           console.error("Error fetching user details");
         });
       setRecipientName(response.data.full_name);
+      setRecipientImage(response.data.image);
     };
     fetchUserName();
   }, [recipientId]);
@@ -22,11 +24,17 @@ export default function ChatCard({ message, index, recipientId, chatId }) {
         chId={chatId}
         recipientId={recipientId}
         recipientName={recipientName}
+        recipientImage={recipientImage}
         key={index}
         index={index}
       >
         <div className="flex items-center">
-          <RxAvatar className="w-12 h-12 mx-1" />
+          <img
+            src={recipientImage + ".png"}
+            alt="avatar"
+            className="w-12 h-12 rounded-full"
+          />
+
           <div>
             <h1 className="text-xl font-bold text-left">{recipientName}</h1>
             <p>{message}</p>

@@ -178,7 +178,7 @@ export default function Profile() {
           className="w-2/3 mx-auto mt-2 rounded-xl flex justify-between divider-vertical"
         >
           <div className="rounded-xl shadow-2xl flex flex-col w-5/12 p-4">
-            <div className="flex justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-1/3">
+            <div className="flex flex-row justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-1/3">
               <h1 className="text-3xl font-extrabold p-4 px-16">Profile</h1>
             </div>
 

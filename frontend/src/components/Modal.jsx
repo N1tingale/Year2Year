@@ -11,6 +11,7 @@ export default function Modal({
   recipientName,
   index,
   recipientId,
+  recipientImage,
   chId,
 }) {
   const [message, setMessage] = useState("");
@@ -158,8 +159,16 @@ export default function Modal({
                   msg.sender_id == userId ? "chat-end" : "chat-start"
                 }`}
               >
-                <div className="chat-image avatar">
-                  <RxAvatar size={45} />
+                <div className="chat-image avatar w-12 h-12">
+                  <img
+                    src={
+                      msg.sender_id == userId
+                        ? localStorage.getItem("image") + ".png"
+                        : recipientImage + ".png"
+                    }
+                    alt="avatar"
+                    className="w-12 h-12 rounded-full"
+                  />
                 </div>
                 <div className="chat-header">
                   Sender id: {msg.sender_id}

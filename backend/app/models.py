@@ -14,6 +14,7 @@ class Student(db.Model):
     bookings = db.relationship('Booking', backref='student', lazy=True)
     reports = db.relationship('Report', backref='student', lazy=True)
     salt = db.Column(db.String(32), nullable=False)
+    image = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
         return f"<Student {self.first_name} {self.last_name}>"
@@ -32,6 +33,7 @@ class Tutor(db.Model):
     bookings = db.relationship('Booking', backref='tutor', lazy=True)
     reports = db.relationship('Report', backref='tutor', lazy=True)
     salt = db.Column(db.String(32), nullable=False)
+    image = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
         return f"<Tutor {self.first_name} {self.last_name}>"

@@ -1,9 +1,8 @@
 from app import app, db, socketio
-from flask_socketio import send, emit, join_room, leave_room
+from flask_socketio import emit, join_room
 from app.models import Student, Tutor, Module, Booking, Report, Chat, Message
 from flask import jsonify, request
-from sqlalchemy import select
-from app.hash_pass import hash_data, verify_password, generate_salt
+from app.hash_pass import hash_data, verify_password
 import jwt
 import datetime
 from functools import wraps
@@ -15,6 +14,7 @@ import random
 # The function below the decorator handles the data sent/received by the endpoint
 
 secret_key = Config.SECRET_KEY
+images = ["bird", "chipmunk", "dog", "fox", "rabbit", "skunk"]
 
 def token_required(allowed_user_type=None):
     def decorator(f):
@@ -62,6 +62,7 @@ def get_students():
     return jsonify({'students': [{'id': student.id,
                                   'first_name': student.first_name,
                                   'last_name': student.last_name,
+                                  "image": student.image,
                                   'email': student.email} for student in students]})
 
 @app.route('/students/<studentId>', methods=['GET'])
@@ -70,6 +71,7 @@ def get_student(studentId):
     return jsonify({'student': {'id': student.id,
                                 'first_name': student.first_name,
                                 'last_name': student.last_name,
+                                "image": student.image,
                                 'email': student.email}})
 
 @app.route('/add-student', methods=['POST'])
@@ -83,6 +85,7 @@ def create_student():
     emailVerified = False
     hashed_password, salt = hash_data(password)
     id = generate_unique_id()
+    image = random.choice(images)
 
     try:
         existing_tutor = Tutor.query.filter_by(email=email).first()
@@ -96,7 +99,7 @@ def create_student():
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
-        new_student = Student(id=id, first_name=first_name, last_name=last_name,
+        new_student = Student(id=id, first_name=first_name, last_name=last_name, image=image,
                               email=email, password=hashed_password, salt=salt, emailVerified=emailVerified)
 
         db.session.add(new_student)
@@ -107,6 +110,7 @@ def create_student():
                                     'first_name': new_student.first_name,
                                     'last_name': new_student.last_name,
                                     'email': new_student.email,
+                                    "image": new_student.image,
                                     "emailVerified": new_student.emailVerified}}), 201
     except Exception:
         return jsonify({'error': "Student not created"}), 400
@@ -137,6 +141,7 @@ def login_student():
                                     'first_name': student.first_name,
                                     'last_name': student.last_name,
                                     'email': student.email,
+                                    "image": student.image,
                                     "token": token,
                                     "emailVerified": student.emailVerified}}), 201
     except Exception:
@@ -165,6 +170,7 @@ def login_tutor():
                         'tutor': {'id': tutor.id,
                                   'first_name': tutor.first_name,
                                   'last_name': tutor.last_name,
+                                  "image": tutor.image,
                                   'email': tutor.email,
                                   "token": token,
                                   "emailVerified": tutor.emailVerified}}), 201
@@ -181,6 +187,7 @@ def get_tutors():  # current_user
                                 'modules': format_modules(tutor.modules),
                                 'year': tutor.year,
                                 'description': tutor.description,
+                                "image": tutor.image,
                                 'email': tutor.email} for tutor in tutors]})
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
@@ -193,6 +200,7 @@ def get_tutor(tutorId):  # current_user, tutorId
                               'year': tutor.year,
                               'modules': format_modules(tutor.modules),
                               'description': tutor.description,
+                              "image": tutor.image,
                               'email': tutor.email}})
 
 @app.route('/add-tutor', methods=['POST'])
@@ -209,6 +217,7 @@ def create_tutor():
     description = ""
     emailVerified = False
     id = generate_unique_id()
+    image = random.choice(images)
 
     try:
         existing_student = Student.query.filter_by(email=email).first()
@@ -224,7 +233,7 @@ def create_tutor():
             return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year) are required'}), 400
 
         new_tutor = Tutor(id=id, first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
-                            description=description, salt=salt, emailVerified=emailVerified)
+                            description=description, image=image, salt=salt, emailVerified=emailVerified)
 
         db.session.add(new_tutor)
         db.session.commit()
@@ -234,6 +243,7 @@ def create_tutor():
                                   'first_name': new_tutor.first_name,
                                   'last_name': new_tutor.last_name,
                                   'email': new_tutor.email,
+                                  'image': new_tutor.image,
                                   "emailVerified": new_tutor.emailVerified}}), 201
 
     except Exception:
@@ -559,13 +569,15 @@ def get_user_type(user_id):
     if student:
         return jsonify({"user_type": "student",
                         "email": student.email,
-                        "full_name": student.first_name + " " + student.last_name
+                        "full_name": student.first_name + " " + student.last_name,
+                        "image": student.image
                         })
     tutor = Tutor.query.filter_by(id=user_id).first()
     if tutor:
         return jsonify({"user_type": "tutor",
                         "email": tutor.email,
-                        "full_name": tutor.first_name + " " + tutor.last_name
+                        "full_name": tutor.first_name + " " + tutor.last_name,
+                        "image": tutor.image
                         })
     return jsonify({"error": "User not found"}), 400
 
