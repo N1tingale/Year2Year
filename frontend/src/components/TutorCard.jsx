@@ -11,11 +11,7 @@ export default function TutorCard({ tutor, index }) {
   return (
     <div className="shadow-2xl rounded-xl p-4">
       <div className="flex items-center">
-        <img
-          src={tutor.image + ".png"}
-          alt="avatar"
-          className="w-12 h-12 rounded-full"
-        />
+        <RxAvatar size={50} />
         <p className="ml-4">
           {tutor.first_name} {tutor.last_name}
         </p>

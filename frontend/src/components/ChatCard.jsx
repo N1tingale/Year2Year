@@ -29,12 +29,7 @@ export default function ChatCard({ message, index, recipientId, chatId }) {
         index={index}
       >
         <div className="flex items-center">
-          <img
-            src={recipientImage + ".png"}
-            alt="avatar"
-            className="w-12 h-12 rounded-full mr-2"
-          />
-
+          <RxAvatar className="w-12 h-12" />
           <div>
             <h1 className="text-xl font-bold text-left">{recipientName}</h1>
             <p>{message}</p>
