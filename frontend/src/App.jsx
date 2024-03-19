@@ -7,6 +7,7 @@ import Profile from "./components/Profile";
 import ForgotPassword from "./components/ForgotPassword";
 import Tutors from "./components/Tutors";
 import ReportUser from "./components/ReportUser";
+import FAQ from "./components/FAQ";
 function App() {
   return (
     <div className="App">
@@ -14,10 +15,13 @@ function App() {
         <Route path="/" Component={Home}>
           text
         </Route>
+        <Route path="/home" Component={Home}>
+          text
+        </Route>
         <Route path="/login" Component={Login}>
           Log In
         </Route>
-        <Route path="signup" Component={SignUp}>
+        <Route path="/signup" Component={SignUp}>
           Sign Up
         </Route>
         <Route path="/profile" Component={Profile}>
@@ -26,11 +30,14 @@ function App() {
         <Route path="/forgotpassword" Component={ForgotPassword}>
           Forgot Password
         </Route>
-        <Route path="tutors-list" Component={Tutors}>
+        <Route path="/tutors-list" Component={Tutors}>
           Tutors list
         </Route>
         <Route path="report-user/:idBeingReported" Component={ReportUser}>
           Report User
+        </Route>
+        <Route path="/faq" Component={FAQ}>
+          FAQ
         </Route>
       </Routes>
     </div>
