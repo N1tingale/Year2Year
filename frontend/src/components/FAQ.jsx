@@ -5,8 +5,8 @@ import FAQItem from "./FAQItem";
 
 export default function FAQ() {
   return (
-    <div>
-      <div className="container mx-auto h-screen">
+    <div className="h-screen">
+      <div className="container mx-auto">
         <Navbar />
         <div className="mt-10 flex text-center justify-center mx-auto justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-2/5">
           <h1 className="text-3xl font-extrabold p-4 px-16">
