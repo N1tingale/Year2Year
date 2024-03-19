@@ -8,12 +8,12 @@ export default function FAQ() {
     <div className="h-screen">
       <div className="container mx-auto">
         <Navbar />
-        <div className="mt-10 flex text-center justify-center mx-auto justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-2/5">
-          <h1 className="text-3xl font-extrabold p-4 px-16">
+        <div className="bg-secondaryColor mt-10 flex text-center justify-center mx-auto justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-2/5">
+          <h1 className="text-3xl font-extrabold p-4 px-16 text-primaryColor">
             Frequently Asked Questions
           </h1>
         </div>
-        <div className="p-4 text-primaryColor">
+        <div className="p-4 text-primaryColor mx-auto w-11/12">
           <FAQItem
             question="What is Year2Year?"
             information="Year2Year is a platform that connects students with tutors from their university. Students can find tutors to help them with their modules using our messaging system."
