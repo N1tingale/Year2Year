@@ -88,7 +88,7 @@ export default function Tutors() {
       <Navbar />
       {authenticated ? (
         isStudent ? (
-          <div className="container mx-auto p-8">
+          <div className="container mx-auto p-8 text-primaryColor">
             <h1 className="text-4xl font-bold mb-4">Tutors</h1>
             <div className="flex items-center mb-4">
               <label className="text-xl font-bold mr-4">

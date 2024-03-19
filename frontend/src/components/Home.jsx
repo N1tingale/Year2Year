@@ -43,7 +43,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-center items-center mt-8">
+      <div className="flex flex-col justify-center items-center mt-8 text-primaryColor">
         <p className="text-4xl font-light">Still Waiting?</p>
         <h1 className="text-4xl font-bold mt-1">
           Embark On Your Learning Journey With Us!
