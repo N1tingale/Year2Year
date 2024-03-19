@@ -15,7 +15,7 @@ export default function Navbar() {
           Home
         </Link>
         <Link className="text-xl font-semibold" to="/faq">
-          FAQ
+          FAQs
         </Link>
         {localStorage.getItem("id") && (
           <>
