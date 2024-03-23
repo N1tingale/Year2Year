@@ -41,7 +41,7 @@ export default function FAQ() {
 
           <FAQItem
             question="Can I be both a tutor and a student?"
-            information="Yes, you can register as both a student and a tutor. You can offer tutoring in the modules you're confident in, and find tutors for the modules you need help with."
+            information="No, you can only register as either a tutor or a student."
           />
 
           <FAQItem
