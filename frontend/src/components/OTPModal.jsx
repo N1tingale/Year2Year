@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function OTPModal({ email, setReset }) {
   const [otp, setOtp] = useState("");
@@ -65,6 +66,11 @@ export default function OTPModal({ email, setReset }) {
           onChange={handleChange}
           validateChar={validateChar}
         />
+        <Link to="/login">
+          <button className="btn bg-primaryColor text-white mt-4">
+            Go Back
+          </button>
+        </Link>
       </div>
     </dialog>
   );
