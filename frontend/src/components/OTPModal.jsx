@@ -9,6 +9,7 @@ export default function OTPModal({
   correctOtp,
   setIsOtpCorrect,
   showOTPModal,
+  resendOTP,
 }) {
   const [otp, setOtp] = useState("");
   const [showModal, setShowModal] = useState(showOTPModal);
@@ -71,13 +72,21 @@ export default function OTPModal({
               onChange={handleChange}
               validateChar={validateChar}
             />
-            {!correctOtp && (
-              <Link to="/login">
-                <button className="btn bg-primaryColor text-white mt-4">
-                  Go Back
-                </button>
-              </Link>
-            )}
+            <div className="flex justify-center gap-4">
+              {!correctOtp && (
+                <Link to="/login">
+                  <button className="btn bg-primaryColor text-white mt-4">
+                    Go Back
+                  </button>
+                </Link>
+              )}
+              <button
+                className="btn bg-primaryColor text-white mt-4"
+                onClick={() => resendOTP(email)}
+              >
+                Resend OTP
+              </button>
+            </div>
           </div>
         </div>
       )}

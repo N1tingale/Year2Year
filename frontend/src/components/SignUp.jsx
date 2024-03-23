@@ -201,6 +201,16 @@ export default function SignUp() {
     isOtpCorrect,
   ]);
 
+  const resendOTP = () => {
+    axios
+      .post(`http://127.0.0.1:5000/send-otp-to-new-user`, {
+        email: emailForOTP,
+      })
+      .then((res) => {
+        setCorrectOtp(res.data.otp);
+      });
+  };
+
   return (
     <div className="h-screen">
       <Navbar />
@@ -385,6 +395,7 @@ export default function SignUp() {
           correctOtp={correctOtp}
           setIsOtpCorrect={setIsOtpCorrect}
           showOTPModal={true}
+          resendOTP={resendOTP}
         />
       )}
       <Footer relative={isFooterRelative} />

@@ -141,6 +141,7 @@ export default function ForgotPassword() {
                 email={email}
                 setReset={setShowResetPassword}
                 showOTPModal={true}
+                resendOTP={submitEmail}
               />
               <form onSubmit={handleSubmit(submitPassword)}>
                 <h1 className="text-center text-3xl font-semibold text-primaryColor mb-3">
