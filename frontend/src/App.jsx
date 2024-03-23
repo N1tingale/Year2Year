@@ -39,6 +39,9 @@ function App() {
         <Route path="/faq" Component={FAQ}>
           FAQ
         </Route>
+        <Route path="*" Component={Home}>
+          404
+        </Route>
       </Routes>
     </div>
   );
