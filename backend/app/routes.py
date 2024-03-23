@@ -350,12 +350,13 @@ def edit_password():  # current_user
     data = request.get_json()
     email = data.get("email")
     new_password = data.get("new_password")
-    hashed_password = hash_data(new_password)
+    hashed_password, salt = hash_data(new_password)
 
     try:
         student = Student.query.filter_by(email=email).first()
         if student:
             student.password = hashed_password
+            student.salt = salt
             db.session.commit()
             return jsonify({"message": "Password updated successfully",
                             "student": {"id": student.id,
@@ -609,9 +610,7 @@ def verify_otp():
     if not user:
         return jsonify({"error": "User not found"}), 400
     if user.otp == otp:
-        user.emailVerified = True
-        db.session.commit()
-        return jsonify({"message": "Email verified"}), 201
+        return jsonify({"message": "Email verified successfully"})
     return jsonify({"error": "Incorrect OTP"}), 400
 
 

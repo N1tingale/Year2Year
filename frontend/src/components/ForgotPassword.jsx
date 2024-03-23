@@ -6,6 +6,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import Input from "./Input"; // Import your custom Input component
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,8 @@ export default function ForgotPassword() {
   const [showReEnterPassword, setShowReEnterPassword] = useState(false);
 
   const [showResetPassword, setShowResetPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const validatePassword = (value) => {
     if (value.length < 8) return "Password must be at least 8 characters";
@@ -93,11 +96,15 @@ export default function ForgotPassword() {
     }
 
     axios
-      .post("http://127.0.0.1:5000/", {
+      .post("http://127.0.0.1:5000/edit-password", {
         email: email,
         new_password: password,
       })
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        alert("Password updated successfully");
+        navigate("/login");
+      })
       .catch((err) => console.log(err));
   };
 
