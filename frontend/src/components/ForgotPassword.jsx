@@ -52,9 +52,21 @@ export default function ForgotPassword() {
       } else {
         // TODO: send data email to reset password route
         // Simulate data fetching from the backend
-        setTimeout(() => {
-          document.getElementById("otp_modal").showModal();
-        }, 250);
+        axios
+          .post("http://127.0.0.1:5000/send-otp", {
+            email: email,
+          })
+          .then((res) => {
+            console.log(res);
+            setShowResetPassword(true);
+            setTimeout(() => {
+              document.getElementById("otp_modal").showModal();
+            }, 250);
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("Something went wrong");
+          });
       }
     }
   };
@@ -80,13 +92,13 @@ export default function ForgotPassword() {
       return;
     }
 
-    axios.post("http://127.0.0.1:5000/", {
-      "email":email,
-      "new_password":password
-    })
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
-
+    axios
+      .post("http://127.0.0.1:5000/", {
+        email: email,
+        new_password: password,
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   return (

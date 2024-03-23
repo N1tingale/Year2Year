@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { MuiOtpInput } from "mui-one-time-password-input";
+import axios from "axios";
 
 export default function OTPModal({ email, setReset }) {
   const [otp, setOtp] = useState("");
 
   const handleChange = (newValue) => {
     setOtp(newValue);
+    console.log("OTP:", newValue);
+    if (newValue.length === 4) {
+      handleComplete(newValue);
+    }
   };
 
   const validatePassword = (value) => {
@@ -21,11 +26,23 @@ export default function OTPModal({ email, setReset }) {
     return true;
   };
 
-  const handleComplete = () => {
+  const handleComplete = (newValue) => {
     // Send data to be verified
-    setOtp("");
-    setReset(true);
-    document.getElementById("otp_modal").close();
+    console.log("OTP entered:", newValue);
+    axios
+      .post("http://127.0.0.1:5000/verify-otp", {
+        email: email,
+        otp: newValue,
+      })
+      .then((res) => {
+        console.log(res);
+        setReset(true);
+        document.getElementById("otp_modal").close();
+      })
+      .catch((err) => {
+        console.error("Error verifying OTP:", err);
+        document.getElementById("otp_modal").showModal();
+      });
   };
 
   const validateChar = (char) => {
@@ -33,8 +50,8 @@ export default function OTPModal({ email, setReset }) {
   };
 
   return (
-    <dialog id="otp_modal" className="modal">
-      <div className="modal-box">
+    <dialog id="otp_modal" className="modal mx-auto justify-center">
+      <div className="modal-box justify-center mx-auto text-center">
         <h3 className="font-bold text-lg">Enter your one time password</h3>
         <p className="py-4">Send to {email}</p>
         <MuiOtpInput
@@ -43,17 +60,11 @@ export default function OTPModal({ email, setReset }) {
               border: "none",
             },
           }}
-          className="w-4/6"
+          className="w-4/6 flex mx-auto justify-center"
           value={otp}
           onChange={handleChange}
-          onComplete={handleComplete}
           validateChar={validateChar}
         />
-        <div className="modal-action justify-start">
-          <form method="dialog">
-            <button className="btn">Close</button>
-          </form>
-        </div>
       </div>
     </dialog>
   );

@@ -1,6 +1,7 @@
-from app import app, db, socketio
+from app import app, db, socketio, mail
 from flask_socketio import emit, join_room
 from app.models import Student, Tutor, Module, Booking, Report, Chat, Message
+from flask_mail import Message as EmailMessage
 from flask import jsonify, request
 from app.hash_pass import hash_data, verify_password
 import jwt
@@ -580,6 +581,39 @@ def get_user_type(user_id):
                         "image": tutor.image
                         })
     return jsonify({"error": "User not found"}), 400
+
+@app.route("/send-otp", methods=["POST"])
+def send_otp_to_email():
+    data = request.get_json()
+    email = data.get("email")
+    user = Student.query.filter_by(email=email).first()
+    if not user:
+        user = Tutor.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 400
+    otp = str(random.randint(1000, 9999))
+    user.otp = otp
+    db.session.commit()
+    msg = EmailMessage("Your OTP", sender=app.config["MAIL_USERNAME"], recipients=[email], body=f"Your OTP is {otp}")
+    mail.send(msg)
+    return jsonify({"otp": otp})
+
+@app.route("/verify-otp", methods=["POST"])
+def verify_otp():
+    data = request.get_json()
+    email = data.get("email")
+    otp = data.get("otp")
+    user = Student.query.filter_by(email=email).first()
+    if not user:
+        user = Tutor.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 400
+    if user.otp == otp:
+        user.emailVerified = True
+        db.session.commit()
+        return jsonify({"message": "Email verified"}), 201
+    return jsonify({"error": "Incorrect OTP"}), 400
+
 
 def format_modules(modules):
     modules = modules.split(", ")
