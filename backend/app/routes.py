@@ -604,6 +604,8 @@ def verify_otp():
     if not user:
         return jsonify({"error": "User not found"}), 400
     if user.otp == otp:
+        user.otp = None
+        db.session.commit()
         return jsonify({"message": "Email verified successfully"})
     return jsonify({"error": "Incorrect OTP"}), 400
 
