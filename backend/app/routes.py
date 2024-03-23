@@ -82,6 +82,8 @@ def create_student():
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     email = data.get('email')
+    if not email.endswith("@student.manchester.ac.uk"):
+        return jsonify({"error": "Email must be a student email"}), 400
     password = data.get('password')
     hashed_password, salt = hash_data(password)
     id = generate_unique_id()
@@ -200,6 +202,8 @@ def create_tutor():
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     email = data.get('email')
+    if not email.endswith("@student.manchester.ac.uk"):
+        return jsonify({"error": "Email must be a student email"}), 400
     password = data.get('password')
     hashed_password, salt = hash_data(password)
     year = data.get('year')
