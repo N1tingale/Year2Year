@@ -364,16 +364,18 @@ def edit_password():  # current_user
                                         "last_name": student.last_name,
                                         "email": student.email,
                                         "emailVerified": student.emailVerified}}), 201
-        tutor = Tutor.query.filter_by(email=email).first()
-        if tutor:
-            tutor.password = hashed_password
-            db.session.commit()
-            return jsonify({"message": "Password updated successfully",
-                            "tutor": {"id": tutor.id,
-                                      "first_name": tutor.first_name,
-                                      "last_name": tutor.last_name,
-                                      "email": tutor.email,
-                                      "emailVerified": tutor.emailVerified}}), 201
+        else:
+            tutor = Tutor.query.filter_by(email=email).first()
+            if tutor:
+                tutor.password = hashed_password
+                tutor.salt = salt
+                db.session.commit()
+                return jsonify({"message": "Password updated successfully",
+                                "tutor": {"id": tutor.id,
+                                        "first_name": tutor.first_name,
+                                        "last_name": tutor.last_name,
+                                        "email": tutor.email,
+                                        "emailVerified": tutor.emailVerified}}), 201
         return jsonify({"error": "User not found"}), 400
     except Exception:
         return jsonify({"error": "Password not updated"}), 400
