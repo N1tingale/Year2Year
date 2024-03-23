@@ -83,7 +83,6 @@ def create_student():
     last_name = data.get('last_name')
     email = data.get('email')
     password = data.get('password')
-    emailVerified = False
     hashed_password, salt = hash_data(password)
     id = generate_unique_id()
     image = random.choice(images)
@@ -101,7 +100,7 @@ def create_student():
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
         new_student = Student(id=id, first_name=first_name, last_name=last_name, image=image,
-                              email=email, password=hashed_password, salt=salt, emailVerified=emailVerified)
+                              email=email, password=hashed_password, salt=salt)
 
         db.session.add(new_student)
         db.session.commit()
@@ -111,8 +110,7 @@ def create_student():
                                     'first_name': new_student.first_name,
                                     'last_name': new_student.last_name,
                                     'email': new_student.email,
-                                    "image": new_student.image,
-                                    "emailVerified": new_student.emailVerified}}), 201
+                                    "image": new_student.image}}), 201
     except Exception:
         return jsonify({'error': "Student not created"}), 400
 
@@ -130,21 +128,16 @@ def login_student():
             return jsonify({"error": "Unsuccessful login"}), 401
         if not verify_password(password, student.salt, student.password):
             return jsonify({"error": "Incorrect email or password."}), 401
-        emailVerified = student.emailVerified
         token = jwt.encode({'email': student.email,
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
                            secret_key)
-        if not emailVerified:
-            token = None
-            print(True)
         return jsonify({"message": "This is a student successfully logging in",
                         'student': {'id': student.id,
                                     'first_name': student.first_name,
                                     'last_name': student.last_name,
                                     'email': student.email,
                                     "image": student.image,
-                                    "token": token,
-                                    "emailVerified": student.emailVerified}}), 201
+                                    "token": token}}), 201
     except Exception:
         return jsonify({"error": "You are not a student. GET OUT."}), 500
 
@@ -161,20 +154,16 @@ def login_tutor():
             return jsonify({"error": "Unsuccessful login"}), 401
         if not verify_password(password, tutor.salt, tutor.password):
             return jsonify({"error": "Incorrect email or password."}), 401
-        emailVerified = tutor.emailVerified
         token = jwt.encode({'email': tutor.email,
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
                            secret_key)
-        if not emailVerified:
-            token = None
         return jsonify({"message": "This is a tutor successfully logging in",
                         'tutor': {'id': tutor.id,
                                   'first_name': tutor.first_name,
                                   'last_name': tutor.last_name,
                                   "image": tutor.image,
                                   'email': tutor.email,
-                                  "token": token,
-                                  "emailVerified": tutor.emailVerified}}), 201
+                                  "token": token}}), 201
     except Exception:
         return jsonify({"error": "Internal service error."}), 500
 
@@ -216,7 +205,6 @@ def create_tutor():
     year = data.get('year')
     modules = ", ".join(data.get('modules'))
     description = ""
-    emailVerified = False
     id = generate_unique_id()
     image = random.choice(images)
 
@@ -234,7 +222,7 @@ def create_tutor():
             return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year) are required'}), 400
 
         new_tutor = Tutor(id=id, first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
-                            description=description, image=image, salt=salt, emailVerified=emailVerified)
+                            description=description, image=image, salt=salt)
 
         db.session.add(new_tutor)
         db.session.commit()
@@ -244,8 +232,7 @@ def create_tutor():
                                   'first_name': new_tutor.first_name,
                                   'last_name': new_tutor.last_name,
                                   'email': new_tutor.email,
-                                  'image': new_tutor.image,
-                                  "emailVerified": new_tutor.emailVerified}}), 201
+                                  'image': new_tutor.image}}), 201
 
     except Exception:
         return jsonify({"error": "Tutor not created"}), 400
@@ -295,8 +282,7 @@ def edit_name():  # current_user
                             "student": {"id": student.id,
                                         "first_name": student.first_name,
                                         "last_name": student.last_name,
-                                        "email": student.email,
-                                        "emailVerified": student.emailVerified}}), 201
+                                        "email": student.email}}), 201
         tutor = Tutor.query.filter_by(email=email).first()
         if tutor:
             tutor.first_name = first_name
@@ -306,8 +292,7 @@ def edit_name():  # current_user
                             "tutor": {"id": tutor.id,
                                       "first_name": tutor.first_name,
                                       "last_name": tutor.last_name,
-                                      "email": tutor.email,
-                                      "emailVerified": tutor.emailVerified}}), 201
+                                      "email": tutor.email}}), 201
         return jsonify({"error": "User not found"}), 400
     except Exception:
         return jsonify({"error": "Name not updated"}), 400
@@ -328,8 +313,7 @@ def edit_email():  # current_user
                             "student": {"id": student.id,
                                         "first_name": student.first_name,
                                         "last_name": student.last_name,
-                                        "email": student.email,
-                                        "emailVerified": student.emailVerified}}), 201
+                                        "email": student.email}}), 201
         tutor = Tutor.query.filter_by(email=email).first()
         if tutor:
             tutor.email = new_email
@@ -338,8 +322,7 @@ def edit_email():  # current_user
                             "tutor": {"id": tutor.id,
                                       "first_name": tutor.first_name,
                                       "last_name": tutor.last_name,
-                                      "email": tutor.email,
-                                      "emailVerified": tutor.emailVerified}}), 201
+                                      "email": tutor.email}}), 201
         return jsonify({"error": "User not found"}), 400
     except Exception:
         return jsonify({"error": "Email not updated"}), 400
@@ -362,8 +345,7 @@ def edit_password():  # current_user
                             "student": {"id": student.id,
                                         "first_name": student.first_name,
                                         "last_name": student.last_name,
-                                        "email": student.email,
-                                        "emailVerified": student.emailVerified}}), 201
+                                        "email": student.email}}), 201
         else:
             tutor = Tutor.query.filter_by(email=email).first()
             if tutor:
@@ -374,8 +356,7 @@ def edit_password():  # current_user
                                 "tutor": {"id": tutor.id,
                                         "first_name": tutor.first_name,
                                         "last_name": tutor.last_name,
-                                        "email": tutor.email,
-                                        "emailVerified": tutor.emailVerified}}), 201
+                                        "email": tutor.email}}), 201
         return jsonify({"error": "User not found"}), 400
     except Exception:
         return jsonify({"error": "Password not updated"}), 400
@@ -398,8 +379,7 @@ def edit_description():
                                       "first_name": tutor.first_name,
                                       "last_name": tutor.last_name,
                                       "email": tutor.email,
-                                      "description": tutor.description,
-                                      "emailVerified": tutor.emailVerified}}), 201
+                                      "description": tutor.description}}), 201
         return jsonify({"error": "User not found"}), 400
     except Exception:
         return jsonify({"error": "Description not updated"}), 400
@@ -421,8 +401,7 @@ def edit_modules():
                                       "first_name": tutor.first_name,
                                       "last_name": tutor.last_name,
                                       "email": tutor.email,
-                                      "modules": tutor.modules,
-                                      "emailVerified": tutor.emailVerified}}), 201
+                                      "modules": tutor.modules}}), 201
         return jsonify({"error": "User not found"}), 400
     except Exception:
         return jsonify({"error": "Modules not updated"}), 400
@@ -585,8 +564,8 @@ def get_user_type(user_id):
                         })
     return jsonify({"error": "User not found"}), 400
 
-@app.route("/send-otp", methods=["POST"])
-def send_otp_to_email():
+@app.route("/send-otp-to-existing-user", methods=["POST"])
+def send_otp_to_existing_user():
     data = request.get_json()
     email = data.get("email")
     user = Student.query.filter_by(email=email).first()
@@ -597,6 +576,15 @@ def send_otp_to_email():
     otp = str(random.randint(1000, 9999))
     user.otp = otp
     db.session.commit()
+    msg = EmailMessage("Your OTP", sender=app.config["MAIL_USERNAME"], recipients=[email], body=f"Your OTP is {otp}")
+    mail.send(msg)
+    return jsonify({"otp": otp})
+
+@app.route("/send-otp-to-new-user", methods=["POST"])
+def send_otp_to_new_user():
+    data = request.get_json()
+    email = data.get("email")
+    otp = str(random.randint(1000, 9999))
     msg = EmailMessage("Your OTP", sender=app.config["MAIL_USERNAME"], recipients=[email], body=f"Your OTP is {otp}")
     mail.send(msg)
     return jsonify({"otp": otp})

@@ -53,18 +53,14 @@ export default function ForgotPassword() {
       if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
         setErr(true);
       } else {
-        // TODO: send data email to reset password route
         // Simulate data fetching from the backend
         axios
-          .post("http://127.0.0.1:5000/send-otp", {
+          .post("http://127.0.0.1:5000/send-otp-to-existing-user", {
             email: email,
           })
           .then((res) => {
             console.log(res);
             setShowResetPassword(true);
-            setTimeout(() => {
-              document.getElementById("otp_modal").showModal();
-            }, 250);
           })
           .catch((err) => {
             console.log(err);
@@ -140,51 +136,57 @@ export default function ForgotPassword() {
               )}
             </>
           ) : (
-            <form onSubmit={handleSubmit(submitPassword)}>
-              <h1 className="text-center text-3xl font-semibold text-primaryColor mb-3">
-                Enter new password
-              </h1>
-              <Input
-                name={"password"}
-                type={showPassword ? "text" : "password"}
-                placeholder={"Password"}
-                showPassword={showPassword}
-                onClick={onPasswordClick}
-                register={register}
-                validation={{ required: "Password required" }}
-                errorMessage={errors.password?.message}
-              >
-                {showPassword ? (
-                  <FaEye className="text-primaryColor h-6 w-6" />
-                ) : (
-                  <FaEyeSlash className="text-primaryColor h-6 w-6" />
-                )}
-              </Input>
-              <Input
-                name={"reenterPassword"}
-                type={showReEnterPassword ? "text" : "password"}
-                placeholder={"Re-enter Password"}
-                onClick={onReEnterPasswordClick}
-                register={register}
-                validation={{ required: "Password is required" }}
-                errorMessage={errors.reenterPassword?.message}
-              >
-                {showReEnterPassword ? (
-                  <FaEye className="text-primaryColor h-6 w-6" />
-                ) : (
-                  <FaEyeSlash className="text-primaryColor h-6 w-6" />
-                )}
-              </Input>
-              <button
-                type="submit"
-                className="w-full btn bg-white mt-1 rounded-3xl"
-              >
-                Submit
-              </button>
-            </form>
+            <>
+              <OTPModal
+                email={email}
+                setReset={setShowResetPassword}
+                showOTPModal={true}
+              />
+              <form onSubmit={handleSubmit(submitPassword)}>
+                <h1 className="text-center text-3xl font-semibold text-primaryColor mb-3">
+                  Enter new password
+                </h1>
+                <Input
+                  name={"password"}
+                  type={showPassword ? "text" : "password"}
+                  placeholder={"Password"}
+                  showPassword={showPassword}
+                  onClick={onPasswordClick}
+                  register={register}
+                  validation={{ required: "Password required" }}
+                  errorMessage={errors.password?.message}
+                >
+                  {showPassword ? (
+                    <FaEye className="text-primaryColor h-6 w-6" />
+                  ) : (
+                    <FaEyeSlash className="text-primaryColor h-6 w-6" />
+                  )}
+                </Input>
+                <Input
+                  name={"reenterPassword"}
+                  type={showReEnterPassword ? "text" : "password"}
+                  placeholder={"Re-enter Password"}
+                  onClick={onReEnterPasswordClick}
+                  register={register}
+                  validation={{ required: "Password is required" }}
+                  errorMessage={errors.reenterPassword?.message}
+                >
+                  {showReEnterPassword ? (
+                    <FaEye className="text-primaryColor h-6 w-6" />
+                  ) : (
+                    <FaEyeSlash className="text-primaryColor h-6 w-6" />
+                  )}
+                </Input>
+                <button
+                  type="submit"
+                  className="w-full btn bg-white mt-1 rounded-3xl"
+                >
+                  Submit
+                </button>
+              </form>
+            </>
           )}
         </div>
-        <OTPModal email={email} setReset={setShowResetPassword} />
       </div>
       <Footer />
     </div>

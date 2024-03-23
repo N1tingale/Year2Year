@@ -2,12 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Input from "./Input";
 import { RxCross2 } from "react-icons/rx";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import OTPModal from "./OTPModal";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -20,6 +21,10 @@ export default function SignUp() {
   const [signUpAsTutor, setSignUpAsTutor] = useState(false);
   const [selectedModules, setSelectedModules] = useState([]);
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
+  const [showOTPModal, setShowOTPModal] = useState(false);
+  const [correctOtp, setCorrectOtp] = useState("");
+  const [emailForOTP, setEmailForOTP] = useState("");
+  const [isOtpCorrect, setIsOtpCorrect] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem("id")) {
@@ -85,6 +90,12 @@ export default function SignUp() {
     return true;
   };
 
+  useEffect(() => {
+    if (isOtpCorrect) {
+      handleSubmit(onSubmit)();
+    }
+  }, [isOtpCorrect]);
+
   const onSubmit = (data, e) => {
     const passwordValidationResult = validatePassword(data.password);
 
@@ -111,41 +122,56 @@ export default function SignUp() {
       return;
     }
 
-    console.log(data);
-    const path = signUpAsTutor ? "add-tutor" : "add-student";
-
     axios
-      .post(`http://127.0.0.1:5000/${path}`, {
-        first_name: data.firstName,
-        last_name: data.lastName,
+      .post(`http://127.0.0.1:5000/send-otp-to-new-user`, {
         email: data.email,
-        password: data.password,
-        modules: selectedModules,
-        year: data.year,
       })
       .then((res) => {
-        if (res.data.student || res.data.tutor) {
-          const userType = res.data.student ? res.data.student : res.data.tutor;
-          for (const field in userType) {
-            localStorage.setItem(field, userType[field]);
-          }
-        }
-        if (res.data.student != undefined) {
-          localStorage.setItem("userType", "student");
-        } else {
-          localStorage.setItem("userType", "tutor");
-        }
-
-        navigate("/profile");
-        console.log(res);
-      })
-      .catch((err) => {
-        const errorMessage = err.response?.data?.error || "An error occurred";
-        setError("reenterPassword", {
-          type: "manual",
-          message: errorMessage,
-        });
+        setShowOTPModal(true);
+        console.log(showOTPModal);
+        setCorrectOtp(res.data.otp);
+        console.log("Correct OTP:", correctOtp);
+        setEmailForOTP(data.email);
       });
+
+    const path = signUpAsTutor ? "add-tutor" : "add-student";
+
+    if (isOtpCorrect) {
+      axios
+        .post(`http://127.0.0.1:5000/${path}`, {
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          password: data.password,
+          modules: selectedModules,
+          year: data.year,
+        })
+        .then((res) => {
+          if (res.data.student || res.data.tutor) {
+            const userType = res.data.student
+              ? res.data.student
+              : res.data.tutor;
+            for (const field in userType) {
+              localStorage.setItem(field, userType[field]);
+            }
+          }
+          if (res.data.student != undefined) {
+            localStorage.setItem("userType", "student");
+          } else {
+            localStorage.setItem("userType", "tutor");
+          }
+
+          navigate("/profile");
+          console.log(res);
+        })
+        .catch((err) => {
+          const errorMessage = err.response?.data?.error || "An error occurred";
+          setError("reenterPassword", {
+            type: "manual",
+            message: errorMessage,
+          });
+        });
+    }
   };
 
   useEffect(() => {
@@ -166,7 +192,14 @@ export default function SignUp() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [selectedModules, showModuleDropdown, errors, signUpAsTutor]);
+  }, [
+    selectedModules,
+    showModuleDropdown,
+    errors,
+    signUpAsTutor,
+    isFooterRelative,
+    isOtpCorrect,
+  ]);
 
   return (
     <div className="h-screen">
@@ -336,9 +369,6 @@ export default function SignUp() {
         <small className="mt-1 underline">
           <Link to="/login">ALREADY HAVE AN ACCOUNT?</Link>
         </small>
-        <small className="mt-1 underline">
-          <Link to="/forgotpassword">FORGOT PASSWORD?</Link>
-        </small>
         <small className="mt-1">
           <button
             onClick={() => setSignUpAsTutor((value) => !value)}
@@ -348,6 +378,15 @@ export default function SignUp() {
           </button>
         </small>
       </form>
+      {console.log("Show OTP Modal:", showOTPModal)}
+      {showOTPModal && (
+        <OTPModal
+          email={emailForOTP}
+          correctOtp={correctOtp}
+          setIsOtpCorrect={setIsOtpCorrect}
+          showOTPModal={true}
+        />
+      )}
       <Footer relative={isFooterRelative} />
     </div>
   );
