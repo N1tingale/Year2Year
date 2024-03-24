@@ -25,6 +25,7 @@ export default function SignUp() {
   const [correctOtp, setCorrectOtp] = useState("");
   const [emailForOTP, setEmailForOTP] = useState("");
   const [isOtpCorrect, setIsOtpCorrect] = useState(false);
+  const [sentEmail, setSentEmail] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem("id")) {
@@ -122,18 +123,20 @@ export default function SignUp() {
       return;
     }
 
-    axios
-      .post(`http://127.0.0.1:5000/send-otp-to-new-user`, {
-        email: data.email,
-      })
-      .then((res) => {
-        setShowOTPModal(true);
-        console.log(showOTPModal);
-        setCorrectOtp(res.data.otp);
-        console.log("Correct OTP:", correctOtp);
-        setEmailForOTP(data.email);
-      });
-
+    if (!sentEmail) {
+      axios
+        .post(`http://127.0.0.1:5000/send-otp-to-new-user`, {
+          email: data.email,
+        })
+        .then((res) => {
+          setShowOTPModal(true);
+          console.log(showOTPModal);
+          setCorrectOtp(res.data.otp);
+          console.log("Correct OTP:", correctOtp);
+          setEmailForOTP(data.email);
+        });
+      setSentEmail(true);
+    }
     const path = signUpAsTutor ? "add-tutor" : "add-student";
 
     if (isOtpCorrect) {
