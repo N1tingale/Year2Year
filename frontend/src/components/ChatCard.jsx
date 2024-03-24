@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 export default function ChatCard({ message, index, recipientId, chatId }) {
   const [recipientName, setRecipientName] = useState("");
-  const [recipientImage, setRecipientImage] = useState("");
+  const [recipientProfileColour, setRecipientProfileColour] = useState("");
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -14,7 +14,7 @@ export default function ChatCard({ message, index, recipientId, chatId }) {
           console.error("Error fetching user details");
         });
       setRecipientName(response.data.full_name);
-      setRecipientImage(response.data.image);
+      setRecipientProfileColour(response.data.profile_colour);
     };
     fetchUserName();
   }, [recipientId]);
@@ -24,12 +24,24 @@ export default function ChatCard({ message, index, recipientId, chatId }) {
         chId={chatId}
         recipientId={recipientId}
         recipientName={recipientName}
-        recipientImage={recipientImage}
+        recipientProfileColour={recipientProfileColour}
         key={index}
         index={index}
       >
         <div className="flex items-center">
-          <RxAvatar className="w-12 h-12" />
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center mr-2"
+            style={{
+              backgroundColor: recipientProfileColour,
+              borderRadius: "50%",
+              minWidth: "48px",
+              minHeight: "48px",
+            }}
+          >
+            <span className="text-white text-lg font-bold">
+              {recipientName[0]}
+            </span>
+          </div>
           <div>
             <h1 className="text-xl font-bold text-left">{recipientName}</h1>
             <p>{message}</p>

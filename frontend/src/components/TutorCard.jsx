@@ -11,7 +11,19 @@ export default function TutorCard({ tutor, index }) {
   return (
     <div className="shadow-2xl rounded-xl p-4">
       <div className="flex items-center">
-        <RxAvatar size={50} />
+        <div
+          className="w-12 h-12 rounded-full flex items-center justify-center mr-2"
+          style={{
+            backgroundColor: tutor.profile_colour,
+            borderRadius: "50%",
+            minWidth: "48px",
+            minHeight: "48px",
+          }}
+        >
+          <span className="text-white text-lg font-bold">
+            {tutor.first_name[0]}
+          </span>
+        </div>
         <p className="ml-4">
           {tutor.first_name} {tutor.last_name}
         </p>
@@ -20,7 +32,7 @@ export default function TutorCard({ tutor, index }) {
       <Modal
         recipientId={tutor.id}
         recipientName={`${tutor.first_name} ${tutor.last_name}`}
-        recipientImage={tutor.image}
+        recipientProfileColour={tutor.profile_colour}
         index={index}
       >
         <button className="btn btn-primary mt-4">

@@ -30,4 +30,4 @@ npm install
 npm run dev
 ```
 
-5. Access our project [http://localhost:5173](here)
+5. Access our project [here](http://localhost:5173)

@@ -11,13 +11,14 @@ export default function Modal({
   recipientName,
   index,
   recipientId,
-  recipientImage,
+  recipientProfileColour,
   chId,
 }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
   const userType = localStorage.getItem("userType");
+  const userProfileColour = localStorage.getItem("profile_colour");
   const [chatId, setChatId] = useState(chId);
   const navigate = useNavigate();
   // This is a temporary thing for convenience, but should be fetched and passed here instead
@@ -163,10 +164,29 @@ export default function Modal({
                 }`}
               >
                 <div className="chat-image avatar">
-                  <RxAvatar size={45} />
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center mr-2"
+                    style={{
+                      backgroundColor:
+                        msg.sender_id == userId
+                          ? userProfileColour
+                          : recipientProfileColour,
+                      borderRadius: "50%",
+                      minWidth: "48px",
+                      minHeight: "48px",
+                    }}
+                  >
+                    <span
+                      className="text-white text-lg font-bold flex items-center justify-center"
+                      style={{ width: "100%", height: "100%" }}
+                    >
+                      {msg.sender_id == userId
+                        ? localStorage.getItem("first_name")[0]
+                        : recipientName[0]}
+                    </span>
+                  </div>
                 </div>
                 <div className="chat-header">
-                  Sender id: {msg.sender_id}
                   <time className="text-xs opacity-50 mx-1">
                     {new Date(msg.timestamp).toLocaleTimeString([], {
                       hour: "2-digit",

@@ -15,7 +15,10 @@ import random
 # The function below the decorator handles the data sent/received by the endpoint
 
 secret_key = Config.SECRET_KEY
-images = ["bird", "chipmunk", "dog", "fox", "rabbit", "skunk"]
+colours = ["#05A8AA", "#B8D5B8", "#FF9A8B", "#FF3D7F", "#6B5B95", "#88B04B", "#F7CAC9", "#92A8D1", "#955251",
+           "#B163A3", "#DE5285", "#FAD02E", "#2E86AB", "#FF9F1C", "#EC610A",  "#6A0572", "#AB83A1","#CBAACB",
+           "#EDC9AF", "#EF2D56", "#7851A9", "#F7CAC9", "#FE840E", "#FF6F61", "#5F4B8B", "#A2A2D0", "#DE8F6E",
+           "#84DE02", "#B2BEB5", "#D8BFD8", "#FF91A4", "#DDA0DD", "#56A0D3", "#BFAFB2", "#808000", "#FF7E00"]
 
 def token_required(allowed_user_type=None):
     def decorator(f):
@@ -63,7 +66,7 @@ def get_students():
     return jsonify({'students': [{'id': student.id,
                                   'first_name': student.first_name,
                                   'last_name': student.last_name,
-                                  "image": student.image,
+                                  "profile_colour": student.profile_colour,
                                   'email': student.email} for student in students]})
 
 @app.route('/students/<studentId>', methods=['GET'])
@@ -72,7 +75,7 @@ def get_student(studentId):
     return jsonify({'student': {'id': student.id,
                                 'first_name': student.first_name,
                                 'last_name': student.last_name,
-                                "image": student.image,
+                                "profile_colour": student.profile_colour,
                                 'email': student.email}})
 
 @app.route('/add-student', methods=['POST'])
@@ -82,12 +85,12 @@ def create_student():
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     email = data.get('email')
-    if not email.endswith("@student.manchester.ac.uk"):
-        return jsonify({"error": "Email must be a student email"}), 400
+    #if not email.endswith("@student.manchester.ac.uk"):
+        #return jsonify({"error": "Email must be a student email"}), 400
     password = data.get('password')
     hashed_password, salt = hash_data(password)
     id = generate_unique_id()
-    image = random.choice(images)
+    profile_colour = random.choice(colours)
 
     try:
         existing_tutor = Tutor.query.filter_by(email=email).first()
@@ -101,7 +104,7 @@ def create_student():
         if not all([first_name, last_name, email, password]):
             return jsonify({'error': 'All fields (first_name, last_name, email, password) are required'}), 400
 
-        new_student = Student(id=id, first_name=first_name, last_name=last_name, image=image,
+        new_student = Student(id=id, first_name=first_name, last_name=last_name, profile_colour=profile_colour,
                               email=email, password=hashed_password, salt=salt)
 
         db.session.add(new_student)
@@ -112,7 +115,7 @@ def create_student():
                                     'first_name': new_student.first_name,
                                     'last_name': new_student.last_name,
                                     'email': new_student.email,
-                                    "image": new_student.image}}), 201
+                                    "profile_colour": new_student.profile_colour}}), 201
     except Exception:
         return jsonify({'error': "Student not created"}), 400
 
@@ -138,7 +141,7 @@ def login_student():
                                     'first_name': student.first_name,
                                     'last_name': student.last_name,
                                     'email': student.email,
-                                    "image": student.image,
+                                    "profile_colour": student.profile_colour,
                                     "token": token}}), 201
     except Exception:
         return jsonify({"error": "You are not a student. GET OUT."}), 500
@@ -163,7 +166,7 @@ def login_tutor():
                         'tutor': {'id': tutor.id,
                                   'first_name': tutor.first_name,
                                   'last_name': tutor.last_name,
-                                  "image": tutor.image,
+                                  "profile_colour": tutor.profile_colour,
                                   'email': tutor.email,
                                   "token": token}}), 201
     except Exception:
@@ -179,7 +182,7 @@ def get_tutors():  # current_user
                                 'modules': format_modules(tutor.modules),
                                 'year': tutor.year,
                                 'description': tutor.description,
-                                "image": tutor.image,
+                                "profile_colour": tutor.profile_colour,
                                 'email': tutor.email} for tutor in tutors]})
 
 @app.route('/tutors/<tutorId>', methods=['GET'])
@@ -192,7 +195,7 @@ def get_tutor(tutorId):  # current_user, tutorId
                               'year': tutor.year,
                               'modules': format_modules(tutor.modules),
                               'description': tutor.description,
-                              "image": tutor.image,
+                              "profile_colour": tutor.profile_colour,
                               'email': tutor.email}})
 
 @app.route('/add-tutor', methods=['POST'])
@@ -202,15 +205,15 @@ def create_tutor():
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     email = data.get('email')
-    if not email.endswith("@student.manchester.ac.uk"):
-        return jsonify({"error": "Email must be a student email"}), 400
+    #if not email.endswith("@student.manchester.ac.uk"):
+        #return jsonify({"error": "Email must be a student email"}), 400
     password = data.get('password')
     hashed_password, salt = hash_data(password)
     year = data.get('year')
     modules = ", ".join(data.get('modules'))
     description = ""
     id = generate_unique_id()
-    image = random.choice(images)
+    profile_colour = random.choice(colours)
 
     try:
         existing_student = Student.query.filter_by(email=email).first()
@@ -226,7 +229,7 @@ def create_tutor():
             return jsonify({'error': 'All fields (first_name, last_name, email, password, modules, year) are required'}), 400
 
         new_tutor = Tutor(id=id, first_name=first_name, last_name=last_name, email=email, modules=modules, password=hashed_password, year=year,
-                            description=description, image=image, salt=salt)
+                            description=description, profile_colour=profile_colour, salt=salt)
 
         db.session.add(new_tutor)
         db.session.commit()
@@ -236,7 +239,7 @@ def create_tutor():
                                   'first_name': new_tutor.first_name,
                                   'last_name': new_tutor.last_name,
                                   'email': new_tutor.email,
-                                  'image': new_tutor.image}}), 201
+                                  'profile_colour': new_tutor.profile_colour}}), 201
 
     except Exception:
         return jsonify({"error": "Tutor not created"}), 400
@@ -557,14 +560,14 @@ def get_user_type(user_id):
         return jsonify({"user_type": "student",
                         "email": student.email,
                         "full_name": student.first_name + " " + student.last_name,
-                        "image": student.image
+                        "profile_colour": student.profile_colour
                         })
     tutor = Tutor.query.filter_by(id=user_id).first()
     if tutor:
         return jsonify({"user_type": "tutor",
                         "email": tutor.email,
                         "full_name": tutor.first_name + " " + tutor.last_name,
-                        "image": tutor.image
+                        "profile_colour": tutor.profile_colour
                         })
     return jsonify({"error": "User not found"}), 400
 
