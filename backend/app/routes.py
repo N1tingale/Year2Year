@@ -1,6 +1,6 @@
 from app import app, db, socketio, mail
 from flask_socketio import emit, join_room
-from app.models import Student, Tutor, Module, Booking, Report, Chat, Message
+from app.models import Student, Tutor, Module, Booking, Report, Chat, Message, Review
 from flask_mail import Message as EmailMessage
 from flask import jsonify, request
 from app.hash_pass import hash_data, verify_password
@@ -16,7 +16,7 @@ import random
 
 secret_key = Config.SECRET_KEY
 colours = ["#05A8AA", "#B8D5B8", "#FF9A8B", "#FF3D7F", "#6B5B95", "#88B04B", "#F7CAC9", "#92A8D1", "#955251",
-           "#B163A3", "#DE5285", "#FAD02E", "#2E86AB", "#FF9F1C", "#EC610A",  "#6A0572", "#AB83A1","#CBAACB",
+           "#B163A3", "#DE5285", "#FAD02E", "#2E86AB", "#FF9F1C", "#EC610A", "#6A0572", "#AB83A1", "#CBAACB",
            "#EDC9AF", "#EF2D56", "#7851A9", "#F7CAC9", "#FE840E", "#FF6F61", "#5F4B8B", "#A2A2D0", "#DE8F6E",
            "#84DE02", "#B2BEB5", "#D8BFD8", "#FF91A4", "#DDA0DD", "#56A0D3", "#BFAFB2", "#808000", "#FF7E00"]
 
@@ -625,10 +625,10 @@ def add_review():
 
     if int(rating) < 1 or int(rating) > 5:
         return jsonify({"error": "Rating must be 1 to 5"}), 400
-    
+
     # return jsonify({"student_id":student_id,
     #                 "tutor_id":tutor_id,
-    #                 "rating":rating, 
+    #                 "rating":rating,
     #                 "description":description})
 
     try:
