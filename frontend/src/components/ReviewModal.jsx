@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { IoIosChatboxes } from "react-icons/io";
 import Modal from "./Modal";
@@ -65,7 +65,7 @@ export default function ReviewModal({ tutor, close, index }) {
   return (
     <div className="fixed inset-0 flex items-center z-20 justify-center bg-opacity-50 bg-black">
       <div className="modal-box max-w-screen-lg mx-auto p-4 rounded-2xl shadow-xl">
-        <div className="bg-primaryColor text-white p-4 flex justify-between rounded-xl text-left">
+        <div className="sticky top-0 z-10 bg-primaryColor text-white p-4 flex justify-between rounded-xl">
           <h2 className="text-3xl font-bold">
             {tutor.first_name + " " + tutor.last_name}
           </h2>
