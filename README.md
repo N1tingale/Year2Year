@@ -27,16 +27,16 @@ python run_app.py
 
 ### Frontend 👩‍💻
 
-3. Navigate to the frontend directory and install the necessary dependencies 🛠️
+4. Navigate to the frontend directory and install the necessary dependencies 🛠️
 
 ```
 npm install
 ```
 
-4. Start the frontend 🌐
+5. Start the frontend 🌐
 
 ```
 npm run dev
 ```
 
-5. Access our project [here](http://localhost:5173)
+6. Access our project [here](http://localhost:5173)
