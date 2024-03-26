@@ -484,6 +484,9 @@ def create_reports():  # current_user
     db.session.add(new_report)
     db.session.commit()
 
+    msg = EmailMessage(f"Report Against User #{user_reported}", sender=app.config["MAIL_USERNAME"], recipients=["year2yearmcr@gmail.com"], body=f"Report from user #{student_id if user_reported != student_id else tutor_id} against user #{user_reported}:\nType: {report_type}\nDescription: {description}")
+    mail.send(msg)
+
     return jsonify({'message': 'Report created successfully',
                     'report': {'id': new_report.id,
                                'student_id': new_report.student_id,
