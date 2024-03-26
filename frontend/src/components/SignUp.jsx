@@ -98,6 +98,7 @@ export default function SignUp() {
   }, [isOtpCorrect]);
 
   const onSubmit = (data, e) => {
+    console.log("Submitting form");
     const passwordValidationResult = validatePassword(data.password);
 
     if (passwordValidationResult !== true) {
@@ -123,7 +124,9 @@ export default function SignUp() {
       return;
     }
 
+    console.log("Email:", data.email);
     if (!sentEmail) {
+      console.log("Sending email");
       axios
         .post(`http://127.0.0.1:5000/send-otp-to-new-user`, {
           email: data.email,
@@ -140,6 +143,7 @@ export default function SignUp() {
     const path = signUpAsTutor ? "add-tutor" : "add-student";
 
     if (isOtpCorrect) {
+      console.log("OTP is correct");
       axios
         .post(`http://127.0.0.1:5000/${path}`, {
           first_name: data.firstName,
