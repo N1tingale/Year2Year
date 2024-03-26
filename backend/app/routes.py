@@ -1,6 +1,6 @@
 from app import app, db, socketio, mail
 from flask_socketio import emit, join_room
-from app.models import Student, Tutor, Module, Booking, Report, Chat, Message
+from app.models import Student, Tutor, Module, Booking, Report, Chat, Message, Review
 from flask_mail import Message as EmailMessage
 from flask import jsonify, request
 from app.hash_pass import hash_data, verify_password
@@ -16,7 +16,7 @@ import random
 
 secret_key = Config.SECRET_KEY
 colours = ["#05A8AA", "#B8D5B8", "#FF9A8B", "#FF3D7F", "#6B5B95", "#88B04B", "#F7CAC9", "#92A8D1", "#955251",
-           "#B163A3", "#DE5285", "#FAD02E", "#2E86AB", "#FF9F1C", "#EC610A",  "#6A0572", "#AB83A1","#CBAACB",
+           "#B163A3", "#DE5285", "#FAD02E", "#2E86AB", "#FF9F1C", "#EC610A", "#6A0572", "#AB83A1", "#CBAACB",
            "#EDC9AF", "#EF2D56", "#7851A9", "#F7CAC9", "#FE840E", "#FF6F61", "#5F4B8B", "#A2A2D0", "#DE8F6E",
            "#84DE02", "#B2BEB5", "#D8BFD8", "#FF91A4", "#DDA0DD", "#56A0D3", "#BFAFB2", "#808000", "#FF7E00"]
 
@@ -614,6 +614,45 @@ def verify_otp():
         db.session.commit()
         return jsonify({"message": "Email verified successfully"})
     return jsonify({"error": "Incorrect OTP"}), 400
+
+@app.route("/add-review", methods=["POST"])
+def add_review():
+    data = request.get_json()
+    student_id = data.get("student_id")
+    tutor_id = data.get("tutor_id")
+    rating = data.get("rating")
+    description = data.get("description")
+
+    if int(rating) < 1 or int(rating) > 5:
+        return jsonify({"error": "Rating must be 1 to 5"}), 400
+
+    # return jsonify({"student_id":student_id,
+    #                 "tutor_id":tutor_id,
+    #                 "rating":rating,
+    #                 "description":description})
+
+    try:
+        # existing_review = Review.query.filter_by()
+        # if existing_review:
+        #     return jsonify({"error": "This review already exists"}), 401
+
+        if not all([student_id, tutor_id, rating, description]):
+            return jsonify({'error': 'All fields (student_id, tutor_id, rating, description) are required'}), 400
+
+        new_review = Review(student_id=student_id, tutor_id=tutor_id, rating=rating, description=description)
+
+        db.session.add(new_review)
+        db.session.commit()
+
+        return jsonify({'message': 'Review created successfully',
+                        'review': {'id': new_review.id,
+                                    'student_id': new_review.student_id,
+                                    'tutor_id': new_review.tutor_id,
+                                    'rating': new_review.rating,
+                                    'description': new_review.description}}), 201
+
+    except Exception as e:
+        return jsonify({'error': 'Review could not be created', 'message': str(e)}), 400
 
 
 def format_modules(modules):
