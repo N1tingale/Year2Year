@@ -90,3 +90,13 @@ class Message(db.Model):
 
     def __repr__(self):
         return f"<Message {self.sender_id} {self.chat_id} {self.content} {self.timestamp}>"
+
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.id'), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f"<Review {self.student_id} {self.tutor_id} {self.rating} {self.description}>"

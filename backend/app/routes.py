@@ -615,6 +615,45 @@ def verify_otp():
         return jsonify({"message": "Email verified successfully"})
     return jsonify({"error": "Incorrect OTP"}), 400
 
+@app.route("/add-review", methods=["POST"])
+def add_review():
+    data = request.get_json()
+    student_id = data.get("student_id")
+    tutor_id = data.get("tutor_id")
+    rating = data.get("rating")
+    description = data.get("description")
+
+    if int(rating) < 1 or int(rating) > 5:
+        return jsonify({"error": "Rating must be 1 to 5"}), 400
+    
+    # return jsonify({"student_id":student_id,
+    #                 "tutor_id":tutor_id,
+    #                 "rating":rating, 
+    #                 "description":description})
+
+    try:
+        # existing_review = Review.query.filter_by()
+        # if existing_review:
+        #     return jsonify({"error": "This review already exists"}), 401
+
+        if not all([student_id, tutor_id, rating, description]):
+            return jsonify({'error': 'All fields (student_id, tutor_id, rating, description) are required'}), 400
+
+        new_review = Review(student_id=student_id, tutor_id=tutor_id, rating=rating, description=description)
+
+        db.session.add(new_review)
+        db.session.commit()
+
+        return jsonify({'message': 'Review created successfully',
+                        'review': {'id': new_review.id,
+                                    'student_id': new_review.student_id,
+                                    'tutor_id': new_review.tutor_id,
+                                    'rating': new_review.rating,
+                                    'description': new_review.description}}), 201
+
+    except Exception as e:
+        return jsonify({'error': 'Review could not be created', 'message': str(e)}), 400
+
 
 def format_modules(modules):
     modules = modules.split(", ")
