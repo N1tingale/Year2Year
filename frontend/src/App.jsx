@@ -8,7 +8,7 @@ import ForgotPassword from "./components/ForgotPassword";
 import Tutors from "./components/Tutors";
 import ReportUser from "./components/ReportUser";
 import FAQ from "./components/FAQ";
-import TutorReviews from "./components/TutorReviews";
+
 function App() {
   return (
     <div className="App">
@@ -39,9 +39,6 @@ function App() {
         </Route>
         <Route path="/faq" Component={FAQ}>
           FAQ
-        </Route>
-        <Route path="/tutor-reviews/:tutorId" Component={TutorReviews}>
-          Tutor Reviews
         </Route>
         <Route path="/my-reviews" Component={Tutors}>
           My Reviews

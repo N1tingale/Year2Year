@@ -21,7 +21,7 @@ export default function DescriptionModal({ tutor, close, index }) {
             <RxCross2 className="w-6 h-6" />
           </button>
         </div>
-        <div className="bg-secondary p-4 text-center">
+        <div className="bg-secondary rounded-b-2xl p-4 text-center">
           <div className="mb-4">
             <p className="text-2xl font-bold">Year</p>
             <p className="text-lg mt-2 text-gray-700">{tutor.year}</p>
