@@ -95,9 +95,9 @@ export default function ReportUser() {
                 required
                 className="bg-white py-4 rounded-lg border-2 px-2 border-primaryColor"
               >
-                <option value="spam">Spam</option>
-                <option value="inappropriate">Inappropriate</option>
-                <option value="other">Other</option>
+                <option value="Spam">Spam</option>
+                <option value="Inappropriate">Inappropriate</option>
+                <option value="Other">Other</option>
               </select>
               <label htmlFor="description">Description:</label>
               <textarea

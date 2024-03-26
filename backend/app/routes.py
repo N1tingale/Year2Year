@@ -655,6 +655,17 @@ def add_review():
         return jsonify({'error': 'Review could not be created', 'message': str(e)}), 400
 
 
+@app.route("/get-reviews/<int:tutor_id>", methods=["GET"])
+def get_reviews(tutor_id):
+    reviews = Review.query.filter_by(tutor_id=tutor_id).all()
+    review_data = [
+        {"student_id": review.student_id, "rating": review.rating,
+            "description": review.description}
+        for review in reviews
+    ]
+    return jsonify({"reviews": review_data})
+
+
 def format_modules(modules):
     modules = modules.split(", ")
     print(modules)
