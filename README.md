@@ -19,7 +19,7 @@ class Config:
   MAIL_PASSWORD = 'your_password'
 ```
 
-4. Start the server by running the following command 🐍
+3. Start the server by running the following command 🐍
 
 ```
 python run_app.py
