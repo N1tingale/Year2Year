@@ -8,10 +8,12 @@ import ForgotPassword from "./components/ForgotPassword";
 import Tutors from "./components/Tutors";
 import ReportUser from "./components/ReportUser";
 import FAQ from "./components/FAQ";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <div className="App">
+      <Toaster />
       <Routes>
         <Route path="/" Component={Home}>
           text

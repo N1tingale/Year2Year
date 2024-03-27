@@ -67,9 +67,11 @@ export default function ReportUser() {
         report_type: type,
         description: description,
       });
-      alert(
-        "Report submitted successfully. We will review it shortly and make a decision regarding this user's account."
-      );
+      toast.success("Report submitted successfully. We will review it shortly and make a decision regarding this user's account.", {
+        style: {
+          background: "#ffeccc",
+        },
+      });
       setTimeout(() => navigate("/profile"), 1000);
     } catch (error) {
       console.error("Error submitting report:", error);

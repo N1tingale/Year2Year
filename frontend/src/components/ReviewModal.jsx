@@ -42,7 +42,11 @@ export default function ReviewModal({ tutor, close, index }) {
     event.preventDefault();
     const description = document.getElementById("description").value;
     if (description === "") {
-      alert("Please enter a review");
+      toast.error("Please enter a review", {
+        style: {
+          background: "#ffeccc",
+        },
+      });
       return;
     }
 

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import Input from "./Input"; // Import your custom Input component
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -64,7 +65,11 @@ export default function ForgotPassword() {
           })
           .catch((err) => {
             console.log(err);
-            alert("Something went wrong");
+            toast.error("Something went wrong", {
+              style: {
+                background: "#ffeccc",
+              },
+            });
           });
       }
     }
@@ -98,7 +103,11 @@ export default function ForgotPassword() {
       })
       .then((res) => {
         console.log(res);
-        alert("Password updated successfully");
+        toast.success("Password updated successfully", {
+          style: {
+            background: "#ffeccc",
+          },
+        });
         navigate("/login");
       })
       .catch((err) => console.log(err));

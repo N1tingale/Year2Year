@@ -134,7 +134,11 @@ export default function Profile() {
 
   const addSelectedModule = async (module) => {
     if (selectedModules.includes(module)) {
-      alert("You have already selected this module");
+      toast.error("You have already selected this module", {
+        style: {
+          background: "#ffeccc",
+        },
+      });
     } else {
       try {
         await axios.post("http://127.0.0.1:5000/edit-modules", {
@@ -151,7 +155,11 @@ export default function Profile() {
 
   const removeSelectedModule = async (moduleToRemove) => {
     if (selectedModules.length === 1) {
-      alert("You must have at least one module selected");
+      toast.error("You must have at least one module selected", {
+        style: {
+          background: "#ffeccc",
+        },
+      });
       return;
     }
     try {

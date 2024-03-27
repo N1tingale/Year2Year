@@ -9,6 +9,7 @@ import Input from "./Input";
 import { RxCross2 } from "react-icons/rx";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import OTPModal from "./OTPModal";
+import toast from "react-hot-toast";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -35,7 +36,11 @@ export default function SignUp() {
 
   const handleModuleSelect = (selected) => {
     if (selectedModules.includes(selected)) {
-      alert("Module already selected");
+      toast.error("Module already selected", {
+        style: {
+          background: "#ffeccc",
+        },
+      });
     } else {
       setSelectedModules((prevModules) => {
         const newModules = [...prevModules, selected];
