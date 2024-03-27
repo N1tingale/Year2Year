@@ -88,7 +88,10 @@ export default function Tutors() {
       <Navbar />
       {authenticated ? (
         isStudent ? (
-          <div className="container mx-auto p-8 text-primaryColor">
+          <div
+            ref={containerRef}
+            className="container mx-auto p-8 text-primaryColor"
+          >
             <h1 className="text-4xl font-bold mb-4">Tutors</h1>
             <div className="flex items-center mb-4">
               <label className="text-xl font-bold mr-4">
@@ -123,7 +126,7 @@ export default function Tutors() {
                 ))}
               </div>
             ) : (
-              <div ref={containerRef} className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 {filteredTutors.map((tutor, index) => (
                   <TutorCard key={index} tutor={tutor} index={index} />
                 ))}
