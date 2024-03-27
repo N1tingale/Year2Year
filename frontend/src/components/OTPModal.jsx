@@ -83,7 +83,7 @@ export default function OTPModal({
                 </Link>
               )}
               <button
-                className="btn bg-primaryColor text-white"
+                className="btn btn-primary text-white"
                 onClick={() => resendOTP(email)}
               >
                 Resend OTP
