@@ -201,10 +201,10 @@ export default function SignUp() {
     };
   }, [
     selectedModules,
-    showModuleDropdown,
+    // showModuleDropdown,
     errors,
     signUpAsTutor,
-    isFooterRelative,
+    // isFooterRelative,
     isOtpCorrect,
   ]);
 
@@ -405,7 +405,7 @@ export default function SignUp() {
           resendOTP={resendOTP}
         />
       )}
-      <Footer relative={isFooterRelative} />
+      <Footer relative={signUpAsTutor} />
     </div>
   );
 }
