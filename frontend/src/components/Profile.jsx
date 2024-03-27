@@ -7,7 +7,6 @@ import ChatCard from "./ChatCard";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ChatCardSkeleton from "./ChatCardSkeleton";
-import { set } from "react-hook-form";
 import toast from "react-hot-toast";
 
 export default function Profile() {
@@ -183,51 +182,52 @@ export default function Profile() {
       <Navbar />
       {authenticated ? (
         <div
+          className="h-fit container mx-auto w-5/6 py-4 px-6"
           ref={containerRef}
-          className="h-fit  w-2/3 mx-auto mt-2 rounded-xl flex justify-between divider-vertical"
         >
-          <div className="rounded-xl shadow-2xl flex flex-col w-5/12 p-4">
-            <div className="flex flex-row justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-1/3">
-              <h1 className="text-3xl font-extrabold p-4 px-16">Profile</h1>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="rounded-xl shadow-2xl p-4">
+              <div className="inline-block rounded-xl border-2 border-black mb-2 bg-white">
+                <h1 className="text-3xl font-extrabold p-4">Profile</h1>
+              </div>
 
-            <div className="flex flex-col items-center rounded-xl border-2 border-black m-2 bg-white w-1/3s p-2">
-              <h1 className="text-xl font-bold p-1 w-full">Name</h1>
-              <div className="bg-secondaryColor rounded-xl w-full p-2">
-                <p className="text-lg font-normal p-1 w-full">
+              <div className="mb-4">
+                <h1 className="text-xl font-bold">Name</h1>
+                <p className="bg-secondary p-2 rounded-md">
                   {localStorage.getItem("first_name") +
                     " " +
                     localStorage.getItem("last_name")}
                 </p>
               </div>
-              <h1 className="text-xl font-bold p-1 w-full">Email</h1>
-              <div className="bg-secondaryColor rounded-xl w-full p-2">
-                <p className="text-lg font-normal p-1 w-full">
+
+              <div className="mb-4">
+                <h1 className="text-xl font-bold">Email</h1>
+                <p className="bg-secondary p-2 rounded-md">
                   {localStorage.getItem("email")}
                 </p>
               </div>
+
               {localStorage.getItem("userType") === "tutor" && (
-                <>
-                  <h1 className="text-xl font-bold p-1 w-full">Year</h1>
-                  <div className="bg-secondaryColor rounded-xl w-full p-2">
-                    <p className="text-lg font-normal p-1 w-full">{year}</p>
-                  </div>
-                </>
+                <div className="mb-4">
+                  <h1 className="text-xl font-bold">Year</h1>
+                  <p className="bg-secondary p-2 rounded-md">{year}</p>
+                </div>
               )}
-            </div>
-            {localStorage.getItem("userType") === "tutor" && (
-              <>
-                <div className="flex flex-col items-center rounded-xl border-2 border-black m-2 bg-white w-1/3s p-2">
-                  <div className="justify-between flex w-full mb-2">
-                    <h1 className="text-xl font-bold p-2">Description</h1>
+
+              {localStorage.getItem("userType") === "tutor" && (
+                <div className="mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h1 className="text-xl font-bold">Description</h1>
                     <button
-                      className={`rounded-3xl bg-${
-                        isEditingDescription ? "primaryColor" : "secondaryColor"
-                      } text-${
-                        isEditingDescription ? "white" : "black"
-                      } border border-black capitalize p-1 py-0.5 hover:bg-${
-                        isEditingDescription ? "secondaryColor" : "primaryColor"
-                      } hover:text-${isEditingDescription ? "black" : "white"}`}
+                      className={`rounded-2xl ${
+                        isEditingDescription
+                          ? "bg-primary text-white"
+                          : "bg-secondary text-black"
+                      } border border-black px-3 py-1 capitalize hover:bg-${
+                        isEditingDescription
+                          ? "secondary hover:text-black"
+                          : "primary"
+                      } hover:text-white`}
                       onClick={
                         isEditingDescription
                           ? handleSaveDescription
@@ -237,10 +237,9 @@ export default function Profile() {
                       {isEditingDescription ? "Save" : "Edit"}
                     </button>
                   </div>
-                  <div className="w-full bg-secondaryColor rounded-xl">
+                  <div className="bg-secondary rounded-md">
                     <textarea
-                      className="textarea textarea-bordered h-24 text-base w-full bg-secondaryColor border-none resize-none"
-                      style={{ outline: "none" }}
+                      className="w-full p-2 bg-secondary rounded-xl border-none resize-none focus:outline-none"
                       placeholder="Write a description so students can know more about you."
                       value={description}
                       readOnly={!isEditingDescription}
@@ -248,17 +247,20 @@ export default function Profile() {
                     ></textarea>
                   </div>
                 </div>
-                <div className="flex flex-col items-center rounded-xl border-2 border-black m-2 bg-white w-1/3s p-2">
-                  <div className="justify-between flex w-full mb-2">
-                    <h1 className="text-xl font-bold p-2">Modules</h1>
+              )}
+
+              {localStorage.getItem("userType") === "tutor" && (
+                <div className="mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h1 className="text-xl font-bold">Modules</h1>
                   </div>
-                  <div className="w-full bg-secondaryColor rounded-xl p-2">
+                  <div className="bg-secondary rounded-md p-2">
                     {selectedModules.length > 0 && (
-                      <div className="flex flex-wrap mx-auto rounded-3xl justify-center bg-white border mt-2 mb-4 ">
+                      <div className="flex flex-wrap">
                         {selectedModules.map((module) => (
                           <div
                             key={module}
-                            className="bg-white text-primary rounded-md m-1 p-2 items-center"
+                            className="bg-white text-primary rounded-md m-1 p-2"
                           >
                             {module}
                             <button
@@ -272,80 +274,78 @@ export default function Profile() {
                         ))}
                       </div>
                     )}
-                    <div className="mt-4 relative">
-                      <div className="relative mt-4">
-                        <div className="relative justify-center flex mx-auto">
-                          {showModuleDropdown && (
-                            <div className="absolute bottom-full left-0 bg-white border rounded-md mt-1 z-10">
-                              {allowedModules.map((module) => (
-                                <div
-                                  key={module}
-                                  className="p-2 w-80 cursor-pointer hover:bg-gray-300"
-                                  onClick={() => addSelectedModule(module)}
-                                >
-                                  {module}
-                                </div>
-                              ))}
+                    <div className="p-2 relative">
+                      <input
+                        id="modules"
+                        name="modules"
+                        type="text"
+                        placeholder="Modules"
+                        className="w-full p-3 rounded-3xl bg-primaryColor text-white"
+                        readOnly
+                        onClick={() =>
+                          setShowModuleDropdown(!showModuleDropdown)
+                        }
+                      />
+                      {showModuleDropdown && (
+                        <div className="absolute bottom-full left-0 bg-white border rounded-md">
+                          {allowedModules.map((module) => (
+                            <div
+                              key={module}
+                              className="p-2 w-80 cursor-pointer hover:bg-secondary"
+                              onClick={() => addSelectedModule(module)}
+                            >
+                              {module}
                             </div>
-                          )}
-                          <input
-                            id="modules"
-                            name="modules"
-                            type="text"
-                            placeholder="Add Modules"
-                            className="w-full p-3 rounded-3xl bg-primaryColor text-white"
-                            readOnly
-                            onClick={() =>
-                              setShowModuleDropdown((state) => !state)
-                            }
-                          />
-                          {!showModuleDropdown ? (
-                            <RiArrowDropDownLine
-                              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white h-6 w-6 cursor-pointer"
-                              onClick={() =>
-                                setShowModuleDropdown((state) => !state)
-                              }
-                            />
-                          ) : (
-                            <RxCross2
-                              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white h-6 w-6 cursor-pointer"
-                              onClick={() =>
-                                setShowModuleDropdown((state) => !state)
-                              }
-                            />
-                          )}
+                          ))}
                         </div>
-                      </div>
+                      )}
+                      {!showModuleDropdown ? (
+                        <RiArrowDropDownLine
+                          className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white h-6 w-6 cursor-pointer"
+                          onClick={() =>
+                            setShowModuleDropdown(!showModuleDropdown)
+                          }
+                        />
+                      ) : (
+                        <RxCross2
+                          className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white h-6 w-6 cursor-pointer"
+                          onClick={() =>
+                            setShowModuleDropdown(!showModuleDropdown)
+                          }
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
-              </>
-            )}
-          </div>
-          <div className="rounded-xl shadow-2xl flex flex-col w-5/12 p-4">
-            <div className="flex justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-1/3">
-              <h1 className="text-3xl font-extrabold p-4">Chats</h1>
+              )}
             </div>
-            <div className="p-2 rounded-xl my-2 border-2 border-black bg-secondaryColor">
-              <h1 className="text-xl font-bold p-2">Chat preview</h1>
-              <div className="my-2 flex flex-col overflow-y-auto max-h-96">
-                {!isLoading
-                  ? chats.map((chat, index) => (
-                      <ChatCard
-                        recipientId={
-                          localStorage.getItem("userType") === "student"
-                            ? chat.tutor_id
-                            : chat.student_id
-                        }
-                        message={lastMessages[index]}
-                        key={index}
-                        index={index}
-                        chatId={chat.id}
-                      />
-                    ))
-                  : [...Array(5)].map((element, index) => (
-                      <ChatCardSkeleton key={index} />
-                    ))}
+
+            <div className="rounded-xl shadow-2xl p-4">
+              <div className="inline-block rounded-xl border-2 border-black mb-2 bg-white">
+                <h1 className="text-3xl font-extrabold p-4">Chats</h1>
+              </div>
+
+              <div className="p-2 rounded-md my-2 border-2 border-black bg-secondary">
+                <h1 className="text-xl font-bold mb-2">Chat preview</h1>
+                <div className="flex flex-col overflow-y-auto max-h-96">
+                  {!isLoading
+                    ? chats.map((chat, index) => (
+                        <ChatCard
+                          recipientId={
+                            localStorage.getItem("userType") === "student"
+                              ? chat.tutor_id
+                              : chat.student_id
+                          }
+                          message={lastMessages[index]}
+                          key={index}
+                          index={index}
+                          chatId={chat.id}
+                        />
+                      ))
+                    : [...Array(5)].map((element, index) => (
+                        <ChatCardSkeleton key={index} />
+                      ))}
+                </div>
               </div>
             </div>
           </div>
