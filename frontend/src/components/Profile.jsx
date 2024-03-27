@@ -183,7 +183,7 @@ export default function Profile() {
       {authenticated ? (
         <div
           ref={containerRef}
-          className="w-2/3 mx-auto mt-2 rounded-xl flex justify-between divider-vertical"
+          className="h-fit  w-2/3 mx-auto mt-2 rounded-xl flex justify-between divider-vertical"
         >
           <div className="rounded-xl shadow-2xl flex flex-col w-5/12 p-4">
             <div className="flex flex-row justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-1/3">
