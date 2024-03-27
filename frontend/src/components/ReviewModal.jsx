@@ -6,6 +6,7 @@ import axios from "axios";
 import { FaStar } from "react-icons/fa";
 import StarRating from "./StarRating";
 import EditableStarRating from "./EditableStarRating";
+import toast from "react-hot-toast";
 
 export default function ReviewModal({ tutor, close, index }) {
   const [reviews, setReviews] = useState([]);

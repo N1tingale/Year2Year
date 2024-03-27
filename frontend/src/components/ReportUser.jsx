@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "./Navbar";
+import toast from "react-hot-toast";
 
 export default function ReportUser() {
   const navigate = useNavigate();
@@ -67,11 +68,14 @@ export default function ReportUser() {
         report_type: type,
         description: description,
       });
-      toast.success("Report submitted successfully. We will review it shortly and make a decision regarding this user's account.", {
-        style: {
-          background: "#ffeccc",
-        },
-      });
+      toast.success(
+        "Report submitted successfully. We will review it shortly and make a decision regarding this user's account.",
+        {
+          style: {
+            background: "#ffeccc",
+          },
+        }
+      );
       setTimeout(() => navigate("/profile"), 1000);
     } catch (error) {
       console.error("Error submitting report:", error);

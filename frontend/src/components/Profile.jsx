@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ChatCardSkeleton from "./ChatCardSkeleton";
 import { set } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export default function Profile() {
   const navigate = useNavigate();
