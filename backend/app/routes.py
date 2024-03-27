@@ -275,12 +275,12 @@ def add_module():  # current_user
 # @token_required
 def edit_name():  # current_user
     data = request.get_json()
-    email = data.get("email")
     first_name = data.get("first_name")
     last_name = data.get("last_name")
+    user_id = data.get("user_id")
 
     try:
-        student = Student.query.filter_by(email=email).first()
+        student = Student.query.filter_by(id=user_id).first()
         if student:
             student.first_name = first_name
             student.last_name = last_name
@@ -290,7 +290,7 @@ def edit_name():  # current_user
                                         "first_name": student.first_name,
                                         "last_name": student.last_name,
                                         "email": student.email}}), 201
-        tutor = Tutor.query.filter_by(email=email).first()
+        tutor = Tutor.query.filter_by(id=user_id).first()
         if tutor:
             tutor.first_name = first_name
             tutor.last_name = last_name

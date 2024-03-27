@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ChatCardSkeleton from "./ChatCardSkeleton";
 import toast from "react-hot-toast";
+import { set } from "react-hook-form";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -22,7 +23,10 @@ export default function Profile() {
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [selectedModules, setSelectedModules] = useState([]);
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
-  const [fullName, setFullName] = useState("");
+  const [fullName, setFullName] = useState(
+    localStorage.getItem("first_name") + " " + localStorage.getItem("last_name")
+  );
+  const [isEditingName, setIsEditingName] = useState(false);
   const [email, setEmail] = useState("");
   const [lastMessages, setLastMessages] = useState([]);
   const [year, setYear] = useState("");
@@ -37,6 +41,14 @@ export default function Profile() {
     "COMP11120",
     "COMP11212",
   ];
+
+  useEffect(() => {
+    const storedFullName =
+      localStorage.getItem("first_name") +
+      " " +
+      localStorage.getItem("last_name");
+    setFullName(storedFullName);
+  }, []);
 
   useEffect(() => {
     if (localStorage.getItem("id") == null) {
@@ -132,6 +144,34 @@ export default function Profile() {
     }
   };
 
+  const handleSaveName = async () => {
+    try {
+      const new_first_name = fullName.split(" ")[0];
+      const new_last_name = fullName.split(" ").slice(1).join(" ");
+      if (new_first_name === "" || new_last_name === "") {
+        toast.error("Please enter a valid full name", {
+          style: {
+            background: "#ffeccc",
+          },
+        });
+        return;
+      }
+      console.log(new_first_name, new_last_name);
+      const res = await axios.post(`http://127.0.0.1:5000/edit-name`, {
+        user_id: localStorage.getItem("id"),
+        first_name: new_first_name,
+        last_name: new_last_name,
+      });
+      localStorage.setItem("first_name", new_first_name);
+      localStorage.setItem("last_name", new_last_name);
+      setFullName(new_first_name + " " + new_last_name);
+      console.log(res);
+      setIsEditingName(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const addSelectedModule = async (module) => {
     if (selectedModules.includes(module)) {
       toast.error("You have already selected this module", {
@@ -192,12 +232,39 @@ export default function Profile() {
               </div>
 
               <div className="mb-4">
-                <h1 className="text-xl font-bold">Name</h1>
-                <p className="bg-secondary p-2 rounded-md">
-                  {localStorage.getItem("first_name") +
-                    " " +
-                    localStorage.getItem("last_name")}
-                </p>
+                <div className="flex justify-between items-center mb-2">
+                  <h1 className="text-xl font-bold">Name</h1>
+                  <button
+                    className={`rounded-2xl ${
+                      isEditingName
+                        ? "bg-primary text-white"
+                        : "bg-secondary text-black"
+                    } border border-black px-3 py-1 capitalize hover:bg-${
+                      isEditingName
+                        ? "secondary hover:text-black"
+                        : "primary hover:text-white"
+                    } `}
+                    onClick={
+                      isEditingName
+                        ? () => {
+                            handleSaveName();
+                            setIsEditingName(false);
+                          }
+                        : () => setIsEditingName(true)
+                    }
+                  >
+                    {isEditingName ? "Save" : "Edit"}
+                  </button>
+                </div>
+                <div className="bg-secondary rounded-md">
+                  <input
+                    type="text"
+                    className="w-full p-2 bg-secondary rounded-xl border-none focus:outline-none"
+                    value={fullName}
+                    readOnly={!isEditingName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                </div>
               </div>
 
               <div className="mb-4">
@@ -226,8 +293,8 @@ export default function Profile() {
                       } border border-black px-3 py-1 capitalize hover:bg-${
                         isEditingDescription
                           ? "secondary hover:text-black"
-                          : "primary"
-                      } hover:text-white`}
+                          : "primary hover:text-white"
+                      } `}
                       onClick={
                         isEditingDescription
                           ? handleSaveDescription
