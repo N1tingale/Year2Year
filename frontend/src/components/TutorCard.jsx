@@ -22,7 +22,7 @@ export default function TutorCard({ tutor, index }) {
           }}
         >
           <span className="text-white text-lg font-bold">
-            {tutor.first_name[0]}
+            {tutor.first_name[0].toUpperCase()}
           </span>
         </div>
         <p className="ml-4 font-semibold text-lg">

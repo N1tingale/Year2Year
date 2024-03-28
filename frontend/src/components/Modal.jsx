@@ -181,8 +181,8 @@ export default function Modal({
                       style={{ width: "100%", height: "100%" }}
                     >
                       {msg.sender_id == userId
-                        ? localStorage.getItem("first_name")[0]
-                        : recipientName[0]}
+                        ? localStorage.getItem("first_name")[0].toUpperCase()
+                        : recipientName[0].toUpperCase()}
                     </span>
                   </div>
                 </div>
