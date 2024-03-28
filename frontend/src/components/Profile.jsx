@@ -326,9 +326,15 @@ export default function Profile() {
                       {isEditingDescription ? "Save" : "Edit"}
                     </button>
                   </div>
-                  <div className="bg-secondary rounded-md">
+                  <div
+                    className={`rounded-md ${
+                      isEditingDescription ? "bg-white" : "bg-secondary"
+                    }`}
+                  >
                     <textarea
-                      className="w-full p-2 bg-secondary rounded-xl border-none resize-none focus:outline-none"
+                      className={`w-full p-2 rounded-xl border-none resize-none focus:outline-none ${
+                        isEditingDescription ? "bg-white" : "bg-secondary"
+                      }`}
                       placeholder="Write a description so students can know more about you."
                       value={description}
                       readOnly={!isEditingDescription}
