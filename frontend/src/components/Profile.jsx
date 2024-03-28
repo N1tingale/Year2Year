@@ -21,12 +21,15 @@ export default function Profile() {
   const [authenticated, setAuthenticated] = useState(false);
   const [description, setDescription] = useState("");
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
   const [selectedModules, setSelectedModules] = useState([]);
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
-  const [fullName, setFullName] = useState(
-    localStorage.getItem("first_name") + " " + localStorage.getItem("last_name")
+  const [firstName, setFirstName] = useState(
+    localStorage.getItem("first_name") || ""
   );
-  const [isEditingName, setIsEditingName] = useState(false);
+  const [lastName, setLastName] = useState(
+    localStorage.getItem("last_name") || ""
+  );
   const [email, setEmail] = useState("");
   const [lastMessages, setLastMessages] = useState([]);
   const [year, setYear] = useState("");
@@ -43,11 +46,10 @@ export default function Profile() {
   ];
 
   useEffect(() => {
-    const storedFullName =
-      localStorage.getItem("first_name") +
-      " " +
-      localStorage.getItem("last_name");
-    setFullName(storedFullName);
+    const storedFirstName = localStorage.getItem("first_name") || "";
+    const storedLastName = localStorage.getItem("last_name") || "";
+    setFirstName(storedFirstName);
+    setLastName(storedLastName);
   }, []);
 
   useEffect(() => {
@@ -146,26 +148,30 @@ export default function Profile() {
 
   const handleSaveName = async () => {
     try {
-      const new_first_name = fullName.split(" ")[0];
-      const new_last_name = fullName.split(" ").slice(1).join(" ");
-      if (new_first_name === "" || new_last_name === "") {
+      const new_first_name = firstName.trim();
+      const new_last_name = lastName.trim();
+      const nameRegex = /^[a-zA-Z\s-]+$/;
+      if (
+        !new_first_name.trim().match(nameRegex) ||
+        !new_last_name.trim().match(nameRegex)
+      ) {
         toast.error("Please enter a valid full name", {
           style: {
             background: "#ffeccc",
           },
         });
+        setFirstName(localStorage.getItem("first_name"));
+        setLastName(localStorage.getItem("last_name"));
         return;
       }
-      console.log(new_first_name, new_last_name);
-      const res = await axios.post(`http://127.0.0.1:5000/edit-name`, {
+
+      await axios.post(`http://127.0.0.1:5000/edit-name`, {
         user_id: localStorage.getItem("id"),
         first_name: new_first_name,
         last_name: new_last_name,
       });
       localStorage.setItem("first_name", new_first_name);
       localStorage.setItem("last_name", new_last_name);
-      setFullName(new_first_name + " " + new_last_name);
-      console.log(res);
       setIsEditingName(false);
     } catch (err) {
       console.error(err);
@@ -242,7 +248,7 @@ export default function Profile() {
                     } border border-black px-3 py-1 capitalize hover:bg-${
                       isEditingName
                         ? "secondary hover:text-black"
-                        : "primary hover:text-white"
+                        : "primaryColor hover:text-white"
                     } `}
                     onClick={
                       isEditingName
@@ -256,17 +262,33 @@ export default function Profile() {
                     {isEditingName ? "Save" : "Edit"}
                   </button>
                 </div>
-                <div className="bg-secondary rounded-md">
-                  <input
-                    type="text"
-                    className="w-full p-2 bg-secondary rounded-xl border-none focus:outline-none"
-                    value={fullName}
-                    readOnly={!isEditingName}
-                    onChange={(e) => setFullName(e.target.value)}
-                  />
-                </div>
+                {isEditingName ? (
+                  <div className="bg-secondary rounded-md flex items-center">
+                    <input
+                      type="text"
+                      id="first_name"
+                      className="w-full p-2 bg-white rounded-l-md border-none focus:bg-secondary"
+                      value={firstName}
+                      placeholder="First Name"
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      id="last_name"
+                      className="w-full p-2 bg-white rounded-r-md border-l-2 focus:bg-secondary"
+                      value={lastName}
+                      placeholder="Last Name"
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  <div className="bg-secondary rounded-md flex items-center">
+                    <p className="w-full p-2 bg-secondary rounded-xl border-none focus:outline-none">
+                      {`${firstName} ${lastName}`}
+                    </p>
+                  </div>
+                )}
               </div>
-
               <div className="mb-4">
                 <h1 className="text-xl font-bold">Email</h1>
                 <p className="bg-secondary p-2 rounded-md">
@@ -293,7 +315,7 @@ export default function Profile() {
                       } border border-black px-3 py-1 capitalize hover:bg-${
                         isEditingDescription
                           ? "secondary hover:text-black"
-                          : "primary hover:text-white"
+                          : "primaryColor hover:text-white"
                       } `}
                       onClick={
                         isEditingDescription
