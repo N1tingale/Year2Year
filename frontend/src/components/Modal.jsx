@@ -49,11 +49,17 @@ export default function Modal({
   const userProfileColour = localStorage.getItem("profile_colour");
   const [chatId, setChatId] = useState(chId);
   const navigate = useNavigate();
-  // This is a temporary thing for convenience, but should be fetched and passed here instead
-  // The chatId will be set when the socket receives a chat signal
+  
 
+  const endOfMessagesRef = useRef(null);
   const socketRef = useRef();
   const chatContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (endOfMessagesRef.current) {
+      endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   // Runs once when the element is instantiated, to prevent constantly reconnecting to the socket
   useEffect(() => {
@@ -232,7 +238,7 @@ export default function Modal({
             ))}
           </div>
 
-          <div className="sticky bottom-0 z-10">
+          <div ref={endOfMessagesRef} className="sticky bottom-0 z-10">
             <div className="flex justify-between items-center">
               <div className="relative w-full">
                 <input
