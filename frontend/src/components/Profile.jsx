@@ -451,7 +451,11 @@ export default function Profile() {
           login...
         </div>
       )}
-      <Footer relative={isFooterRelative} />
+      <Footer
+        relative={
+          localStorage.getItem("userType") == "tutor" ? true : isFooterRelative
+        }
+      />
     </>
   );
 }
