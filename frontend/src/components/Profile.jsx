@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ChatCardSkeleton from "./ChatCardSkeleton";
 import toast from "react-hot-toast";
-import { set } from "react-hook-form";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -107,31 +106,26 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    const fetchLastMessages = async () => {
-      try {
-        const newLastMessages = [];
-        for (const chat of chats) {
-          const response = await axios.get(
-            `http://127.0.0.1:5000/get-messages/${chat.id}`
-          );
+    for (const chat of chats) {
+      axios
+        .get(`http://127.0.0.1:5000/get-messages/${chat.id}`)
+        .then((response) => {
+          console.log(response);
           if (response.data && response.data.messages.length > 0) {
             let content =
               response.data.messages[response.data.messages.length - 1].content;
             if (content.length > 40) {
               content = content.slice(0, 40) + "...";
             }
-            newLastMessages.push(content);
+            setLastMessages((prev) => [...prev, content]);
+            console.log(lastMessages);
           } else {
-            newLastMessages.push("");
-            console.error("No messages found for chat");
+            setLastMessages((prev) => [...prev, ""]);
+            console.error(`No messages found for chat with id ${chat.id}`);
           }
-        }
-        setLastMessages(newLastMessages);
-      } catch (error) {
-        console.error("Error fetching last messages:", error);
-      }
-    };
-    fetchLastMessages();
+        })
+        .catch((err) => console.error(err));
+    }
   }, [chats]);
 
   const handleSaveDescription = async () => {
