@@ -122,6 +122,7 @@ export default function Profile() {
             }
             newLastMessages.push(content);
           } else {
+            newLastMessages.push("");
             console.error("No messages found for chat");
           }
         }
