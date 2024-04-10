@@ -9,6 +9,7 @@ import Tutors from "./components/Tutors";
 import ReportUser from "./components/ReportUser";
 import FAQ from "./components/FAQ";
 import { Toaster } from "react-hot-toast";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 function App() {
   return (
@@ -44,6 +45,9 @@ function App() {
         </Route>
         <Route path="/my-reviews" Component={Tutors}>
           My Reviews
+        </Route>
+        <Route path="/privacy-policy" Component={PrivacyPolicy}>
+          Privacy Policy
         </Route>
         <Route path="*" Component={Home}>
           404

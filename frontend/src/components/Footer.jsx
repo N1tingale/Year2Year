@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 export default function Footer({ relative }) {
   return (
     <footer
@@ -22,7 +23,7 @@ export default function Footer({ relative }) {
       <nav className="grid-flow-col gap-4 text-white flex md:place-self-center md:justify-self-end">
         <div className="flex gap-4 text-lg font-semibold text-right">
           <a href="mailto:year2yearmcr@gmail.com">Contact Us</a>
-          <p>Privacy Policy</p>
+          <Link to="/privacy-policy">Privacy Policy</Link>
         </div>
       </nav>
     </footer>
