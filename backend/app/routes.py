@@ -85,8 +85,8 @@ def create_student():
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     email = data.get('email')
-    if not email.endswith("@student.manchester.ac.uk"):
-        return jsonify({"error": "Email must be a student email"}), 400
+    #if not email.endswith("@student.manchester.ac.uk"):
+        #return jsonify({"error": "Email must be a student email"}), 400
     password = data.get('password')
     hashed_password, salt = hash_data(password)
     id = generate_unique_id()
@@ -205,8 +205,8 @@ def create_tutor():
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     email = data.get('email')
-    if not email.endswith("@student.manchester.ac.uk"):
-        return jsonify({"error": "Email must be a student email"}), 400
+    #if not email.endswith("@student.manchester.ac.uk"):
+        #return jsonify({"error": "Email must be a student email"}), 400
     password = data.get('password')
     hashed_password, salt = hash_data(password)
     year = data.get('year')
@@ -625,6 +625,10 @@ def add_review():
 
     if int(rating) < 1 or int(rating) > 5:
         return jsonify({"error": "Rating must be 1 to 5"}), 400
+
+    existing_review = Review.query.filter_by(student_id=student_id, tutor_id=tutor_id).first()
+    if existing_review:
+        return jsonify({"error": "This student has already submitted a review for this tutor."}), 400
 
     # return jsonify({"student_id":student_id,
     #                 "tutor_id":tutor_id,

@@ -64,6 +64,11 @@ export default function ReviewModal({ tutor, close, index }) {
       console.log("Review submitted");
     } catch (error) {
       console.error("Error submitting review:", error);
+      toast.error(
+        "Error submitting review. You may have already submitted a review for this tutor",
+        { style: { background: "#ffeccc" } }
+      );
+      setShowWriteReview(false);
     }
   };
 
