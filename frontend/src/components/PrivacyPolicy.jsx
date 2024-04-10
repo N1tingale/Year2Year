@@ -12,15 +12,15 @@ export default function PrivacyPolicy() {
         <p className="mb-4">This Privacy Policy outlines how we collect, use, and safeguard your data when you use our tutoring platform.</p>
         <h2 className="text-2xl font-bold mt-8 mb-2">1. Information We Collect:</h2>
         <ul className="list-disc pl-5 mb-4">
-          <li><strong className="font-semibold">- User Profile Information:</strong> When you sign up for Year2Year, we collect basic information such as your name, email address, and university affiliation.</li>
-          <li><strong className="font-semibold">- Messaging Data:</strong> We store messages exchanged between students and tutors within our platform.</li>
-          <li><strong className="font-semibold">- Module Preferences:</strong> To connect you with relevant tutors, we collect information about the modules you’re studying.</li>
+          <li><strong className="font-semibold"> User Profile Information:</strong> When you sign up for Year2Year, we collect basic information such as your name, email address, and university affiliation.</li>
+          <li><strong className="font-semibold"> Messaging Data:</strong> We store messages exchanged between students and tutors within our platform.</li>
+          <li><strong className="font-semibold"> Module Preferences:</strong> To connect you with relevant tutors, we collect information about the modules you’re studying.</li>
         </ul>
         <h2 className="text-2xl font-bold mt-8 mb-2">2. How We Use Your Information:</h2>
         <ul className="list-disc pl-5 mb-4">
-          <li><strong className="font-semibold">- Connecting Students and Tutors:</strong> We use your profile information to match you with suitable tutors.</li>
-          <li><strong className="font-semibold">- Improving Our Services:</strong> We analyze usage patterns to enhance Year2Year’s functionality.</li>
-          <li><strong className="font-semibold">- Communication:</strong> We use your email address to send important updates and notifications.</li>
+          <li><strong className="font-semibold"> Connecting Students and Tutors:</strong> We use your profile information to match you with suitable tutors.</li>
+          <li><strong className="font-semibold"> Improving Our Services:</strong> We analyze usage patterns to enhance Year2Year’s functionality.</li>
+          <li><strong className="font-semibold"> Communication:</strong> We use your email address to send important updates and notifications.</li>
         </ul>
         <h2 className="text-2xl font-bold mt-8 mb-2">3. Data Security:</h2>
         <p className="mb-4">We employ industry-standard security measures to protect your data from unauthorized access, loss, or misuse.</p>
