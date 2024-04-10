@@ -623,7 +623,7 @@ def add_review():
     rating = data.get("rating")
     description = data.get("description")
 
-    if int(rating) < 1 or int(rating) > 5:
+    if rating < 0.5 or rating > 5:
         return jsonify({"error": "Rating must be 1 to 5"}), 400
 
     existing_review = Review.query.filter_by(student_id=student_id, tutor_id=tutor_id).first()
