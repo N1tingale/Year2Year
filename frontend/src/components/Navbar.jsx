@@ -16,7 +16,7 @@ export default function Navbar() {
             textDecoration: location.pathname === "/" ? "underline" : "",
           }}
         >
-          Home
+          <img src="/logo.png" alt="logo" className="h-8" />
         </Link>
         <Link
           className="text-xl font-semibold hover:text-primaryColor-700 rounded-2xl p-1"
