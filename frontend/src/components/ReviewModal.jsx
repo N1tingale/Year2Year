@@ -15,14 +15,12 @@ export default function ReviewModal({ tutor, close, index }) {
   const [rating, setRating] = useState(2.5);
 
   useEffect(() => {
-    console.log("Fetching reviews");
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
           `http://127.0.0.1:5000/get-reviews/${tutor.id}`
         );
         setReviews(response.data);
-        console.log("Reviews", response.data);
         if (response.data.length > 0) {
           let totalRating = 0;
           response.data.forEach((review) => {
@@ -61,7 +59,6 @@ export default function ReviewModal({ tutor, close, index }) {
       setShowWriteReview(false);
       document.getElementById("description").value = "";
       setRating(2.5);
-      console.log("Review submitted");
     } catch (error) {
       console.error("Error submitting review:", error);
       toast.error(

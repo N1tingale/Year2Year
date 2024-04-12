@@ -37,7 +37,6 @@ export default function OTPModal({
           otp: enteredOtp,
         })
         .then((res) => {
-          console.log(res);
           setReset(true);
           setShowModal(false);
         })

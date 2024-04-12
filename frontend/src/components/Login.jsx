@@ -33,8 +33,6 @@ export default function Login() {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
-
     const path = loginAsTutor ? "login-tutor" : "login-student";
 
     axios
@@ -56,7 +54,6 @@ export default function Login() {
         }
 
         navigate("/profile");
-        console.log(res);
       })
       .catch((err) => {
         console.log(err.response.data.error);

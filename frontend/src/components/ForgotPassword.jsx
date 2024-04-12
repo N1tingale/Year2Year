@@ -54,17 +54,14 @@ export default function ForgotPassword() {
       if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
         setErr(true);
       } else {
-        // Simulate data fetching from the backend
         axios
           .post("http://127.0.0.1:5000/send-otp-to-existing-user", {
             email: email,
           })
           .then((res) => {
-            console.log(res);
             setShowResetPassword(true);
           })
           .catch((err) => {
-            console.log(err);
             toast.error("Something went wrong", {
               style: {
                 background: "#ffeccc",
@@ -102,7 +99,6 @@ export default function ForgotPassword() {
         new_password: password,
       })
       .then((res) => {
-        console.log(res);
         toast.success("Password updated successfully", {
           style: {
             background: "#ffeccc",

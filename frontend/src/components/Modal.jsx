@@ -15,8 +15,6 @@ export default function Modal({
   recipientProfileColour,
   chId,
 }) {
-  
-
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("id");
@@ -24,7 +22,6 @@ export default function Modal({
   const userProfileColour = localStorage.getItem("profile_colour");
   const [chatId, setChatId] = useState(chId);
   const navigate = useNavigate();
-  
 
   const endOfMessagesRef = useRef(null);
   const socketRef = useRef();
@@ -32,7 +29,7 @@ export default function Modal({
 
   useEffect(() => {
     if (endOfMessagesRef.current) {
-      endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+      endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
@@ -49,14 +46,12 @@ export default function Modal({
     // Sets up message listening when the component is mounted
     if (socketRef.current) {
       socketRef.current.on("message", (data) => {
-        console.log("Incoming message: ", data);
         if (data.sender_id != userId) {
           setMessages((prevMessages) => [...prevMessages, data]);
         }
       });
 
       socketRef.current.on("chat", (data) => {
-        console.log("Incoming chat request", data);
         setChatId(data.chat_id);
         fetchMessages(data.chat_id);
       });
@@ -79,7 +74,6 @@ export default function Modal({
       .get(`http://127.0.0.1:5000/get-messages/${chatId}`)
       .then((response) => {
         if (response.data) {
-          console.log("Messages fetched:", response.data);
           setMessages(response.data.messages);
         } else {
           console.error("Invalid response format:", response);
@@ -103,14 +97,6 @@ export default function Modal({
     }
     const current_timestamp = new Date().toISOString();
     socketRef.current.emit("message", {
-      chat_id: chatId,
-      sender_id: userId,
-      recipient_id: recipientId,
-      sender_type: userType,
-      content: message,
-      timestamp: current_timestamp,
-    });
-    console.log("Message sent:", {
       chat_id: chatId,
       sender_id: userId,
       recipient_id: recipientId,

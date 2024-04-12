@@ -14,13 +14,11 @@ export default function ReportUser() {
     const fetchUserType = async () => {
       try {
         if (!localStorage.getItem("id")) {
-          console.log("User not logged in");
           navigate("/login");
           return;
         }
 
         if (localStorage.getItem("id") === idBeingReported) {
-          console.log("User trying to report themselves");
           navigate("/profile");
           return;
         }
@@ -35,7 +33,6 @@ export default function ReportUser() {
         setReportedName(response.data.full_name);
 
         if (userType === localStorage.getItem("userType")) {
-          console.log("User trying to report user of same type");
           navigate("/profile");
           return;
         }

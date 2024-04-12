@@ -45,7 +45,6 @@ export default function SignUp() {
       setSelectedModules((prevModules) => {
         const newModules = [...prevModules, selected];
         allowedModules = allowedModules.filter((module) => module !== selected);
-        console.log(newModules);
         return newModules;
       });
     }
@@ -103,7 +102,6 @@ export default function SignUp() {
   }, [isOtpCorrect]);
 
   const onSubmit = (data, e) => {
-    console.log("Submitting form");
     const passwordValidationResult = validatePassword(data.password);
 
     if (passwordValidationResult !== true) {
@@ -129,18 +127,14 @@ export default function SignUp() {
       return;
     }
 
-    console.log("Email:", data.email);
     if (!sentEmail) {
-      console.log("Sending email");
       axios
         .post(`http://127.0.0.1:5000/send-otp-to-new-user`, {
           email: data.email,
         })
         .then((res) => {
           setShowOTPModal(true);
-          console.log(showOTPModal);
           setCorrectOtp(res.data.otp);
-          console.log("Correct OTP:", correctOtp);
           setEmailForOTP(data.email);
         });
       setSentEmail(true);
@@ -148,7 +142,6 @@ export default function SignUp() {
     const path = signUpAsTutor ? "add-tutor" : "add-student";
 
     if (isOtpCorrect) {
-      console.log("OTP is correct");
       axios
         .post(`http://127.0.0.1:5000/${path}`, {
           first_name: data.firstName,
@@ -174,7 +167,6 @@ export default function SignUp() {
           }
 
           navigate("/profile");
-          console.log(res);
         })
         .catch((err) => {
           const errorMessage = err.response?.data?.error || "An error occurred";
@@ -193,9 +185,6 @@ export default function SignUp() {
         const windowHeight = window.innerHeight;
 
         setIsFooterRelative(containerHeight > windowHeight);
-        console.log(
-          `Container height:${containerHeight}, Window heigth:${windowHeight}, isFooterRelative: ${isFooterRelative}`
-        );
       }
     };
     handleResize();
@@ -400,7 +389,6 @@ export default function SignUp() {
           </button>
         </small>
       </form>
-      {console.log("Show OTP Modal:", showOTPModal)}
       {showOTPModal && (
         <OTPModal
           email={emailForOTP}

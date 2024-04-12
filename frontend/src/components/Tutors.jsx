@@ -63,11 +63,9 @@ export default function Tutors() {
     axios
       .get("http://127.0.0.1:5000/tutors")
       .then((res) => {
-        console.log(res);
         setTimeout(() => setIsLoading(false), 250);
         setTutors(res.data.tutors);
         setFilteredTutors(res.data.tutors);
-        console.log(res.data.tutors);
       })
       .catch((err) => console.debug(err));
   }, []);

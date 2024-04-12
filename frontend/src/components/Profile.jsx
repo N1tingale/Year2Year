@@ -110,7 +110,6 @@ export default function Profile() {
       axios
         .get(`http://127.0.0.1:5000/get-messages/${chat.id}`)
         .then((response) => {
-          console.log(response);
           if (response.data && response.data.messages.length > 0) {
             let content =
               response.data.messages[response.data.messages.length - 1].content;
@@ -118,7 +117,6 @@ export default function Profile() {
               content = content.slice(0, 40) + "...";
             }
             setLastMessages((prev) => [...prev, content]);
-            console.log(lastMessages);
           } else {
             setLastMessages((prev) => [...prev, ""]);
             console.error(`No messages found for chat with id ${chat.id}`);
@@ -134,7 +132,6 @@ export default function Profile() {
         user_id: localStorage.getItem("id"),
         description: description,
       });
-      console.log(res);
       setIsEditingDescription(false);
     } catch (err) {
       console.error(err);
