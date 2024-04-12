@@ -9,7 +9,7 @@ export default function Home() {
       <Navbar />
       <div className="flex flex-col 2xl:justify-center 2xl:items-center 2xl:flex-grow">
         <div className="flex flex-col items-center">
-          <h1 className="text-5xl font-bold text-primaryColor text-center mt-4">
+          <h1 className="text-5xl font-bold text-primaryColor text-center mt-2 2xl:mt-0">
             UNLOCK YOUR POTENTIAL: BOOK YOUR TUTOR, <br /> MASTER YOUR SUBJECTS!
           </h1>
           <p className="text-xl mt-6">How It Works</p>
