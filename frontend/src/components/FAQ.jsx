@@ -3,9 +3,35 @@ import Footer from "./Footer";
 import Navbar from "./Navbar";
 import FAQItem from "./FAQItem";
 
+import { useEffect, useState, useRef } from "react";
+
 export default function FAQ() {
+  const [isFooterRelative, setIsFooterRelative] = useState(false);
+
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const containerHeight = containerRef.current.offsetHeight;
+        const windowHeight = window.innerHeight;
+
+        setIsFooterRelative(containerHeight > windowHeight);
+        console.log(
+          `Container height:${containerHeight}, Window heigth:${windowHeight}, isFooterRelative: ${isFooterRelative}`
+        );
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
-    <div className="h-screen">
+    <div ref={containerRef} className="h-screen">
       <div className="container mx-auto">
         <Navbar />
         <div className="bg-secondaryColor mt-10 flex text-center justify-center mx-auto justify-center items-center rounded-xl border-2 border-black m-2 bg-white w-2/5">
@@ -55,7 +81,7 @@ export default function FAQ() {
           />
         </div>
       </div>
-      <Footer relative={true} />
+      <Footer isRelative={isFooterRelative} />
     </div>
   );
 }
