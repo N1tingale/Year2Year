@@ -81,7 +81,7 @@ export default function FAQ() {
           />
         </div>
       </div>
-      <Footer isRelative={isFooterRelative} />
+      <Footer relative={true} />
     </div>
   );
 }
