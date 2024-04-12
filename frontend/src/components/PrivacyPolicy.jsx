@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
           data when you use our tutoring platform.
         </p>
         <h2 className="text-2xl font-bold mt-8 mb-2">
-          1. Information We Collect:
+          1. Infоrmation We Collect:
         </h2>
         <ul className="list-disc pl-5 mb-4">
           <li>
