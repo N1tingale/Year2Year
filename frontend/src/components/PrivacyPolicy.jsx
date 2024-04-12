@@ -26,7 +26,7 @@ export default function PrivacyPolicy() {
         <h2 className="text-2xl font-bold mt-8 mb-2">
           1. Infоrmation We Collect:
         </h2>
-        <ul className="list-disc pl-5 mb-4">
+        <ul className="pl-5 mb-4">
           <li>
             <strong className="font-semibold">
               {" "}
@@ -48,7 +48,7 @@ export default function PrivacyPolicy() {
         <h2 className="text-2xl font-bold mt-8 mb-2">
           2. How We Use Your Information:
         </h2>
-        <ul className="list-disc pl-5 mb-4">
+        <ul className="pl-5 mb-4">
           <li>
             <strong className="font-semibold">
               {" "}
