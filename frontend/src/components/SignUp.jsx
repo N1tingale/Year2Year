@@ -357,7 +357,7 @@ export default function SignUp() {
               <Input
                 type={"text"}
                 name={"year"}
-                placeholder={"Year"}
+                placeholder={"Year (2-4)"}
                 register={register}
                 validation={{
                   required: "Year is required",
