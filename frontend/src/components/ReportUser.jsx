@@ -25,7 +25,7 @@ export default function ReportUser() {
 
         const response = await axios
           .get(
-            `https://year2year.onrender.com:5000/get-user-details/${idBeingReported}`
+            `https://year2year.onrender.com/get-user-details/${idBeingReported}`
           )
           .catch((error) => {
             console.error("Error fetching user type:", error);
@@ -55,7 +55,7 @@ export default function ReportUser() {
 
     try {
       const res = await axios.post(
-        `https://year2year.onrender.com:5000/create-report`,
+        `https://year2year.onrender.com/create-report`,
         {
           student_id:
             localStorage.getItem("userType") === "student"

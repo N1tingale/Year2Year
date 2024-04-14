@@ -71,7 +71,7 @@ export default function Modal({
   // Fetches messages from the backend to display chat history
   const fetchMessages = (chatId) => {
     axios
-      .get(`https://year2year.onrender.com:5000/get-messages/${chatId}`)
+      .get(`https://year2year.onrender.com/get-messages/${chatId}`)
       .then((response) => {
         if (response.data) {
           setMessages(response.data.messages);

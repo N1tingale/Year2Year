@@ -59,7 +59,7 @@ export default function Profile() {
       if (localStorage.getItem("userType") === "tutor") {
         axios
           .get(
-            `https://year2year.onrender.com:5000/tutors/${localStorage.getItem(
+            `https://year2year.onrender.com/tutors/${localStorage.getItem(
               "id"
             )}`
           )
@@ -75,7 +75,7 @@ export default function Profile() {
 
   useEffect(() => {
     axios
-      .get("https://year2year.onrender.com:5000/get-chats", {
+      .get("https://year2year.onrender.com/get-chats", {
         params: {
           user_id: localStorage.getItem("id"),
           user_type: localStorage.getItem("userType"),
@@ -112,7 +112,7 @@ export default function Profile() {
   useEffect(() => {
     for (const chat of chats) {
       axios
-        .get(`https://year2year.onrender.com:5000/get-messages/${chat.id}`)
+        .get(`https://year2year.onrender.com/get-messages/${chat.id}`)
         .then((response) => {
           if (response.data && response.data.messages.length > 0) {
             let content =
@@ -133,7 +133,7 @@ export default function Profile() {
   const handleSaveDescription = async () => {
     try {
       const res = await axios.post(
-        `https://year2year.onrender.com:5000/edit-description`,
+        `https://year2year.onrender.com/edit-description`,
         {
           user_id: localStorage.getItem("id"),
           description: description,
@@ -164,7 +164,7 @@ export default function Profile() {
         return;
       }
 
-      await axios.post(`https://year2year.onrender.com:5000/edit-name`, {
+      await axios.post(`https://year2year.onrender.com/edit-name`, {
         user_id: localStorage.getItem("id"),
         first_name: new_first_name,
         last_name: new_last_name,
@@ -186,7 +186,7 @@ export default function Profile() {
       });
     } else {
       try {
-        await axios.post("https://year2year.onrender.com:5000/edit-modules", {
+        await axios.post("https://year2year.onrender.com/edit-modules", {
           user_id: localStorage.getItem("id"),
           modules: [...selectedModules, module],
         });
@@ -208,7 +208,7 @@ export default function Profile() {
       return;
     }
     try {
-      await axios.post("https://year2year.onrender.com:5000/edit-modules", {
+      await axios.post("https://year2year.onrender.com/edit-modules", {
         user_id: localStorage.getItem("id"),
         modules: selectedModules.filter((module) => module !== moduleToRemove),
       });
