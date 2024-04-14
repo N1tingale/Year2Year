@@ -1,4 +1,4 @@
-from app import app, db, sio, mail
+from app import app, db, socketio, mail
 from flask_socketio import emit, join_room
 from app.models import Student, Tutor, Module, Booking, Report, Chat, Message, Review
 from flask_mail import Message as EmailMessage
@@ -495,7 +495,7 @@ def create_reports():  # current_user
                                "report_type": new_report.report_type,
                                "description": new_report.description}}), 201
 
-@sio.on("message")
+@socketio.on("message")
 def handle_message(data):
     chat_id = data["chat_id"]
     sender_id = data["sender_id"]
@@ -534,7 +534,7 @@ def get_user_chats():
     ]
     return jsonify({"chats": chat_data})
 
-@sio.on("chat")
+@socketio.on("chat")
 def handle_chat(data):
     print(f"\nChat data received: {data}\n")
     student_id = data["student_id"]
