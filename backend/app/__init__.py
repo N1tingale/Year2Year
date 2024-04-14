@@ -8,7 +8,7 @@ import socketio
 
 
 app = Flask(__name__)
-socketio = socketio.AsyncServer()
+socketio = socketio.Server()
 
 # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='asgi')
 app.config.from_object('config.Config')
