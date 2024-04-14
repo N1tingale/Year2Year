@@ -2,7 +2,8 @@ from flask_cors import CORS
 from flask_socketio import SocketIO
 from flask_mail import Mail, Message
 from asgiref.wsgi import WsgiToAsgi
-
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -13,3 +14,5 @@ asgi_app = WsgiToAsgi(app)
 
 mail = Mail(app)
 db = SQLAlchemy(app)
+
+from app import routes
