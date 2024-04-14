@@ -35,7 +35,7 @@ export default function Modal({
 
   // Runs once when the element is instantiated, to prevent constantly reconnecting to the socket
   useEffect(() => {
-    socketRef.current = io("http://127.0.0.1:5000:5000", {
+    socketRef.current = io("http://127.0.0.1:5000", {
       withCredentials: true,
     });
 
