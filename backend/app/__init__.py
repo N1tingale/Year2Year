@@ -12,7 +12,6 @@ sio = socketio.Server()
 
 # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='asgi')
 app.config.from_object('config.Config')
-app = socketio.WSGIApp(sio, app)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # asgi_app = WsgiToAsgi(app)
@@ -20,4 +19,5 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 mail = Mail(app)
 db = SQLAlchemy(app)
 
+app = socketio.WSGIApp(sio, app)
 from app import routes
