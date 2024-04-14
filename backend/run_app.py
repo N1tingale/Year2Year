@@ -8,4 +8,9 @@ if not os.path.exists("backend/instance/site.db"):
         db.create_all()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    from werkzeug.serving import run_simple
+
+    HOST = '0.0.0.0'
+    PORT = 8000
+
+    run_simple(HOST, PORT, app)
