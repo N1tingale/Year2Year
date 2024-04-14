@@ -19,5 +19,5 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 mail = Mail(app)
 db = SQLAlchemy(app)
 
-app = socketio.WSGIApp(sio, app)
+socketio_app = socketio.WSGIApp(sio, app)
 from app import routes
