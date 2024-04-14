@@ -497,9 +497,9 @@ def create_reports():  # current_user
 
 @socketio.on("message")
 def handle_message(data):
-    chat_id = data["chat_id"]
-    sender_id = data["sender_id"]
-    recipient_id = data["recipient_id"]
+    chat_id = int(data["chat_id"])
+    sender_id = int(data["sender_id"])
+    recipient_id = int(data["recipient_id"])
     sender_type = data["sender_type"]
     content = data["content"]
     timestamp_str = data["timestamp"]
@@ -537,8 +537,8 @@ def get_user_chats():
 @socketio.on("chat")
 def handle_chat(data):
     print(f"\nChat data received: {data}\n")
-    student_id = data["student_id"]
-    tutor_id = data["tutor_id"]
+    student_id = int(data["student_id"])
+    tutor_id = int(data["tutor_id"])
     chat = Chat.query.filter_by(
         student_id=student_id, tutor_id=tutor_id).first()
     if not chat:
