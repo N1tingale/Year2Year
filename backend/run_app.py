@@ -9,4 +9,4 @@ if not os.path.exists("backend/instance/site.db"):
         db.create_all()
 
 if __name__ == '__main__':
-    socketio.run()
+    socketio.run(app=app)
