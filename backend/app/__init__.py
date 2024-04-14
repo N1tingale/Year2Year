@@ -8,11 +8,11 @@ import socketio
 
 
 app = Flask(__name__)
-socketio = socketio.Server()
+sio = socketio.Server()
 
 # socketio = SocketIO(app, cors_allowed_origins="*", async_mode='asgi')
 app.config.from_object('config.Config')
-app = socketio.WSGIApp(socketio, app)
+app = socketio.WSGIApp(sio, app)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # asgi_app = WsgiToAsgi(app)
