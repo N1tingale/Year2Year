@@ -18,7 +18,7 @@ export default function ReviewModal({ tutor, close, index }) {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:5000/get-reviews/${tutor.id}`
+          `https://year2year.onrender.com:5000/get-reviews/${tutor.id}`
         );
         setReviews(response.data);
         if (response.data.length > 0) {
@@ -50,7 +50,7 @@ export default function ReviewModal({ tutor, close, index }) {
     }
 
     try {
-      await axios.post(`http://127.0.0.1:5000/add-review`, {
+      await axios.post(`https://year2year.onrender.com:5000/add-review`, {
         tutor_id: tutor.id,
         student_id: localStorage.getItem("id"),
         description: description,

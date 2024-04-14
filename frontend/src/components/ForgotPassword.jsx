@@ -55,9 +55,12 @@ export default function ForgotPassword() {
         setErr(true);
       } else {
         axios
-          .post("http://127.0.0.1:5000/send-otp-to-existing-user", {
-            email: email,
-          })
+          .post(
+            "https://year2year.onrender.com:5000/send-otp-to-existing-user",
+            {
+              email: email,
+            }
+          )
           .then((res) => {
             setShowResetPassword(true);
           })
@@ -94,7 +97,7 @@ export default function ForgotPassword() {
     }
 
     axios
-      .post("http://127.0.0.1:5000/edit-password", {
+      .post("https://year2year.onrender.com:5000/edit-password", {
         email: email,
         new_password: password,
       })

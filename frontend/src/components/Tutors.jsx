@@ -61,7 +61,7 @@ export default function Tutors() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/tutors")
+      .get("https://year2year.onrender.com:5000/tutors")
       .then((res) => {
         setTimeout(() => setIsLoading(false), 250);
         setTutors(res.data.tutors);

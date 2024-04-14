@@ -32,7 +32,7 @@ export default function OTPModal({
       }
     } else {
       axios
-        .post("http://127.0.0.1:5000/verify-otp", {
+        .post("https://year2year.onrender.com:5000/verify-otp", {
           email: email,
           otp: enteredOtp,
         })

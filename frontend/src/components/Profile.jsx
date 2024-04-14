@@ -58,7 +58,11 @@ export default function Profile() {
       setAuthenticated(true);
       if (localStorage.getItem("userType") === "tutor") {
         axios
-          .get(`http://127.0.0.1:5000/tutors/${localStorage.getItem("id")}`)
+          .get(
+            `https://year2year.onrender.com:5000/tutors/${localStorage.getItem(
+              "id"
+            )}`
+          )
           .then((res) => {
             setDescription(res.data.tutor.description || "");
             setSelectedModules(res.data.tutor.modules || []);
@@ -71,7 +75,7 @@ export default function Profile() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/get-chats", {
+      .get("https://year2year.onrender.com:5000/get-chats", {
         params: {
           user_id: localStorage.getItem("id"),
           user_type: localStorage.getItem("userType"),
@@ -108,7 +112,7 @@ export default function Profile() {
   useEffect(() => {
     for (const chat of chats) {
       axios
-        .get(`http://127.0.0.1:5000/get-messages/${chat.id}`)
+        .get(`https://year2year.onrender.com:5000/get-messages/${chat.id}`)
         .then((response) => {
           if (response.data && response.data.messages.length > 0) {
             let content =
@@ -128,10 +132,13 @@ export default function Profile() {
 
   const handleSaveDescription = async () => {
     try {
-      const res = await axios.post(`http://127.0.0.1:5000/edit-description`, {
-        user_id: localStorage.getItem("id"),
-        description: description,
-      });
+      const res = await axios.post(
+        `https://year2year.onrender.com:5000/edit-description`,
+        {
+          user_id: localStorage.getItem("id"),
+          description: description,
+        }
+      );
       setIsEditingDescription(false);
     } catch (err) {
       console.error(err);
@@ -157,7 +164,7 @@ export default function Profile() {
         return;
       }
 
-      await axios.post(`http://127.0.0.1:5000/edit-name`, {
+      await axios.post(`https://year2year.onrender.com:5000/edit-name`, {
         user_id: localStorage.getItem("id"),
         first_name: new_first_name,
         last_name: new_last_name,
@@ -179,7 +186,7 @@ export default function Profile() {
       });
     } else {
       try {
-        await axios.post("http://127.0.0.1:5000/edit-modules", {
+        await axios.post("https://year2year.onrender.com:5000/edit-modules", {
           user_id: localStorage.getItem("id"),
           modules: [...selectedModules, module],
         });
@@ -201,7 +208,7 @@ export default function Profile() {
       return;
     }
     try {
-      await axios.post("http://127.0.0.1:5000/edit-modules", {
+      await axios.post("https://year2year.onrender.com:5000/edit-modules", {
         user_id: localStorage.getItem("id"),
         modules: selectedModules.filter((module) => module !== moduleToRemove),
       });

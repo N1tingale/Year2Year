@@ -24,7 +24,9 @@ export default function ReportUser() {
         }
 
         const response = await axios
-          .get(`http://127.0.0.1:5000/get-user-details/${idBeingReported}`)
+          .get(
+            `https://year2year.onrender.com:5000/get-user-details/${idBeingReported}`
+          )
           .catch((error) => {
             console.error("Error fetching user type:", error);
             navigate("/profile");
@@ -52,19 +54,22 @@ export default function ReportUser() {
     const description = event.target.description.value;
 
     try {
-      const res = await axios.post(`http://127.0.0.1:5000/create-report`, {
-        student_id:
-          localStorage.getItem("userType") === "student"
-            ? localStorage.getItem("id")
-            : idBeingReported,
-        tutor_id:
-          localStorage.getItem("userType") === "tutor"
-            ? localStorage.getItem("id")
-            : idBeingReported,
-        user_reported: idBeingReported,
-        report_type: type,
-        description: description,
-      });
+      const res = await axios.post(
+        `https://year2year.onrender.com:5000/create-report`,
+        {
+          student_id:
+            localStorage.getItem("userType") === "student"
+              ? localStorage.getItem("id")
+              : idBeingReported,
+          tutor_id:
+            localStorage.getItem("userType") === "tutor"
+              ? localStorage.getItem("id")
+              : idBeingReported,
+          user_reported: idBeingReported,
+          report_type: type,
+          description: description,
+        }
+      );
       toast.success(
         "Report submitted successfully. We will review it shortly and make a decision regarding this user's account.",
         {
