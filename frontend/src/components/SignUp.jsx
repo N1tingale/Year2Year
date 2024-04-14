@@ -129,7 +129,7 @@ export default function SignUp() {
 
     if (!sentEmail) {
       axios
-        .post(`https://year2year.onrender.com/send-otp-to-new-user`, {
+        .post(`http://127.0.0.1:5000/send-otp-to-new-user`, {
           email: data.email,
         })
         .then((res) => {
@@ -143,7 +143,7 @@ export default function SignUp() {
 
     if (isOtpCorrect) {
       axios
-        .post(`https://year2year.onrender.com/${path}`, {
+        .post(`http://127.0.0.1:5000/${path}`, {
           first_name: data.firstName,
           last_name: data.lastName,
           email: data.email,
@@ -204,7 +204,7 @@ export default function SignUp() {
 
   const resendOTP = () => {
     axios
-      .post(`https://year2year.onrender.com/send-otp-to-new-user`, {
+      .post(`http://127.0.0.1:5000/send-otp-to-new-user`, {
         email: emailForOTP,
       })
       .then((res) => {

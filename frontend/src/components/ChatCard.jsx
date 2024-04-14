@@ -9,7 +9,7 @@ export default function ChatCard({ message, index, recipientId, chatId }) {
   useEffect(() => {
     const fetchUserName = async () => {
       const response = await axios
-        .get(`https://year2year.onrender.com/get-user-details/${recipientId}`)
+        .get(`http://127.0.0.1:5000/get-user-details/${recipientId}`)
         .catch((error) => {
           console.error("Error fetching user details");
         });
