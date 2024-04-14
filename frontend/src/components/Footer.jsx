@@ -7,7 +7,7 @@ export default function Footer({ relative }) {
       } footer items-center px-2 py-1 bg-primaryColor`}
     >
       <aside className="text-white items-center grid-flow-col">
-       <img alt="Year 2 Year Logo" width={50} height={50} src="../public/y-white.png"/>
+       <img alt="Year 2 Year Logo" width={50} height={50} src="/y-white.png"/>
         <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
       </aside>
       <nav className="grid-flow-col gap-4 text-white flex md:place-self-center md:justify-self-end">
