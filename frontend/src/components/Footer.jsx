@@ -8,7 +8,7 @@ export default function Footer({ relative }) {
     >
       <aside className="text-white items-center grid-flow-col">
        <img alt="Year 2 Year Logo" width={50} height={50} src="/y-white.png"/>
-        <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
+        <p>Copyright © {new Date().getFullYear()} - All rights reserved</p>
       </aside>
       <nav className="grid-flow-col gap-4 text-white flex md:place-self-center md:justify-self-end">
         <div className="flex gap-4 text-lg font-semibold text-right">
